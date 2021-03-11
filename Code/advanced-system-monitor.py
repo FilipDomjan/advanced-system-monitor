@@ -53,7 +53,9 @@ try:
     def MessageBox(title, text, style):
         ctypes.windll.user32.MessageBoxW(0, text, title, style)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("MessageBox error: {}".format(e))
+    f.close()
 
 # Home page which holds various settings and options
 
@@ -569,7 +571,9 @@ try:
                 loading.pack_forget()
         dec_home = root.after(15, declare_home)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # Following functions change the theme of the app #
 
 try:
@@ -602,7 +606,9 @@ try:
                 print(
                     f"Refresh Rate saved! - New Value: {refresh_rate_entry.get()}")
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 
 # Default theme
 try:
@@ -616,7 +622,9 @@ try:
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # Red/Black theme
 
 try:
@@ -630,7 +638,9 @@ try:
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # Black/White theme
 
 try:
@@ -644,7 +654,9 @@ try:
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # Metallic theme
 
 try:
@@ -658,7 +670,9 @@ try:
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # Blue theme
 
 try:
@@ -672,7 +686,9 @@ try:
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # Purple theme
 
 try:
@@ -686,7 +702,9 @@ try:
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # Orange theme
 
 try:
@@ -700,7 +718,9 @@ try:
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 
 # Function for the clock located on the home page
 
@@ -741,7 +761,9 @@ try:
 
         time = root.after(1000, get_time)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 
 # RECORD_CPU - BUTTON STATE #
 
@@ -788,7 +810,9 @@ try:
         except Exception as e:
             print(e)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # RECORD_GPU - BUTTON STATE #
 
 try:
@@ -834,7 +858,9 @@ try:
         except Exception as e:
             print(e)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # RECORD_RAM - BUTTON STATE #
 
 try:
@@ -880,7 +906,9 @@ try:
         except Exception as e:
             print(e)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # RECORD_FANS - BUTTON STATE #
 
 try:
@@ -926,7 +954,9 @@ try:
         except Exception as e:
             print(e)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # BASE_INFO - BUTTON STATE #
 
 try:
@@ -1419,7 +1449,9 @@ try:
 
         dec_test = root.after(15, declare_test)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # Refresh combined test set amount of miliseconds
 
 try:
@@ -1789,7 +1821,9 @@ try:
         # Update test
         rct = root.after(split[2], refresh_combined_test)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # WRITING STATISTICS TO A FILE #
 
 try:
@@ -2194,7 +2228,9 @@ try:
 
         f.close()
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # Function to generate random fun facts about Advanced System Monitor
 
 try:
@@ -2234,7 +2270,9 @@ try:
 
         ff = root.after(7000, fun_facts)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # Mobo function grabs and displays wide range of data related to the system
 
 try:
@@ -2641,7 +2679,9 @@ try:
 
         dec_mobo = root.after(15, declare_mobo)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # CPU function grabs various information about your CPU and displays it
 
 try:
@@ -3048,7 +3088,9 @@ try:
 
         dec_cpu = root.after(15, declare_cpu)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # refresh_cpu function updates cpu information every x amount of miliseconds
 
 try:
@@ -3251,7 +3293,9 @@ try:
 
         ref = root.after(1500, refresh_cpu)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # GPU function gets all the information available for the GPU
 
 try:
@@ -3732,7 +3776,9 @@ try:
                 refresh_gpu()
         dec_gpu = root.after(15, declare_gpu)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # This function refreshes GPU information every x amount of miliseconds
 
 try:
@@ -4012,7 +4058,9 @@ try:
 
         gpu_update = root.after(1000, refresh_gpu)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # RAM function gets all available information for RAM and SWAP memory
 
 try:
@@ -4333,7 +4381,9 @@ try:
                 refresh_ram()
         dec_ram = root.after(5, declare_ram)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # refresh_ram function refreshes ram and swap memory information every x amount of miliseconds
 
 try:
@@ -4497,7 +4547,9 @@ try:
 
         ram_ref = root.after(1000, refresh_ram)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # Drives function gets all available partitions and shows their usage and free space
 
 try:
@@ -4570,7 +4622,9 @@ try:
 
         refresh_drives()
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # refresh_drives function refreshes partition data every x amount of seconds
 
 try:
@@ -4686,7 +4740,9 @@ try:
 
         drive_ref = root.after(10000, refresh_drives)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # fans function sets up basic frame and closes all previous processes
 
 try:
@@ -4760,7 +4816,9 @@ try:
 
         refresh_fans()
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # refresh_fans finds all the fans connected to the system, displays and refreshes them every x amount of miliseconds
 
 try:
@@ -4831,7 +4889,9 @@ try:
 
         fan_ref = root.after(1000, refresh_fans)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # network function sets up frames and labels for various network information and removes previously active services
 
 try:
@@ -5192,7 +5252,9 @@ try:
 
         refresh_net()
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # refresh_net function refreshes network information every x amount of miliseconds
 
 try:
@@ -5252,7 +5314,9 @@ try:
 
         net_ref = root.after(1000, refresh_net)
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 # get_speed function handles the speedtesting
 
 try:
@@ -5382,7 +5446,9 @@ try:
             print(e)
 # all the basic stuff is setup in this section
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
 
 try:
     if __name__ == '__main__':
@@ -5615,4 +5681,6 @@ try:
 
         root.mainloop()
 except Exception as e:
-    print(e)
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
