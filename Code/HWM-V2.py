@@ -327,7 +327,7 @@ try:
                 refresh_rate = []
 
                 with open(
-                        "E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "r") as file:
+                        "Code\switches.txt", "r") as file:
                     for line in file:
                         for word in line.split():
                             refresh_rate.append(word)
@@ -359,7 +359,7 @@ try:
                                         anchor=tk.W, width=15, height=1, text="Refresh Rate")
                 refresh_rate.grid(row=0, column=0, padx=(10, 0), pady=(0, 20))
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "r") as file:
+                with open("Code\switches.txt", "r") as file:
                     for line in file:
                         if "refresh_rate" in line:
                             split = line.split()
@@ -373,7 +373,7 @@ try:
                     row=0, column=1, padx=(298, 0), pady=(0, 20))
 
                 # Choose what you want to record and put into a text file during a test | note: more options > bigger the performance impact #
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "r") as file:
+                with open("Code\switches.txt", "r") as file:
                     for line in file:
                         if "record_cpu" in line:
                             rec_cpu = line.split()
@@ -585,13 +585,13 @@ try:
             MessageBox(
                 'Warning!', f'Please choose values between 500 and 10000 - Your pick: {refresh_rate_entry.get()}', 0)
         else:
-            with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+            with open("Code\switches.txt") as f:
                 a = f.read()
 
-            with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+            with open("Code\switches.txt") as f:
                 s = f.readlines()
 
-            with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "w") as f:
+            with open("Code\switches.txt", "w") as f:
                 for line in s:
                     if "refresh_rate " in line:
                         split = line.split()
@@ -608,7 +608,7 @@ except Exception as e:
 try:
     def def_theme():
         conf = open(
-            'E:\Programming\Python\Hardware Monitor V2\Code\config.txt', 'w')
+            'Code\config.txt', 'w')
         conf.write("canvas_color = #242f41\nbg_color = #1b2331\nfg_color = #ffffff\nsidemenu_color = #1b2331\nbutton_bg_color = #303e55\ntheme_selected = default")
         conf.close()
         print("Default theme applied!")
@@ -622,7 +622,7 @@ except Exception as e:
 try:
     def redblack_theme():
         conf = open(
-            'E:\Programming\Python\Hardware Monitor V2\Code\config.txt', 'w')
+            'Code\config.txt', 'w')
         conf.write("canvas_color = #1f1f1f\nbg_color = #1a1a1a\nfg_color = #ff3d3d\nsidemenu_color = #1a1a1a\nbutton_bg_color = #ff3d3d\ntheme_selected = redblack")
         conf.close()
         print("Red/Black theme applied!")
@@ -636,7 +636,7 @@ except Exception as e:
 try:
     def blackwhite_theme():
         conf = open(
-            'E:\Programming\Python\Hardware Monitor V2\Code\config.txt', 'w')
+            'Code\config.txt', 'w')
         conf.write("canvas_color = #ededed\nbg_color = #fafafa\nfg_color = #1c1c1c\nsidemenu_color = #fafafa\nbutton_bg_color = #d6d6d6\ntheme_selected = blackwhite")
         conf.close()
         print("Black/White theme applied!")
@@ -650,7 +650,7 @@ except Exception as e:
 try:
     def metallic_theme():
         conf = open(
-            'E:\Programming\Python\Hardware Monitor V2\Code\config.txt', 'w')
+            'Code\config.txt', 'w')
         conf.write("canvas_color = #121212\nbg_color = #202020\nfg_color = #d0d0d0\nsidemenu_color = #2a2a2a\nbutton_bg_color = #16395b\ntheme_selected = metallic")
         conf.close()
         print("Metallic theme applied!")
@@ -664,7 +664,7 @@ except Exception as e:
 try:
     def blue_theme():
         conf = open(
-            'E:\Programming\Python\Hardware Monitor V2\Code\config.txt', 'w')
+            'Code\config.txt', 'w')
         conf.write("canvas_color = #0084ff\nbg_color = #0070d9\nfg_color = #ffffff\nsidemenu_color = #0070d9\nbutton_bg_color = #47a6ff\ntheme_selected = blue")
         conf.close()
         print("Blue theme applied!")
@@ -678,7 +678,7 @@ except Exception as e:
 try:
     def purple_theme():
         conf = open(
-            'E:\Programming\Python\Hardware Monitor V2\Code\config.txt', 'w')
+            'Code\config.txt', 'w')
         conf.write("canvas_color = #8c00ff\nbg_color = #7400d4\nfg_color = #ffffff\nsidemenu_color = #7400d4\nbutton_bg_color = #b357ff\ntheme_selected = purple")
         conf.close()
         print("Purple theme applied!")
@@ -692,7 +692,7 @@ except Exception as e:
 try:
     def orange_theme():
         conf = open(
-            'E:\Programming\Python\Hardware Monitor V2\Code\config.txt', 'w')
+            'Code\config.txt', 'w')
         conf.write("canvas_color = #ff9900\nbg_color = #db8400\nfg_color = #ffffff\nsidemenu_color = #db8400\nbutton_bg_color = #ffb13b\ntheme_selected = orange")
         conf.close()
         print("Orange theme applied!")
@@ -747,7 +747,7 @@ except Exception as e:
 
 try:
     def cpu_button_state():
-        with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "r") as file:
+        with open("Code\switches.txt", "r") as file:
             for line in file:
                 if "record_cpu" in line:
                     rec_cpu = line.split()
@@ -755,13 +755,13 @@ try:
         try:
             if rec_cpu[2] == "True":
                 record_cpu_button.configure(image=off_button)
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     a = f.read()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     s = f.readlines()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "w") as f:
+                with open("Code\switches.txt", "w") as f:
                     for line in s:
                         if "record_cpu" in line:
                             cpu_split = line.split()
@@ -771,13 +771,13 @@ try:
                     f.write(a)
             else:
                 record_cpu_button.configure(image=on_button)
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     a = f.read()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     s = f.readlines()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "w") as f:
+                with open("Code\switches.txt", "w") as f:
                     for line in s:
                         if "record_cpu" in line:
                             cpu_split = line.split()
@@ -793,7 +793,7 @@ except Exception as e:
 
 try:
     def gpu_button_state():
-        with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "r") as file:
+        with open("Code\switches.txt", "r") as file:
             for line in file:
                 if "record_gpu" in line:
                     rec_gpu = line.split()
@@ -801,13 +801,13 @@ try:
         try:
             if rec_gpu[2] == "True":
                 record_gpu_button.configure(image=off_button)
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     a = f.read()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     s = f.readlines()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "w") as f:
+                with open("Code\switches.txt", "w") as f:
                     for line in s:
                         if "record_gpu" in line:
                             gpu_split = line.split()
@@ -817,13 +817,13 @@ try:
                     f.write(a)
             else:
                 record_gpu_button.configure(image=on_button)
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     a = f.read()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     s = f.readlines()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "w") as f:
+                with open("Code\switches.txt", "w") as f:
                     for line in s:
                         if "record_gpu" in line:
                             gpu_split = line.split()
@@ -839,7 +839,7 @@ except Exception as e:
 
 try:
     def ram_button_state():
-        with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "r") as file:
+        with open("Code\switches.txt", "r") as file:
             for line in file:
                 if "record_ram" in line:
                     rec_ram = line.split()
@@ -847,13 +847,13 @@ try:
         try:
             if rec_ram[2] == "True":
                 record_ram_button.configure(image=off_button)
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     a = f.read()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     s = f.readlines()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "w") as f:
+                with open("Code\switches.txt", "w") as f:
                     for line in s:
                         if "record_ram" in line:
                             ram_split = line.split()
@@ -863,13 +863,13 @@ try:
                     f.write(a)
             else:
                 record_ram_button.configure(image=on_button)
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     a = f.read()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     s = f.readlines()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "w") as f:
+                with open("Code\switches.txt", "w") as f:
                     for line in s:
                         if "record_ram" in line:
                             ram_split = line.split()
@@ -885,7 +885,7 @@ except Exception as e:
 
 try:
     def fan_button_state():
-        with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "r") as file:
+        with open("Code\switches.txt", "r") as file:
             for line in file:
                 if "record_fans" in line:
                     rec_fans = line.split()
@@ -893,13 +893,13 @@ try:
         try:
             if rec_fans[2] == "True":
                 record_fan_button.configure(image=off_button)
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     a = f.read()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     s = f.readlines()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "w") as f:
+                with open("Code\switches.txt", "w") as f:
                     for line in s:
                         if "record_fans" in line:
                             fans_split = line.split()
@@ -909,13 +909,13 @@ try:
                     f.write(a)
             else:
                 record_fan_button.configure(image=on_button)
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     a = f.read()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     s = f.readlines()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "w") as f:
+                with open("Code\switches.txt", "w") as f:
                     for line in s:
                         if "record_fans" in line:
                             fans_split = line.split()
@@ -931,7 +931,7 @@ except Exception as e:
 
 try:
     def base_info_status():
-        with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "r") as file:
+        with open("Code\switches.txt", "r") as file:
             for line in file:
                 if "base_info" in line:
                     base_inf = line.split()
@@ -939,13 +939,13 @@ try:
         try:
             if base_inf[2] == "True":
                 base_info_button.configure(image=off_button)
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     a = f.read()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     s = f.readlines()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "w") as f:
+                with open("Code\switches.txt", "w") as f:
                     for line in s:
                         if "base_info" in line:
                             base_info = line.split()
@@ -955,13 +955,13 @@ try:
                     f.write(a)
             else:
                 base_info_button.configure(image=on_button)
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     a = f.read()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt") as f:
+                with open("Code\switches.txt") as f:
                     s = f.readlines()
 
-                with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "w") as f:
+                with open("Code\switches.txt", "w") as f:
                     for line in s:
                         if "base_info" in line:
                             base_info = line.split()
@@ -1427,7 +1427,7 @@ try:
         global rct
         global max_record
         # READ CONFIG FILE
-        with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "r") as file:
+        with open("Code\switches.txt", "r") as file:
             s = file.readlines()
             for line in s:
                 if "refresh_rate" in line:
@@ -1761,29 +1761,6 @@ try:
         except Exception as e:
             print(e)
 
-        # FREE
-        """
-        try:
-            ram_free_value_label.configure(text=f"{get_size(vmem.free)}")
-            free_perc = (vmem.free / vmem.total) * 100
-            free_perc_optimized = free_perc / 1.65
-            ram_free_bar.configure(text="|"*int(free_perc_optimized))
-        except Exception as e:
-            print(e)
-
-        try:
-            # Adjust colors for free memory
-            if free_perc >= 50:
-                ram_free_bar.configure(fg=asm_cyan)
-            if free_perc < 50 and free_perc > 30:
-                ram_free_bar.configure(fg=asm_yellow)
-            if free_perc < 30 and free_perc > 10:
-                ram_free_bar.configure(fg=asm_orange)
-            if free_perc < 10:
-                ram_free_bar.configure(fg=asm_red)
-        except Exception as e:
-            print(e)
-        """
         # MAX USAGE
 
         try:
@@ -1822,7 +1799,7 @@ try:
 
         line_separator = "-"*10
 
-        with open("E:\Programming\Python\Hardware Monitor V2\Code\switches.txt", "r") as file:
+        with open("Code\switches.txt", "r") as file:
             for line in file:
                 if "base_info" in line:
                     base_info = line.split()
@@ -5420,7 +5397,7 @@ try:
         color_list = []
         theme_selected = ""
 
-        with open("E:\Programming\Python\Hardware Monitor V2\Code\config.txt", "r") as config:
+        with open("Code\config.txt", "r") as config:
             for line in config:
                 for word in line.split():
                     if word.startswith("#"):
@@ -5454,8 +5431,8 @@ try:
         anchor = tk.SW
         lbl_anchor = tk.W
         # Paths
-        image_path = "E:\Programming\Python\Hardware Monitor V2\Visual\images"
-        themes_image_path = "E:\Programming\Python\Hardware Monitor V2\Visual\images\Themes"
+        image_path = "Code\Visual\images"
+        themes_image_path = "Code\Visual\images\Themes"
 
         # Other colors needed for certain tests
         download_color = []
