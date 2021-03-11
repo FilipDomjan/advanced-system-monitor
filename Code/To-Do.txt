@@ -1,0 +1,21 @@
+====== HOME ======
+- COMPLETE - 
+====== MOBO ======
+- COMPLETE
+====== CPU ======
+- COMPLETE -
+====== GPU ======
+1. Add notes inside notes
+2. Swap "VIDEO ENGINE" tab with something more useful
+====== RAM ======
+- COMPLETE -
+====== DRIVES ======
+1. Change the code to work with big amount of drives
+====== FANS ======
+- COMPLETE -
+====== NETWORK ======
+1. Add scrollbar to "INTERFACES"
+
+
+========== ADVANCED SYSTEM MONITOR ============
+1. Add custom title bar
