@@ -5862,7 +5862,7 @@ try:
 
         # Basic root options
         root = tk.Tk()
-        root.title("Advanced System Monitor")
+        root.title("Advanced System Monitor (BETA)")
         root.resizable(False, False)
 
         # Read color and theme from file
