@@ -156,7 +156,7 @@ try:
             global record_gpu_button
             global record_ram_button
             global record_fan_button
-            global base_info_button
+            global mobo_info_button
             global max_cpu_usg
             global cpu_max_usage_during_test
             global gpu_max_usage_during_test
@@ -385,7 +385,7 @@ try:
                             rec_ram = line.split()
                         if "record_fans" in line:
                             rec_fan = line.split()
-                        if "base_info" in line:
+                        if "mobo_info" in line:
                             base_inf = line.split()
 
                 on_button = PhotoImage(
@@ -396,28 +396,28 @@ try:
                 # BASE INFO
 
                 if base_inf[2] == "True":
-                    base_info_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Base Information")
-                    base_info_label.grid(
+                    mobo_info_label = tk.Label(
+                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Mobo Data")
+                    mobo_info_label.grid(
                         row=1, column=0, padx=(10, 0), pady=(0, 20))
-                    base_info_button = tk.Button(
-                        settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=base_info_status)
-                    base_info_button.grid(
+                    mobo_info_button = tk.Button(
+                        settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=mobo_info_status)
+                    mobo_info_button.grid(
                         row=1, column=1, padx=(298, 0), pady=(0, 20))
                 else:
-                    base_info_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Base Information")
-                    base_info_label.grid(
+                    mobo_info_label = tk.Label(
+                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Mobo Data")
+                    mobo_info_label.grid(
                         row=1, column=0, padx=(10, 0), pady=(0, 20))
-                    base_info_button = tk.Button(
-                        settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=base_info_status)
-                    base_info_button.grid(
+                    mobo_info_button = tk.Button(
+                        settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=mobo_info_status)
+                    mobo_info_button.grid(
                         row=1, column=1, padx=(298, 0), pady=(0, 20))
 
                 # CPU RECORDING
                 if rec_cpu[2] == "True":
                     record_cpu_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Write CPU Data")
+                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report CPU Data")
                     record_cpu_label.grid(
                         row=2, column=0, padx=(10, 0), pady=(0, 20))
                     record_cpu_button = tk.Button(
@@ -426,7 +426,7 @@ try:
                         row=2, column=1, padx=(298, 0), pady=(0, 20))
                 else:
                     record_cpu_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Write CPU Data")
+                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report CPU Data")
                     record_cpu_label.grid(
                         row=2, column=0, padx=(10, 0), pady=(0, 20))
                     record_cpu_button = tk.Button(
@@ -437,7 +437,7 @@ try:
                 # GPU RECORDING
                 if rec_gpu[2] == "True":
                     record_gpu_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Write GPU Data")
+                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report GPU Data")
                     record_gpu_label.grid(
                         row=3, column=0, padx=(10, 0), pady=(0, 20))
                     record_gpu_button = tk.Button(
@@ -446,7 +446,7 @@ try:
                         row=3, column=1, padx=(298, 0), pady=(0, 20))
                 else:
                     record_gpu_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Write GPU Data")
+                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report GPU Data")
                     record_gpu_label.grid(
                         row=3, column=0, padx=(10, 0), pady=(0, 20))
                     record_gpu_button = tk.Button(
@@ -457,7 +457,7 @@ try:
                 # RAM RECORDING
                 if rec_ram[2] == "True":
                     record_ram_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Write RAM Data")
+                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report RAM Data")
                     record_ram_label.grid(
                         row=4, column=0, padx=(10, 0), pady=(0, 20))
                     record_ram_button = tk.Button(
@@ -466,7 +466,7 @@ try:
                         row=4, column=1, padx=(298, 0), pady=(0, 20))
                 else:
                     record_ram_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Write RAM Data")
+                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report RAM Data")
                     record_ram_label.grid(
                         row=4, column=0, padx=(10, 0), pady=(0, 20))
                     record_ram_button = tk.Button(
@@ -477,7 +477,7 @@ try:
                 # FAN RECORDING
                 if rec_fan[2] == "True":
                     record_fan_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Write Fans Data")
+                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Fans Data")
                     record_fan_label.grid(
                         row=5, column=0, padx=(10, 0), pady=(0, 20))
                     record_fan_button = tk.Button(
@@ -486,7 +486,7 @@ try:
                         row=5, column=1, padx=(298, 0), pady=(0, 20))
                 else:
                     record_fan_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Write Fans Data")
+                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Fans Data")
                     record_fan_label.grid(
                         row=5, column=0, padx=(10, 0), pady=(0, 20))
                     record_fan_button = tk.Button(
@@ -507,7 +507,7 @@ try:
                 start_test.grid(row=0, column=0, padx=(150, 10), pady=0)
 
                 write_only = tk.Button(start_button_frame, bg="#16395b", fg="#d0d0d0", activebackground="#11314f", relief=SUNKEN, activeforeground="#d0d0d0",
-                                       width=12, height=1, bd=0, anchor=tk.CENTER, font=font, text="WRITE ONLY", command=record_and_save)
+                                       width=12, height=1, bd=0, anchor=tk.CENTER, font=font, text="WRITE ONLY", command=save_write_only)
                 write_only.grid(row=0, column=1, padx=10, pady=0)
 
                 bar.update(10)
@@ -957,18 +957,18 @@ except Exception as e:
     f = open("errorFile.txt", "a")
     f.write("Get size function error: {}".format(e))
     f.close()
-# BASE_INFO - BUTTON STATE #
+# mobo_info - BUTTON STATE #
 
 try:
-    def base_info_status():
+    def mobo_info_status():
         with open("Code\switches.txt", "r") as file:
             for line in file:
-                if "base_info" in line:
+                if "mobo_info" in line:
                     base_inf = line.split()
 
         try:
             if base_inf[2] == "True":
-                base_info_button.configure(image=off_button)
+                mobo_info_button.configure(image=off_button)
                 with open("Code\switches.txt") as f:
                     a = f.read()
 
@@ -977,14 +977,14 @@ try:
 
                 with open("Code\switches.txt", "w") as f:
                     for line in s:
-                        if "base_info" in line:
-                            base_info = line.split()
+                        if "mobo_info" in line:
+                            mobo_info = line.split()
                             a = a.replace(
-                                f"base_info = {base_info[2]}", "base_info = False")
+                                f"mobo_info = {mobo_info[2]}", "mobo_info = False")
                             break
                     f.write(a)
             else:
-                base_info_button.configure(image=on_button)
+                mobo_info_button.configure(image=on_button)
                 with open("Code\switches.txt") as f:
                     a = f.read()
 
@@ -993,10 +993,10 @@ try:
 
                 with open("Code\switches.txt", "w") as f:
                     for line in s:
-                        if "base_info" in line:
-                            base_info = line.split()
+                        if "mobo_info" in line:
+                            mobo_info = line.split()
                             a = a.replace(
-                                f"base_info = {base_info[2]}", "base_info = True")
+                                f"mobo_info = {mobo_info[2]}", "mobo_info = True")
                             break
                     f.write(a)
         except Exception as e:
@@ -1458,6 +1458,21 @@ try:
     def refresh_combined_test():
         global rct
         global max_record
+        global cpuPerc
+        global temp_last
+        global clock_last
+        global clock_max
+        global power_last
+        global gpu_load
+        global gpu_total_memory_test
+        global gpu_temperature
+        global gpu_used_memory
+        global vmem_used
+        global vmem_total
+        global vmem_free
+        global sv_used
+        global sv_total
+        global sv_free
         # READ CONFIG FILE
         with open("Code\switches.txt", "r") as file:
             s = file.readlines()
@@ -1477,10 +1492,11 @@ try:
         try:
             if cpuPerc not in cpu_max_usage_list:
                 if cpuPerc > max_record:
-                    cpu_max_usage_list.append(cpuPerc)
+                    cpu_max_usage_during_test.append(cpuPerc)
                     max_record = cpuPerc
                 else:
-                    max_cpu_usage.configure(text=f"{max(cpu_max_usage_list)}%")
+                    max_cpu_usage.configure(
+                        text=f"{max(cpu_max_usage_during_test)}%")
         except Exception as e:
             print(e)
 
@@ -1506,13 +1522,13 @@ try:
             print(e)
 
         try:
-            if max(cpu_max_usage_list) <= 40:
+            if max(cpu_max_usage_during_test) <= 40:
                 max_cpu_usage.configure(fg=asm_cyan)
-            elif max(cpu_max_usage_list) > 40 and max(cpu_max_usage_list) <= 60:
+            elif max(cpu_max_usage_during_test) > 40 and max(cpu_max_usage_during_test) <= 60:
                 max_cpu_usage.configure(fg=asm_yellow)
-            elif max(cpu_max_usage_list) > 60 and max(cpu_max_usage_list) <= 80:
+            elif max(cpu_max_usage_during_test) > 60 and max(cpu_max_usage_during_test) <= 80:
                 max_cpu_usage.configure(fg=asm_orange)
-            elif max(cpu_max_usage_list) > 80:
+            elif max(cpu_max_usage_during_test) > 80:
                 max_cpu_usage.configure(fg=asm_red)
         except Exception as e:
             print(e)
@@ -1525,6 +1541,8 @@ try:
             for sensor in temperature_info:
                 if sensor.SensorType == u"Temperature":
                     if sensor.Name == u"CPU Package":
+                        temp_last = sensor.Value
+
                         temp_quotient = sensor.Value / 100
 
                         temp_perc = temp_quotient * 100 / 1.8
@@ -1574,6 +1592,10 @@ try:
             for sensor in freq_info:
                 if sensor.SensorType == u"Clock":
                     if sensor.Name == u"CPU Core #1":
+                        clock_last = sensor.Value
+
+                        clock_max = sensor.Max
+
                         freq_quotient = (
                             (sensor.Value / sensor.Max) * 100) / 1.65
 
@@ -1586,12 +1608,15 @@ try:
             print(e)
 
         # POWER
+
         try:
             pwr = wmi.WMI(namespace=r"root\OpenHardwareMonitor")
             pwr_info = pwr.Sensor()
             for sensor in pwr_info:
                 if sensor.SensorType == u"Power":
                     if sensor.Name == u"CPU Package":
+                        power_last = sensor.Value
+
                         power_value_label.configure(
                             text=f"{sensor.Value:.2f} W")
                         power_perc = ((sensor.Value / sensor.Max) * 100) / 1.65
@@ -1637,14 +1662,14 @@ try:
 
             for gpu in devices:
                 gpu_load = f"{gpu.load*100}"
-                gpu_total_memory = f"{gpu.memoryTotal / 1000}"
+                gpu_total_memory_test = f"{gpu.memoryTotal / 1000}"
                 gpu_temperature = f"{gpu.temperature}"
                 gpu_used_memory = f"{gpu.memoryUsed / 1000}"
 
             # A little math to optimize the percentage to bar length
             load_perc = float(gpu_load) / 1.65
             mem_perc = ((float(gpu_used_memory) /
-                         float(gpu_total_memory)) * 100) / 1.65
+                         float(gpu_total_memory_test)) * 100) / 1.65
             temp_perc = ((float(gpu_temperature) / 120) * 100) / 1.65
         except Exception as e:
             print(e)
@@ -1674,25 +1699,24 @@ try:
 
         # MAX USAGE
         try:
-            if gpu_load not in gpu_max_load_list:
-                gpu_max_load_list.append(gpu_load)
+            if gpu_load not in gpu_max_usage_during_test:
+                gpu_max_usage_during_test.append(gpu_load)
             else:
-                if float(max(gpu_max_load_list)) < 30:
+                if float(max(gpu_max_usage_during_test)) < 30:
                     max_gpu_usage.configure(fg=asm_cyan)
-                elif float(max(gpu_max_load_list)) > 30 and float(max(gpu_max_load_list)) <= 60:
+                elif float(max(gpu_max_usage_during_test)) > 30 and float(max(gpu_max_usage_during_test)) <= 60:
                     max_gpu_usage.configure(fg=asm_yellow)
-                elif float(max(gpu_max_load_list)) > 60 and float(max(gpu_max_load_list)) <= 80:
+                elif float(max(gpu_max_usage_during_test)) > 60 and float(max(gpu_max_usage_during_test)) <= 80:
                     max_gpu_usage.configure(fg=asm_orange)
-                elif float(max(gpu_max_load_list)) > 80:
+                elif float(max(gpu_max_usage_during_test)) > 80:
                     max_gpu_usage.configure(fg=asm_red)
 
                 max_gpu_usage.configure(
-                    text=f"{max(gpu_max_load_list)}%")
+                    text=f"{max(gpu_max_usage_during_test)}%")
         except Exception as e:
             print(e)
 
         # TEMPERATURE
-
         try:
             current_temp_bar.configure(text="|"*int(temp_perc))
             current_temp_num_label.configure(text=f"{gpu_temperature}°C")
@@ -1712,34 +1736,32 @@ try:
         except Exception as e:
             print(e)
         # MAX TEMPERATURE
-
         try:
-            if gpu_temperature not in gpu_max_temp_list:
-                gpu_max_temp_list.append(gpu_temperature)
+            if gpu_temperature not in gpu_max_temp_during_test:
+                gpu_max_temp_during_test.append(gpu_temperature)
             else:
-                if float(max(gpu_max_temp_list)) < 50:
+                if float(max(gpu_max_temp_during_test)) < 50:
                     max_gpu_temp.configure(fg=asm_cyan)
-                elif float(max(gpu_max_temp_list)) > 50 and float(max(gpu_max_temp_list)) <= 60:
+                elif float(max(gpu_max_temp_during_test)) > 50 and float(max(gpu_max_temp_during_test)) <= 60:
                     max_gpu_temp.configure(fg=asm_yellow)
-                elif float(max(gpu_max_temp_list)) > 60 and float(max(gpu_max_temp_list)) <= 75:
+                elif float(max(gpu_max_temp_during_test)) > 60 and float(max(gpu_max_temp_during_test)) <= 75:
                     max_gpu_temp.configure(fg=asm_orange)
-                elif float(max(gpu_max_temp_list)) > 75:
+                elif float(max(gpu_max_temp_during_test)) > 75:
                     max_gpu_temp.configure(fg=asm_red)
 
                 max_gpu_temp.configure(
-                    text=f"{max(gpu_max_temp_list)}°C")
+                    text=f"{max(gpu_max_temp_during_test)}°C")
         except Exception as e:
             print(e)
 
         # VRAM
-
         try:
             vram_bar.configure(text="|"*int(mem_perc))
             vram_value_label.configure(
-                text=f"{float(gpu_used_memory):.2f}GB/{float(gpu_total_memory):.2f}GB")
+                text=f"{float(gpu_used_memory):.2f}GB/{float(gpu_total_memory_test):.2f}GB")
 
             mem_perc_unop = (
-                (float(gpu_used_memory) / float(gpu_total_memory)) * 100)
+                (float(gpu_used_memory) / float(gpu_total_memory_test)) * 100)
         except Exception as e:
             print(e)
 
@@ -1757,24 +1779,31 @@ try:
         except Exception as e:
             print(e)
         # UPDATING RAM #
-
         vmem = psutil.virtual_memory()
+        vmem_used = vmem.used
+        vmem_total = vmem.total
+        vmem_free = vmem.free
+
+        svmem = psutil.swap_memory()
+        sv_used = svmem.used
+        sv_total = svmem.total
+        sv_free = svmem.free
 
         # USAGE
 
         try:
             ram_usage_value_label.configure(
-                text=f"{get_size(vmem.used)}/{get_size(vmem.total)}")
-            usg_perc = (vmem.used / vmem.total) * 100
+                text=f"{get_size(vmem_used)}/{get_size(vmem_total)}")
+            usg_perc = (vmem_used / vmem_total) * 100
             usg_perc_optimized = usg_perc / 1.65
             ram_usage_bar.configure(text="|"*int(usg_perc_optimized))
-            if vmem.used not in ram_max_usage_list:
-                if not ram_max_usage_list:
-                    ram_max_usage_list.append(vmem.used)
-                if vmem.used > max(ram_max_usage_list):
-                    ram_max_usage_list.append(vmem.used)
-                else:
-                    pass
+            if vmem_used not in ram_max_usage_during_test:
+                ram_max_usage_during_test.append(vmem_used)
+            else:
+                pass
+
+            if sv_used not in swap_max_usage_during_test:
+                swap_max_usage_during_test.append(sv_used)
             else:
                 pass
         except Exception as e:
@@ -1794,11 +1823,10 @@ try:
             print(e)
 
         # MAX USAGE
-
         try:
             max_ram_usage.configure(
-                text=f"{get_size(max(ram_max_usage_list))}")
-            max_perc = (max(ram_max_usage_list) / vmem.total) * 100
+                text=f"{get_size(max(ram_max_usage_during_test))}")
+            max_perc = (max(ram_max_usage_during_test) / vmem.total) * 100
         except Exception as e:
             print(e)
 
@@ -1816,7 +1844,7 @@ try:
         except Exception as e:
             print(e)
 
-        record_and_save()
+        full_test()
 
         # Update test
         rct = root.after(split[2], refresh_combined_test)
@@ -1824,19 +1852,20 @@ except Exception as e:
     f = open("errorFile.txt", "a")
     f.write("Get size function error: {}".format(e))
     f.close()
-# WRITING STATISTICS TO A FILE #
 
+# WRITING STATISTICS TO A FILE - FULL TEST #
 try:
-    def record_and_save():
+    def full_test():
         global max_cpu_usg
         global max_gpu_usg
 
-        line_separator = "-"*10
+        main_line_separator = "-"*80
+        line_separator = "-"*5
 
         with open("Code\switches.txt", "r") as file:
             for line in file:
-                if "base_info" in line:
-                    base_info = line.split()
+                if "mobo_info" in line:
+                    mobo_info = line.split()
                 if "record_cpu" in line:
                     rec_cpu = line.split()
                 if "record_gpu" in line:
@@ -1846,8 +1875,8 @@ try:
                 if "record_fans" in line:
                     rec_fans = line.split()
 
-        f = open(f"C:\\Users\\{os.getlogin()}\\Desktop\\record.txt", "w")
-
+        f = open(
+            f"C:\\Users\\{os.getlogin()}\\Desktop\\Report_Full_Test.txt", "w")
         try:
             day = date.today()
 
@@ -1856,17 +1885,27 @@ try:
             currentTime = datetime.now()
 
             currentTime = currentTime.strftime("%H:%M:%S")
-
-            dt_time = datetime.now()
-
-            f.write(f"Time: {currentDate} | {currentTime}\n\n")
-
         except Exception as e:
             print(e)
 
+        f.write(main_line_separator)
+
+        f.write("\n\nAdvanced System Monitor Report\n\n")
+
+        f.write(main_line_separator)
+
+        f.write(f"\n\nTime: {currentDate} | {currentTime}\n\n")
+
+        f.write(main_line_separator)
+
+        f.write("\n\nVersion: 1.0.0.0\n\n")
+
+        f.write(main_line_separator)
+
         # Write base info if selected
-        if base_info[2] == "True":
-            f.write(f"{line_separator} BASE INFORMATION {line_separator}\n\n")
+        if mobo_info[2] == "True":
+            f.write(f"\n\nMOTHERBOARD\n\n")
+            f.write(f"{main_line_separator}\n\n")
             uname = platform.uname()
             w = wmi.WMI()
             sysinf = w.Win32_ComputerSystem()[0]
@@ -1924,7 +1963,7 @@ try:
             total_free_in_gb = get_size(free_space)
             total_used_in_gb = get_size(used_space)
 
-            f.write("--- OS --- \n")
+            f.write(f"{line_separator} OS {line_separator}\n\n")
             f.write(f"System: {uname.system}\n")
             f.write(f"Node name: {uname.node}\n")
             f.write(f"Release: {uname.release}\n")
@@ -1936,12 +1975,12 @@ try:
             f.write(
                 f"Language Pack: {locale.windows_locale[ windll.GetUserDefaultUILanguage() ]}\n\n")
 
-            f.write("--- CPU --- \n")
+            f.write(f"{line_separator} CPU {line_separator}\n\n")
             f.write(f"CPU Name: {cpu_name_raw}\n")
             f.write(f"Physical Cores: {psutil.cpu_count(logical=False)}\n")
             f.write(f"Total Cores: {psutil.cpu_count(logical=True)}\n\n")
 
-            f.write("--- GPU --- \n")
+            f.write(f"{line_separator} GPU {line_separator}\n\n")
             f.write(f"ID: {gpu_id}\n")
             f.write(f"Name: {gpu_name}\n")
             f.write(f"Total Memory: {gpu_total_memory}")
@@ -1953,13 +1992,13 @@ try:
 
             f.write(f"UUID: {gpu_uuid}\n\n")
 
-            f.write("--- MEMORY --- \n\n")
-            f.write("-- RAM --\n")
+            f.write(f"{line_separator} MEMORY {line_separator}\n\n")
+            f.write(f"-- RAM --\n")
             f.write(f"Total Size: {get_size(rammem.total)}\n\n")
             f.write("-- SWAP --\n")
             f.write(f"Total Size: {get_size(swapmemory.total)}\n\n")
 
-            f.write("--- DISK --- \n")
+            f.write(f"{line_separator} DISK {line_separator}\n\n")
             f.write(f"Number of drives: {len(counter)}\n")
             f.write(f"Mountpoints: {mounts}\n")
             f.write(f"Windows installed on partition: {windows_path}\n")
@@ -1968,13 +2007,374 @@ try:
                 f"Used Space (Combined): {total_used_in_gb} ({((used_space / total_space)*100):.2f}%)\n")
             f.write(
                 f"Free Space (Combined): {total_free_in_gb} ({((free_space / total_space)*100):.2f}%)\n\n")
+
+            f.write(main_line_separator)
         else:
             pass
 
         # Write cpu if selected
 
         if rec_cpu[2] == "True":
-            f.write(f"{line_separator} CPU INFO {line_separator}\n\n")
+            f.write(f"\n\nCPU INFO\n\n")
+            f.write(f"{main_line_separator}\n\n")
+            f.write(f"{line_separator} Usage {line_separator}\n\n")
+            try:
+                f.write(f"Usage (last): {cpuPerc}%\n")
+                f.write(f"Max Usage: {max(cpu_max_usage_during_test)}%\n\n")
+            except Exception as e:
+                print(e)
+            f.write("PER CORE\n")
+            # Usage per core
+            try:
+                for i, percentage in enumerate(psutil.cpu_percent(percpu=True)):
+                    f.write(
+                        f"Core #{i+1} (last): {percentage}%\n")
+
+            except Exception as e:
+                print(e)
+            # Temperature
+            f.write(f"\n{line_separator} Temperature {line_separator}\n\n")
+            f.write(
+                f"Temperature (last): {temp_last:.3f}°C\n")
+            f.write(
+                f"Max Temperature: {max(cpu_max_temp_during_test):.3f}°C\n")
+
+            # Voltage
+            f.write(f"\n{line_separator} Voltage {line_separator}\n\n")
+            try:
+                w = wmi.WMI(namespace=r"root/OpenHardwareMonitor")
+                volt_info = w.Sensor()
+                for sensor in volt_info:
+                    if sensor.SensorType == u"Voltage":
+                        if sensor.Name == u"Voltage #1":
+                            f.write(f"Voltage (last): {sensor.Value:.3f}V\n")
+                            break
+            except Exception as e:
+                print(e)
+            # Frequency
+            f.write(f"\n{line_separator} Frequency {line_separator}\n\n")
+            f.write(f"Frequency (last): {clock_last:.2f}Mhz\n")
+            f.write(f"Max Frequency: {clock_max:.2f}Mhz\n")
+
+            # Power
+            f.write(f"\n{line_separator} Power Usage {line_separator}\n\n")
+            f.write(f"Power Usage (last): {power_last:.3f} W\n")
+            f.write(
+                f"Max Power Usage: {max(cpu_max_power_during_test):.3f} W\n\n")
+            f.write(main_line_separator)
+        else:
+            pass
+
+        # Write gpu if selected
+
+        if rec_gpu[2] == "True":
+            f.write(f"\n\nGPU INFO\n\n")
+            f.write(f"{main_line_separator}\n\n")
+            try:
+                gf = wmi.WMI(namespace=r"root\OpenHardwareMonitor")
+                gpu_fans = gf.Sensor()
+                for sensor in gpu_fans:
+                    if sensor.SensorType == u"Fan":
+                        if sensor.Name == u"GPU":
+                            fan_value = sensor.Value
+                            fan_value_max = sensor.Max
+                    if sensor.SensorType == u"Control":
+                        if sensor.Name == u"GPU Fan":
+                            fan_perc = sensor.Value
+                            fan_perc_max = sensor.Max
+            except Exception as e:
+                print(e)
+
+            try:
+                m = wmi.WMI(namespace=r"root\OpenHardwareMonitor")
+                memory_clock = m.Sensor()
+                for sensor in memory_clock:
+                    if sensor.SensorType == u"Clock":
+                        if sensor.Name == u"GPU Memory":
+                            memory_clk = sensor.Value
+                            memory_clk_max = sensor.Max
+                        if sensor.Name == u"GPU Shader":
+                            shader_clk = sensor.Value
+                            shader_clk_max = sensor.Max
+                        if sensor.Name == u"GPU Core":
+                            core_clk = sensor.Value
+                            core_clk_max = sensor.Max
+            except Exception as e:
+                print(e)
+
+            # Usage
+            try:
+                f.write(f"{line_separator} Usage {line_separator}\n\n")
+                f.write(f"Usage (last): {float(gpu_load):.2f}%\n")
+                f.write(
+                    f"Max Usage: {float(max(gpu_max_usage_during_test)):.2f}%\n")
+            except Exception as e:
+                print(e)
+
+            # Memory
+            try:
+                f.write(f"\n{line_separator} VRAM {line_separator}\n\n")
+                f.write(
+                    f"Total Memory: {float(gpu_total_memory_test):.2f}GB\n")
+                f.write(f"Used Memory: {float(gpu_used_memory):.2f}GB\n")
+                f.write(
+                    f"Percentage used: {((float(gpu_used_memory) / float(gpu_total_memory_test)) * 100):.2f}%\n")
+            except Exception as e:
+                print(e)
+            # Temperature
+            try:
+                f.write(f"\n{line_separator} Temperature {line_separator}\n\n")
+                f.write(f"Temperature (last): {gpu_temperature}°C\n")
+                f.write(
+                    f"Max Temperature: {max(gpu_max_temp_during_test)}°C\n")
+            except Exception as e:
+                print(e)
+            # Fans
+            try:
+                f.write(f"\n{line_separator} Fans {line_separator}\n\n")
+                f.write(f"Fan speed (last): {fan_value}RPM | {fan_perc}%\n")
+                f.write(
+                    f"Max Fan Speed: {fan_value_max}RPM | {fan_perc_max}%\n")
+            except Exception as e:
+                print(e)
+            # Clocks
+            try:
+                f.write(f"\n{line_separator} Clocks {line_separator}\n\n")
+                f.write(f"Core Clock: {core_clk:.2f}Mhz\n")
+                f.write(f"Max Core Clock: {core_clk_max:.2f}Mhz\n\n")
+                f.write(f"Shader Clock: {shader_clk:.2f}Mhz\n")
+                f.write(f"Max Shader Clock: {shader_clk_max:.2f}Mhz\n\n")
+                f.write(f"Memory Clock: {memory_clk:.2f}Mhz\n")
+                f.write(f"Max Memory Clock: {memory_clk_max:.2f}Mhz\n\n")
+            except Exception as e:
+                print(e)
+            f.write(main_line_separator)
+        else:
+            pass
+
+        # Write ram if selected
+        if rec_ram[2] == "True":
+            f.write(f"\n\nRAM INFO\n\n")
+            f.write(f"{main_line_separator}\n\n")
+            f.write(f"{line_separator} RAM Usage {line_separator}\n\n")
+
+            try:
+                f.write(f"Total Memory: {get_size(vmem_total)}\n")
+                f.write(
+                    f"Used Memory (last): {get_size(vmem_used)} ({((vmem_used / vmem_total)*100):.2f}%)\n")
+                f.write(f"Free Memory (last): {get_size(vmem_free)}\n")
+                f.write(
+                    f"Max RAM Usage: {get_size(max(ram_max_usage_during_test))} ({((max(ram_max_usage_during_test) / vmem_total)*100):.2f}%)\n")
+            except Exception as e:
+                print(e)
+
+            f.write(
+                f"\n{line_separator} SWAP Memory Usage {line_separator}\n\n")
+
+            try:
+                f.write(f"Total SWAP Memory: {get_size(sv_total)}\n")
+                f.write(
+                    f"Used SWAP Memory (last): {get_size(sv_used)} ({((sv_used / sv_total)*100):.2f}%)\n")
+                f.write(f"Free SWAP Memory (last): {get_size(sv_free)}\n")
+                f.write(
+                    f"Max SWAP Usage: {get_size(max(swap_max_usage_during_test))} ({((max(swap_max_usage_during_test) / sv_total)*100):.2f}%)\n\n")
+            except Exception as e:
+                print(e)
+
+            f.write(main_line_separator)
+        else:
+            pass
+
+        # Write fans if selected
+        if rec_fans[2] == "True":
+            f.write(f"\n\nFANS INFO\n\n")
+            f.write(f"{main_line_separator}\n\n")
+            try:
+                fan = wmi.WMI(namespace=r"root\OpenHardwareMonitor")
+                fan_info = fan.Sensor()
+                for sensor in fan_info:
+                    if sensor.SensorType == u"Fan":
+                        f.write(
+                            f"{sensor.Name} (last): {sensor.Value:.2f} RPM\n")
+                        f.write(
+                            f"{sensor.Name} (Max): {sensor.Max:.2f} RPM\n\n")
+                    else:
+                        pass
+            except Exception as e:
+                print(e)
+
+        f.close()
+except Exception as e:
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
+
+
+# WRITING STATISTICS TO A FILE - WRITE ONLY #
+try:
+    def save_write_only():
+        global max_cpu_usg
+        global max_gpu_usg
+
+        main_line_separator = "-"*80
+        line_separator = "-"*10
+
+        with open("Code\switches.txt", "r") as file:
+            for line in file:
+                if "mobo_info" in line:
+                    mobo_info = line.split()
+                if "record_cpu" in line:
+                    rec_cpu = line.split()
+                if "record_gpu" in line:
+                    rec_gpu = line.split()
+                if "record_ram" in line:
+                    rec_ram = line.split()
+                if "record_fans" in line:
+                    rec_fans = line.split()
+
+        f = open(
+            f"C:\\Users\\{os.getlogin()}\\Desktop\\Report_Write_Only.txt", "w")
+
+        try:
+            day = date.today()
+
+            currentDate = day.strftime("%B %d, %Y")
+
+            currentTime = datetime.now()
+
+            currentTime = currentTime.strftime("%H:%M:%S")
+        except Exception as e:
+            print(e)
+
+        f.write(main_line_separator)
+
+        f.write("\n\nAdvanced System Monitor Report\n\n")
+
+        f.write(main_line_separator)
+
+        f.write(f"\n\nTime: {currentDate} | {currentTime}\n\n")
+
+        f.write(main_line_separator)
+
+        f.write("\n\nVersion: 1.0.0.0\n\n")
+
+        f.write(main_line_separator)
+
+        # Write base info if selected
+        if mobo_info[2] == "True":
+            f.write(f"\n\nMOTHERBOARD\n\n")
+            f.write(f"{main_line_separator}\n\n")
+            uname = platform.uname()
+            w = wmi.WMI()
+            sysinf = w.Win32_ComputerSystem()[0]
+            windll = ctypes.windll.kernel32
+            cpu_name_raw = cpuinfo.get_cpu_info()['brand_raw']
+            gpus = GPUtil.getGPUs()
+            for gpu in gpus:
+                gpu_id = gpu.id
+                gpu_name = gpu.name
+                gpu_total_memory = f"{gpu.memoryTotal}MB"
+                gpu_uuid = gpu.uuid
+            device = win32api.EnumDisplayDevices()
+            settings = win32api.EnumDisplaySettings(device.DeviceName, -1)
+            rammem = psutil.virtual_memory()
+            swapmemory = psutil.swap_memory()
+            disk = wmi.WMI()
+            counter = []
+            i = 0
+
+            if not counter:
+                for item in disk.Win32_PhysicalMedia():
+                    counter.append(i)
+                    i += 1
+            else:
+                pass
+
+            partition = psutil.disk_partitions()
+            total_space = 0
+            free_space = 0
+            used_space = 0
+            windows_path = ""
+            mounts = ""
+            partitions_with_storage_list = []
+
+            for part in partition:
+                mounts += f"{part.mountpoint}, "
+                try:
+                    partition_usage = psutil.disk_usage(part.mountpoint)
+                except Exception as e:
+                    print(e)
+
+                if path.exists(f'{part.mountpoint}Windows'):
+                    windows_path += part.mountpoint
+
+                mount = part.mountpoint
+                sp = partition_usage.total
+
+                partitions_with_storage_list.append((mount, sp))
+
+                total_space += partition_usage.total
+                free_space += partition_usage.free
+                used_space += partition_usage.used
+
+            total_space_in_gb = get_size(total_space)
+            total_free_in_gb = get_size(free_space)
+            total_used_in_gb = get_size(used_space)
+
+            f.write(f"{line_separator} OS {line_separator}\n\n")
+            f.write(f"System: {uname.system}\n")
+            f.write(f"Node name: {uname.node}\n")
+            f.write(f"Release: {uname.release}\n")
+            f.write(f"Version: {uname.version}\n")
+            f.write(f"Machine: {uname.machine}\n")
+            f.write(f"Processor: {uname.processor}\n")
+            f.write(f"Manufacturer: {sysinf.Manufacturer}\n")
+            f.write(f"Model: {sysinf.Model}\n")
+            f.write(
+                f"Language Pack: {locale.windows_locale[ windll.GetUserDefaultUILanguage() ]}\n\n")
+
+            f.write(f"{line_separator} CPU {line_separator}\n\n")
+            f.write(f"CPU Name: {cpu_name_raw}\n")
+            f.write(f"Physical Cores: {psutil.cpu_count(logical=False)}\n")
+            f.write(f"Total Cores: {psutil.cpu_count(logical=True)}\n\n")
+
+            f.write(f"{line_separator} GPU {line_separator}\n\n")
+            f.write(f"ID: {gpu_id}\n")
+            f.write(f"Name: {gpu_name}\n")
+            f.write(f"Total Memory: {gpu_total_memory}")
+            f.write(
+                f"Active Resolution: {GetSystemMetrics(0)}x{GetSystemMetrics(1)}\n")
+
+            for varName in ['DisplayFrequency']:
+                f.write(f"Refresh Rate: {getattr(settings, varName)}Hz\n")
+
+            f.write(f"UUID: {gpu_uuid}\n\n")
+
+            f.write(f"{line_separator} MEMORY {line_separator}\n\n")
+            f.write(f"-- RAM --\n")
+            f.write(f"Total Size: {get_size(rammem.total)}\n\n")
+            f.write("-- SWAP --\n")
+            f.write(f"Total Size: {get_size(swapmemory.total)}\n\n")
+
+            f.write(f"{line_separator} DISK {line_separator}\n\n")
+            f.write(f"Number of drives: {len(counter)}\n")
+            f.write(f"Mountpoints: {mounts}\n")
+            f.write(f"Windows installed on partition: {windows_path}\n")
+            f.write(f"Total Space (Combined): {total_space_in_gb}\n")
+            f.write(
+                f"Used Space (Combined): {total_used_in_gb} ({((used_space / total_space)*100):.2f}%)\n")
+            f.write(
+                f"Free Space (Combined): {total_free_in_gb} ({((free_space / total_space)*100):.2f}%)\n\n")
+
+            f.write(main_line_separator)
+        else:
+            pass
+
+        # Write cpu if selected
+
+        if rec_cpu[2] == "True":
+            f.write(f"\n\nCPU INFO\n\n")
+            f.write(f"{main_line_separator}\n\n")
             cpu_perc = psutil.cpu_percent()
             # Usage
 
@@ -1983,7 +2383,7 @@ try:
                     cpu_max_usage_during_test.append(cpu_perc)
                     max_cpu_usg = cpu_perc
 
-            f.write("-Usage-\n")
+            f.write(f"{line_separator} Usage {line_separator}\n\n")
             try:
                 f.write(f"Usage (last): {cpu_perc}%\n")
                 f.write(f"Max Usage: {max(cpu_max_usage_during_test)}%\n\n")
@@ -1999,7 +2399,7 @@ try:
             except Exception as e:
                 print(e)
             # Temperature
-            f.write("\n-Temperature-\n")
+            f.write(f"\n{line_separator} Temperature {line_separator}\n\n")
             try:
                 w = wmi.WMI(namespace=r"root/OpenHardwareMonitor")
                 temp_info = w.Sensor()
@@ -2019,7 +2419,7 @@ try:
                 print(e)
 
             # Voltage
-            f.write("\n-Voltage-\n")
+            f.write(f"\n{line_separator} Voltage {line_separator}\n\n")
             try:
                 w = wmi.WMI(namespace=r"root/OpenHardwareMonitor")
                 volt_info = w.Sensor()
@@ -2031,7 +2431,7 @@ try:
             except Exception as e:
                 print(e)
             # Frequency
-            f.write("\n-Frequency-\n")
+            f.write(f"\n{line_separator} Frequency {line_separator}\n\n")
             try:
                 w = wmi.WMI(namespace=r"root/OpenHardwareMonitor")
                 freq_info = w.Sensor()
@@ -2045,7 +2445,7 @@ try:
                 print(e)
 
             # Power
-            f.write("\n-Power Usage-\n")
+            f.write(f"\n{line_separator} Power Usage {line_separator}\n\n")
             try:
                 w = wmi.WMI(namespace=r"root/OpenHardwareMonitor")
                 pwr_info = w.Sensor()
@@ -2062,14 +2462,15 @@ try:
                                 f"Max Power Usage: {max(cpu_max_power_during_test):.3f} W\n\n")
             except Exception as e:
                 print(e)
-
+            f.write(main_line_separator)
         else:
             pass
 
         # Write gpu if selected
 
         if rec_gpu[2] == "True":
-            f.write(f"{line_separator} GPU INFO {line_separator}\n\n")
+            f.write(f"\n\nGPU INFO\n\n")
+            f.write(f"{main_line_separator}\n\n")
             devices = GPUtil.getGPUs()
 
             for gpu in devices:
@@ -2122,7 +2523,7 @@ try:
 
             # Usage
             try:
-                f.write("-Usage-\n")
+                f.write(f"{line_separator} Usage {line_separator}\n\n")
                 f.write(f"Usage (last): {float(gpu_load):.2f}%\n")
                 f.write(
                     f"Max Usage: {float(max(gpu_max_usage_during_test)):.2f}%\n")
@@ -2131,7 +2532,7 @@ try:
 
             # Memory
             try:
-                f.write("\n-VRAM-\n")
+                f.write(f"\n{line_separator} VRAM {line_separator}\n\n")
                 f.write(f"Total Memory: {float(gpu_total_memory):.2f}GB\n")
                 f.write(f"Used Memory: {float(gpu_used_memory):.2f}GB\n")
                 f.write(
@@ -2140,7 +2541,7 @@ try:
                 print(e)
             # Temperature
             try:
-                f.write("\n-Temperature-\n")
+                f.write(f"\n{line_separator} Temperature {line_separator}\n\n")
                 f.write(f"Temperature (last): {gpu_temperature}°C\n")
                 f.write(
                     f"Max Temperature: {max(gpu_max_temp_during_test)}°C\n")
@@ -2148,7 +2549,7 @@ try:
                 print(e)
             # Fans
             try:
-                f.write("\n-Fans-\n")
+                f.write(f"\n{line_separator} Fans {line_separator}\n\n")
                 f.write(f"Fan speed (last): {fan_value}RPM | {fan_perc}%\n")
                 f.write(
                     f"Max Fan Speed: {fan_value_max}RPM | {fan_perc_max}%\n")
@@ -2156,7 +2557,7 @@ try:
                 print(e)
             # Clocks
             try:
-                f.write("\n-Clocks-\n")
+                f.write(f"\n{line_separator} Clocks {line_separator}\n\n")
                 f.write(f"Core Clock: {core_clk:.2f}Mhz\n")
                 f.write(f"Max Core Clock: {core_clk_max:.2f}Mhz\n\n")
                 f.write(f"Shader Clock: {shader_clk:.2f}Mhz\n")
@@ -2165,13 +2566,14 @@ try:
                 f.write(f"Max Memory Clock: {memory_clk_max:.2f}Mhz\n\n")
             except Exception as e:
                 print(e)
-
+            f.write(main_line_separator)
         else:
             pass
 
         # Write ram if selected
         if rec_ram[2] == "True":
-            f.write(f"{line_separator} RAM INFO {line_separator}\n\n")
+            f.write(f"\n\nRAM INFO\n\n")
+            f.write(f"{main_line_separator}\n\n")
             vmem = psutil.virtual_memory()
             swapmem = psutil.swap_memory()
 
@@ -2185,7 +2587,7 @@ try:
             else:
                 pass
 
-            f.write("-RAM Usage-\n")
+            f.write(f"{line_separator} RAM Usage {line_separator}\n\n")
 
             try:
                 f.write(f"Total Memory: {get_size(vmem.total)}\n")
@@ -2197,7 +2599,8 @@ try:
             except Exception as e:
                 print(e)
 
-            f.write("\n-SWAP Memory Usage-\n")
+            f.write(
+                f"\n{line_separator} SWAP Memory Usage {line_separator}\n\n")
 
             try:
                 f.write(f"Total SWAP Memory: {get_size(swapmem.total)}\n")
@@ -2208,12 +2611,15 @@ try:
                     f"Max SWAP Usage: {get_size(max(swap_max_usage_during_test))} ({((max(swap_max_usage_during_test) / swapmem.total)*100):.2f}%)\n\n")
             except Exception as e:
                 print(e)
+
+            f.write(main_line_separator)
         else:
             pass
 
         # Write fans if selected
         if rec_fans[2] == "True":
-            f.write(f"\n{line_separator} Fans {line_separator}\n\n")
+            f.write(f"\n\nFANS INFO\n\n")
+            f.write(f"{main_line_separator}\n\n")
             try:
                 fan = wmi.WMI(namespace=r"root\OpenHardwareMonitor")
                 fan_info = fan.Sensor()
@@ -3130,8 +3536,6 @@ try:
                                       font=font, anchor=tk.CENTER, width=10, height=2, text=f"Core #{i+1}\n{percentage}%")
             core_usage_num.grid(row=row, column=column, padx=padx, pady=pady)
 
-            ind += 1
-
             if percentage < 30:
                 core_usage_num.configure(fg=fg)
             if percentage > 30 and percentage <= 50:
@@ -3203,11 +3607,13 @@ try:
             voltage_info = w.Sensor()
             for sensor in voltage_info:
                 if sensor.SensorType == u"Voltage":
-                    voltage_quotient = sensor.Value * 100 / 3
-                    voltage_bar.configure(
-                        text=f"|"*int(voltage_quotient))
-                    voltage_value_label.configure(text=f"{sensor.Value:.2f}V")
-                    break
+                    if sensor.Name == u"Voltage #1":
+                        voltage_quotient = sensor.Value * 100 / 3
+                        voltage_bar.configure(
+                            text=f"|"*int(voltage_quotient))
+                        voltage_value_label.configure(
+                            text=f"{sensor.Value:.2f}V")
+                        break
         except Exception as e:
             print(e)
 
