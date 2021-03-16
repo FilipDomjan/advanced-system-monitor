@@ -15,7 +15,7 @@ import GPUtil
 from win32com.client.gencache import usage
 import wmi
 import speedtest
-from time import sleep
+from time import sleep, time_ns
 import cpuinfo
 import multiprocessing
 import os
@@ -26,7 +26,7 @@ import locale
 from win32api import GetSystemMetrics
 import win32api
 import os.path
-from os import path
+from os import path, times
 from InfoBox import CreateToolTip
 import random
 from tqdm import tqdm
@@ -141,7 +141,7 @@ try:
             global h_accurate_time
             global m_accurate_time
             global s_accurate_time
-            global default_photo
+            global denim_photo
             global bluegreen_photo
             global bluepink_photo
             global metallic_photo
@@ -169,6 +169,7 @@ try:
             global cpu_max_power_during_test
             global cpu_max_temp_during_test
             global cpu_max_core_usage_during_test
+            global cpu_max_clock_during_test
 
             root.after_cancel(dec_home)
             with tqdm(total=100) as bar:
@@ -200,54 +201,51 @@ try:
 
                 # Theme profiles
 
-                default_photo = PhotoImage(
-                    file=f"{themes_image_path}\pdefault.png")
+                metallic_photo = PhotoImage(
+                    file=f"{themes_image_path}\pmetallic.png")
 
-                default_theme = tk.Button(
-                    themes_container, bg=bg, fg="white", bd=0, image=default_photo, width=70, height=70, activebackground=button_bg, activeforeground="white", command=def_theme)
-                default_theme.grid(row=0, column=0, padx=27, pady=(15, 5))
+                metallic = tk.Button(themes_container, bg=bg, fg="white", image=metallic_photo, bd=0,
+                                     width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=metallic_theme)
+                metallic.grid(row=0, column=0, padx=27, pady=(15, 5))
+
+                denim_photo = PhotoImage(
+                    file=f"{themes_image_path}\pdenim.png")
+
+                denim_theme = tk.Button(
+                    themes_container, bg=bg, fg="white", bd=0, image=denim_photo, width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=denim)
+                denim_theme.grid(row=0, column=1, padx=(0, 27), pady=(15, 5))
 
                 redblack_photo = PhotoImage(
                     file=f"{themes_image_path}\predblack.png")
 
                 redblack = tk.Button(
-                    themes_container, bg=bg, fg="white", image=redblack_photo, bd=0, width=70, height=70, activebackground=button_bg, activeforeground="white", command=redblack_theme)
-                redblack.grid(row=0, column=1, padx=(0, 27), pady=(15, 5))
+                    themes_container, bg=bg, fg="white", image=redblack_photo, bd=0, width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=redblack_theme)
+                redblack.grid(row=0, column=2, padx=(0, 27), pady=(15, 5))
 
                 blackwhite_photo = PhotoImage(
                     file=f"{themes_image_path}\pblackwhite.png")
 
                 blackwhite = tk.Button(themes_container, bg=bg, fg="white", image=blackwhite_photo, bd=0,
-                                       width=70, height=70, activebackground=button_bg, activeforeground="white", command=blackwhite_theme)
-                blackwhite.grid(row=0, column=2, padx=(0, 27), pady=(15, 5))
+                                       width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=blackwhite_theme)
+                blackwhite.grid(row=0, column=3, padx=(0, 27), pady=(15, 5))
 
-                metallic_photo = PhotoImage(
-                    file=f"{themes_image_path}\pmetallic.png")
+                with open("Code\config.txt", "r") as config:
+                    for line in config:
+                        if "theme_selected" in line:
+                            split = line.split()
 
-                metallic = tk.Button(themes_container, bg=bg, fg="white", image=metallic_photo, bd=0,
-                                     width=70, height=70, activebackground=button_bg, activeforeground="white", command=metallic_theme)
-                metallic.grid(row=0, column=3, padx=(0, 27), pady=(15, 5))
-
-                bluegreen_photo = PhotoImage(
-                    file=f"{themes_image_path}\pbluegreen.png")
-
-                bluegreen = tk.Button(themes_container, bg=bg, fg="white", image=bluegreen_photo, bd=0,
-                                      width=70, height=70, activebackground=button_bg, activeforeground="white", command=blue_theme)
-                bluegreen.grid(row=1, column=0, padx=27, pady=(20))
-
-                orangepink_photo = PhotoImage(
-                    file=f"{themes_image_path}\porangepink.png")
-
-                orangepink = tk.Button(themes_container, bg=bg, fg="white", image=orangepink_photo, bd=0,
-                                       width=70, height=70, activebackground=button_bg, activeforeground="white", command=orange_theme)
-                orangepink.grid(row=1, column=1, padx=(0, 27), pady=0)
-
-                bluepink_photo = PhotoImage(
-                    file=f"{themes_image_path}\pbluepink.png")
-
-                bluepink = tk.Button(themes_container, bg=bg, fg="white", image=bluepink_photo, bd=0,
-                                     width=70, height=70, activebackground=button_bg, activeforeground="white", command=purple_theme)
-                bluepink.grid(row=1, column=2, padx=(0, 27), pady=0)
+                            if split[2] == "metallic":
+                                metallic.configure(
+                                    borderwidth=2, relief="solid")
+                            elif split[2] == "denim":
+                                denim_theme.configure(
+                                    borderwidth=2, relief="solid")
+                            elif split[2] == "redblack":
+                                redblack.configure(
+                                    borderwidth=2, relief="solid")
+                            elif split[2] == "blackwhite":
+                                blackwhite.configure(
+                                    borderwidth=2, relief="solid")
 
                 bar.update(10)
 
@@ -349,7 +347,7 @@ try:
                                        fg=fg, width=19, height=19, image=info_symbol_photo)
                 info_symbol.grid(row=0, column=1, padx=10, pady=(2, 0))
 
-                CreateToolTip(info_symbol, text="Here are the settings for the combined test.\nWhat is combined test?\nIts a tool that shows you only the most important data\nthat you need when benchmarking.\n\nWhat do the switches do?\nSwitches represent what is written into a text file\nduring the test, you can use all of them,\nbut beware, more information means higher performance impact,\nmeaning that the ASM will run slower.\n\nWhere is the text file?\nText file will be created on your desktop and\nwill contain only the data you choose to write\nin the combined test settings.\n\nWhat is 'WRITE ONLY' button?\nOnce clicked it will only do one run of performance check\nand write it into a file.\n\nWhat is the 'FULL TEST' button?\nOnce clicked the home layout will be replaced with\na new layout containing the combined test information.\nYou can return to home at any time by pressing the home\nbutton given in the bottom-right corner of the combined\ntest or by pressing the home button in the sidemenu.\n\nWhat is Refresh Rate field?\nThere you can choose how fast does the app refresh.\nYou can choose from 500 to 10000ms.\nNote: 1000ms = 1s", backg=bg, foreg=fg)
+                CreateToolTip(info_symbol, text="What is combined test?\nIts a tool that shows you only the most important data\nthat you need when benchmarking.\n\nWhat do the switches do?\nSwitches represent what is written into a text file\nduring the test, you can use all of them,\nbut beware, more information means higher performance impact,\nmeaning that the ASM will run slower. We recommend\nkeeping everything on except Mobo Data during the test,\nas it is the most demanding one.\n\nWhere is the text file?\nText file will be created on your desktop and\nwill contain only the data you choose to write\nin the combined test settings.\n\nWhat is 'WRITE ONLY' button?\nOnce clicked it will only do one run of performance check\nand write it into a file.\n\nWhat is the 'FULL TEST' button?\nOnce clicked the home layout will be replaced with\na new layout containing the combined test information.\nYou can return to home at any time by pressing the home\nbutton given in the bottom-right corner of the combined\ntest or by pressing the home button in the sidemenu.\n\nWhat is Refresh Rate field?\nThere you can choose how fast does the app refresh.\nYou can choose from 500 to 10000ms.\nNote: 1000ms = 1s", backg=bg, foreg=fg)
 
                 settings_container = tk.Frame(combined_test, bg=bg)
                 settings_container.place(
@@ -517,6 +515,7 @@ try:
                 cpu_max_usage_during_test = []
                 cpu_max_power_during_test = []
                 cpu_max_temp_during_test = []
+                cpu_max_clock_during_test = []
                 cpu_max_core_usage_during_test = {}
                 gpu_max_usage_during_test = []
                 gpu_max_temp_during_test = []
@@ -610,55 +609,8 @@ except Exception as e:
     f.write("Get size function error: {}".format(e))
     f.close()
 
-# Default theme
-try:
-    def def_theme():
-        conf = open(
-            'Code\config.txt', 'w')
-        conf.write("canvas_color = #242f41\nbg_color = #1b2331\nfg_color = #ffffff\nsidemenu_color = #1b2331\nbutton_bg_color = #303e55\ntheme_selected = default")
-        conf.close()
-        print("Default theme applied!")
 
-        MessageBox('Theme Applied!',
-                   'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
-except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
-# Red/Black theme
-
-try:
-    def redblack_theme():
-        conf = open(
-            'Code\config.txt', 'w')
-        conf.write("canvas_color = #1f1f1f\nbg_color = #1a1a1a\nfg_color = #ff3d3d\nsidemenu_color = #1a1a1a\nbutton_bg_color = #ff3d3d\ntheme_selected = redblack")
-        conf.close()
-        print("Red/Black theme applied!")
-
-        MessageBox('Theme Applied!',
-                   'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
-except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
-# Black/White theme
-
-try:
-    def blackwhite_theme():
-        conf = open(
-            'Code\config.txt', 'w')
-        conf.write("canvas_color = #ededed\nbg_color = #fafafa\nfg_color = #1c1c1c\nsidemenu_color = #fafafa\nbutton_bg_color = #d6d6d6\ntheme_selected = blackwhite")
-        conf.close()
-        print("Black/White theme applied!")
-
-        MessageBox('Theme Applied!',
-                   'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
-except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
 # Metallic theme
-
 try:
     def metallic_theme():
         conf = open(
@@ -673,15 +625,15 @@ except Exception as e:
     f = open("errorFile.txt", "a")
     f.write("Get size function error: {}".format(e))
     f.close()
-# Blue theme
 
+# Denim theme
 try:
-    def blue_theme():
+    def denim():
         conf = open(
             'Code\config.txt', 'w')
-        conf.write("canvas_color = #0084ff\nbg_color = #0070d9\nfg_color = #ffffff\nsidemenu_color = #0070d9\nbutton_bg_color = #47a6ff\ntheme_selected = blue")
+        conf.write("canvas_color = #242f41\nbg_color = #1b2331\nfg_color = #ffffff\nsidemenu_color = #1b2331\nbutton_bg_color = #303e55\ntheme_selected = denim")
         conf.close()
-        print("Blue theme applied!")
+        print("Denim theme applied!")
 
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
@@ -689,15 +641,16 @@ except Exception as e:
     f = open("errorFile.txt", "a")
     f.write("Get size function error: {}".format(e))
     f.close()
-# Purple theme
 
+
+# Red/Black theme
 try:
-    def purple_theme():
+    def redblack_theme():
         conf = open(
             'Code\config.txt', 'w')
-        conf.write("canvas_color = #8c00ff\nbg_color = #7400d4\nfg_color = #ffffff\nsidemenu_color = #7400d4\nbutton_bg_color = #b357ff\ntheme_selected = purple")
+        conf.write("canvas_color = #1f1f1f\nbg_color = #1a1a1a\nfg_color = #ff3d3d\nsidemenu_color = #1a1a1a\nbutton_bg_color = #ff3d3d\ntheme_selected = redblack")
         conf.close()
-        print("Purple theme applied!")
+        print("Red/Black theme applied!")
 
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
@@ -705,15 +658,15 @@ except Exception as e:
     f = open("errorFile.txt", "a")
     f.write("Get size function error: {}".format(e))
     f.close()
-# Orange theme
 
+# Black/White theme
 try:
-    def orange_theme():
+    def blackwhite_theme():
         conf = open(
             'Code\config.txt', 'w')
-        conf.write("canvas_color = #ff9900\nbg_color = #db8400\nfg_color = #ffffff\nsidemenu_color = #db8400\nbutton_bg_color = #ffb13b\ntheme_selected = orange")
+        conf.write("canvas_color = #ededed\nbg_color = #fafafa\nfg_color = #1c1c1c\nsidemenu_color = #fafafa\nbutton_bg_color = #d6d6d6\ntheme_selected = blackwhite")
         conf.close()
-        print("Orange theme applied!")
+        print("Black/White theme applied!")
 
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
@@ -721,6 +674,7 @@ except Exception as e:
     f = open("errorFile.txt", "a")
     f.write("Get size function error: {}".format(e))
     f.close()
+
 
 # Function for the clock located on the home page
 
@@ -1585,25 +1539,27 @@ try:
             print(e)
 
         # FREQUENCY
-
         try:
-            w = wmi.WMI(namespace=r"root\OpenHardwareMonitor")
-            freq_info = w.Sensor()
-            for sensor in freq_info:
+            c = wmi.WMI(namespace=r"root\OpenHardwareMonitor")
+            clocks = c.Sensor()
+            for sensor in clocks:
                 if sensor.SensorType == u"Clock":
                     if sensor.Name == u"CPU Core #1":
                         clock_last = sensor.Value
 
-                        clock_max = sensor.Max
+                        if clock_last not in cpu_max_clock_during_test:
+                            cpu_max_clock_during_test.append(clock_last)
+
+                        clock_max = max(cpu_max_clock_during_test)
 
                         freq_quotient = (
-                            (sensor.Value / sensor.Max) * 100) / 1.65
+                            (clock_last / clock_max) * 100) / 1.65
 
                         frequency_bar.configure(
                             text=f"|"*int(freq_quotient))
                         frequency_value_label.configure(
-                            text=f"{sensor.Value:.1f} MHz")
-                        break
+                            text=f"{clock_last:.1f} MHz")
+
         except Exception as e:
             print(e)
 
@@ -2034,11 +1990,13 @@ try:
                 print(e)
             # Temperature
             f.write(f"\n{line_separator} Temperature {line_separator}\n\n")
-            f.write(
-                f"Temperature (last): {temp_last:.3f}°C\n")
-            f.write(
-                f"Max Temperature: {max(cpu_max_temp_during_test):.3f}°C\n")
-
+            try:
+                f.write(
+                    f"Temperature (last): {temp_last:.3f}°C\n")
+                f.write(
+                    f"Max Temperature: {max(cpu_max_temp_during_test):.3f}°C\n")
+            except Exception as e:
+                print(e)
             # Voltage
             f.write(f"\n{line_separator} Voltage {line_separator}\n\n")
             try:
@@ -2053,14 +2011,19 @@ try:
                 print(e)
             # Frequency
             f.write(f"\n{line_separator} Frequency {line_separator}\n\n")
-            f.write(f"Frequency (last): {clock_last:.2f}Mhz\n")
-            f.write(f"Max Frequency: {clock_max:.2f}Mhz\n")
-
+            try:
+                f.write(f"Frequency (last): {clock_last:.2f}Mhz\n")
+                f.write(f"Max Frequency: {clock_max:.2f}Mhz\n")
+            except Exception as e:
+                print(e)
             # Power
             f.write(f"\n{line_separator} Power Usage {line_separator}\n\n")
-            f.write(f"Power Usage (last): {power_last:.3f} W\n")
-            f.write(
-                f"Max Power Usage: {max(cpu_max_power_during_test):.3f} W\n\n")
+            try:
+                f.write(f"Power Usage (last): {power_last:.3f} W\n")
+                f.write(
+                    f"Max Power Usage: {max(cpu_max_power_during_test):.3f} W\n\n")
+            except Exception as e:
+                print(e)
             f.write(main_line_separator)
         else:
             pass
@@ -2103,8 +2066,8 @@ try:
                 print(e)
 
             # Usage
+            f.write(f"{line_separator} Usage {line_separator}\n\n")
             try:
-                f.write(f"{line_separator} Usage {line_separator}\n\n")
                 f.write(f"Usage (last): {float(gpu_load):.2f}%\n")
                 f.write(
                     f"Max Usage: {float(max(gpu_max_usage_during_test)):.2f}%\n")
@@ -2112,8 +2075,8 @@ try:
                 print(e)
 
             # Memory
+            f.write(f"\n{line_separator} VRAM {line_separator}\n\n")
             try:
-                f.write(f"\n{line_separator} VRAM {line_separator}\n\n")
                 f.write(
                     f"Total Memory: {float(gpu_total_memory_test):.2f}GB\n")
                 f.write(f"Used Memory: {float(gpu_used_memory):.2f}GB\n")
@@ -2122,24 +2085,24 @@ try:
             except Exception as e:
                 print(e)
             # Temperature
+            f.write(f"\n{line_separator} Temperature {line_separator}\n\n")
             try:
-                f.write(f"\n{line_separator} Temperature {line_separator}\n\n")
                 f.write(f"Temperature (last): {gpu_temperature}°C\n")
                 f.write(
                     f"Max Temperature: {max(gpu_max_temp_during_test)}°C\n")
             except Exception as e:
                 print(e)
             # Fans
+            f.write(f"\n{line_separator} Fans {line_separator}\n\n")
             try:
-                f.write(f"\n{line_separator} Fans {line_separator}\n\n")
                 f.write(f"Fan speed (last): {fan_value}RPM | {fan_perc}%\n")
                 f.write(
                     f"Max Fan Speed: {fan_value_max}RPM | {fan_perc_max}%\n")
             except Exception as e:
                 print(e)
             # Clocks
+            f.write(f"\n{line_separator} Clocks {line_separator}\n\n")
             try:
-                f.write(f"\n{line_separator} Clocks {line_separator}\n\n")
                 f.write(f"Core Clock: {core_clk:.2f}Mhz\n")
                 f.write(f"Max Core Clock: {core_clk_max:.2f}Mhz\n\n")
                 f.write(f"Shader Clock: {shader_clk:.2f}Mhz\n")
@@ -5611,7 +5574,7 @@ try:
         speed_test_results_container.place(
             relwidth=1, relheight=0.5, relx=0, rely=0.35)
 
-        if not ping_max_list:
+        if not ping_list:
             best_ping = tk.Label(speed_test_results_container, bg=bg, fg=fg,
                                  font=font, anchor=tk.CENTER, width=8, height=1, text="PING")
             best_ping.grid(row=0, column=0, padx=(5), pady=(5, 0))
@@ -5623,10 +5586,10 @@ try:
                                  font=font, anchor=tk.CENTER, width=10, height=1, text="PING")
             best_ping.grid(row=0, column=0, padx=(5), pady=(5, 0))
             best_ping_value = tk.Label(speed_test_results_container, bg=bg, fg=fg,
-                                       font=font, anchor=tk.CENTER, width=10, height=1, text=f"{min(ping_max_list)}ms")
+                                       font=font, anchor=tk.CENTER, width=10, height=1, text=f"{min(ping_list)}ms")
             best_ping_value.grid(row=1, column=0, padx=(5), pady=(0))
 
-        if not download_max_list:
+        if not download_list:
             best_download = tk.Label(speed_test_results_container, bg=bg, fg=fg,
                                      font=font, anchor=tk.CENTER, width=11, height=1, text="DOWNLOAD")
             best_download.grid(row=0, column=1, padx=(5), pady=(5, 0))
@@ -5638,10 +5601,10 @@ try:
                                      font=font, anchor=tk.CENTER, width=10, height=1, text="DOWNLOAD")
             best_download.grid(row=0, column=1, padx=(5), pady=(5, 0))
             best_download_value = tk.Label(speed_test_results_container, bg=bg,
-                                           fg=fg, font=font, anchor=tk.CENTER, width=10, height=1, text=f"{max(download_max_list)}Mbps")
+                                           fg=fg, font=font, anchor=tk.CENTER, width=10, height=1, text=f"{max(download_list)}Mbps")
             best_download_value.grid(row=1, column=1, padx=(5), pady=(0))
 
-        if not upload_max_list:
+        if not upload_list:
             best_upload = tk.Label(speed_test_results_container, bg=bg, fg=fg,
                                    font=font, anchor=tk.CENTER, width=10, height=1, text="UPLOAD")
             best_upload.grid(row=0, column=2, padx=(5), pady=(5, 0))
@@ -5653,7 +5616,7 @@ try:
                                    font=font, anchor=tk.CENTER, width=10, height=1, text="UPLOAD")
             best_upload.grid(row=0, column=2, padx=(5), pady=(5, 0))
             best_upload_value = tk.Label(speed_test_results_container, bg=bg, fg=fg,
-                                         font=font, anchor=tk.CENTER, width=10, height=1, text=f"{max(upload_max_list)}Mbps")
+                                         font=font, anchor=tk.CENTER, width=10, height=1, text=f"{max(upload_list)}Mbps")
             best_upload_value.grid(row=1, column=2, padx=(5), pady=(0))
 
         refresh_net()
@@ -5728,128 +5691,132 @@ except Exception as e:
 try:
     def get_speed():
 
-        ping_list.clear()
-        download_list.clear()
-        upload_list.clear()
+        def start_test():
+            global download
+            global upload
+            global ping
+            root.after_cancel(start_speedtest)
 
-        st = speedtest.Speedtest()
+            with tqdm(total=3) as bar:
+                st = speedtest.Speedtest()
 
-        download = st.download() / 1000000
-        upload = st.upload() / 1000000
+                download = st.download() / 1000000
+                download_list.append(f"{download:.2f}")
 
-        # Append results to list
+                if download < 5:
+                    download_color.clear()
+                    download_color.append(asm_red)
+                    download_value.configure(fg=download_color)
+                elif download > 5 and download < 10:
+                    download_color.clear()
+                    download_color.append(asm_orange)
+                    download_value.configure(fg=download_color)
+                elif download > 10 and download < 20:
+                    download_color.clear()
+                    download_color.append(asm_yellow)
+                    download_value.configure(fg=download_color)
+                elif download > 20 and download < 40:
+                    download_color.clear()
+                    download_color.append(asm_green)
+                    download_value.configure(fg=download_color)
+                elif download > 40:
+                    download_color.clear()
+                    download_color.append(asm_cyan)
+                    download_value.configure(fg=download_color)
 
-        ping_list.append(f"{st.results.ping:.2f}")
-        download_list.append(f"{download:.2f}")
-        upload_list.append(f"{upload:.2f}")
+                try:
+                    download_value.configure(
+                        text=f"{download:.2f}Mbps")
+                except Exception as e:
+                    print(e)
+                try:
+                    best_download_value.configure(
+                        text=f"{max(download_list)}Mbps")
+                except Exception as e:
+                    print(e)
 
-        # Append results to list of maximum values
+                bar.update(1)
 
-        ping_max_list.append(f"{st.results.ping:.2f}")
-        download_max_list.append(f"{download:.2f}")
-        upload_max_list.append(f"{upload:.2f}")
+                upload = st.upload() / 1000000
+                upload_list.append(f"{upload:.2f}")
 
-        # Update colors
+                if upload < 3:
+                    upload_color.clear()
+                    upload_color.append(asm_red)
+                    upload_value.configure(fg=upload_color)
+                elif upload > 3 and upload < 6:
+                    upload_color.clear()
+                    upload_color.append(asm_orange)
+                    upload_value.configure(fg=upload_color)
+                elif upload > 6 and upload < 10:
+                    upload_color.clear()
+                    upload_color.append(asm_yellow)
+                    upload_value.configure(fg=upload_color)
+                elif upload > 10 and upload < 20:
+                    upload_color.clear()
+                    upload_color.append(asm_green)
+                    upload_value.configure(fg=upload_color)
+                elif upload > 20:
+                    upload_color.clear()
+                    upload_color.append(asm_cyan)
+                    upload_value.configure(fg=upload_color)
 
-        if st.results.ping < 10:
-            ping_color.clear()
-            ping_color.append(asm_cyan)
-            ping_value.configure(fg=ping_color)
-        elif st.results.ping > 10 and st.results.ping < 20:
-            ping_color.clear()
-            ping_color.append(asm_green)
-            ping_value.configure(fg=ping_color)
-        elif st.results.ping > 20 and st.results.ping < 30:
-            ping_color.clear()
-            ping_color.append(asm_yellow)
-            ping_value.configure(fg=ping_color)
-        elif st.results.ping > 30 and st.results.ping < 50:
-            ping_color.clear()
-            ping_color.append(asm_orange)
-            ping_value.configure(fg=ping_color)
-        elif st.results.ping > 50:
-            ping_color.clear()
-            ping_color.append(asm_red)
-            ping_value.configure(fg=ping_color)
+                try:
+                    upload_value.configure(text=f"{upload:.2f}Mbps")
+                except Exception as e:
+                    print(e)
 
-        if download < 5:
-            download_color.clear()
-            download_color.append(asm_red)
-            download_value.configure(fg=download_color)
-        elif download > 5 and download < 10:
-            download_color.clear()
-            download_color.append(asm_orange)
-            download_value.configure(fg=download_color)
-        elif download > 10 and download < 20:
-            download_color.clear()
-            download_color.append(asm_yellow)
-            download_value.configure(fg=download_color)
-        elif download > 20 and download < 40:
-            download_color.clear()
-            download_color.append(asm_green)
-            download_value.configure(fg=download_color)
-        elif download > 40:
-            download_color.clear()
-            download_color.append(asm_cyan)
-            download_value.configure(fg=download_color)
+                try:
+                    best_upload_value.configure(
+                        text=f"{max(upload_list)}Mbps")
+                except Exception as e:
+                    print(e)
 
-        if upload < 3:
-            upload_color.clear()
-            upload_color.append(asm_red)
-            upload_value.configure(fg=upload_color)
-        elif upload > 3 and upload < 6:
-            upload_color.clear()
-            upload_color.append(asm_orange)
-            upload_value.configure(fg=upload_color)
-        elif upload > 6 and upload < 10:
-            upload_color.clear()
-            upload_color.append(asm_yellow)
-            upload_value.configure(fg=upload_color)
-        elif upload > 10 and upload < 20:
-            upload_color.clear()
-            upload_color.append(asm_green)
-            upload_value.configure(fg=upload_color)
-        elif upload > 20:
-            upload_color.clear()
-            upload_color.append(asm_cyan)
-            upload_value.configure(fg=upload_color)
+                bar.update(1)
 
-        # Update results
+                ping = st.results.ping
+                ping_list.append(f"{ping:.2f}")
 
-        try:
-            ping_value.configure(text=f"{st.results.ping:.2f}ms")
-        except Exception as e:
-            print(e)
+                if ping < 10:
+                    ping_color.clear()
+                    ping_color.append(asm_cyan)
+                    ping_value.configure(fg=ping_color)
+                elif ping > 10 and ping < 20:
+                    ping_color.clear()
+                    ping_color.append(asm_green)
+                    ping_value.configure(fg=ping_color)
+                elif ping > 20 and ping < 30:
+                    ping_color.clear()
+                    ping_color.append(asm_yellow)
+                    ping_value.configure(fg=ping_color)
+                elif ping > 30 and ping < 50:
+                    ping_color.clear()
+                    ping_color.append(asm_orange)
+                    ping_value.configure(fg=ping_color)
+                elif ping > 50:
+                    ping_color.clear()
+                    ping_color.append(asm_red)
+                    ping_value.configure(fg=ping_color)
 
-        try:
-            download_value.configure(
-                text=f"{download:.2f}Mbps")
-        except Exception as e:
-            print(e)
+                try:
+                    ping_value.configure(text=f"{ping:.2f}ms")
+                except Exception as e:
+                    print(e)
 
-        try:
-            upload_value.configure(text=f"{upload:.2f}Mbps")
-        except Exception as e:
-            print(e)
-        # Update best results
+                try:
+                    best_ping_value.configure(
+                        text=f"{min(ping_list)}ms")
+                except Exception as e:
+                    print(e)
+                bar.update(1)
 
-        try:
-            best_ping_value.configure(
-                text=f"{min(ping_max_list)}ms")
-        except Exception as e:
-            print(e)
+        ping_value.configure(text="...", fg=fg)
+        download_value.configure(text="...", fg=fg)
+        upload_value.configure(text="...", fg=fg)
 
-        try:
-            best_download_value.configure(
-                text=f"{max(download_max_list)}Mbps")
-        except Exception as e:
-            print(e)
+        start_speedtest = root.after(10, start_test)
 
-        try:
-            best_upload_value.configure(
-                text=f"{max(upload_max_list)}Mbps")
-        except Exception as e:
-            print(e)
+
 # all the basic stuff is setup in this section
 except Exception as e:
     f = open("errorFile.txt", "a")
@@ -5911,7 +5878,7 @@ try:
         upload_color = []
         ping_color = []
 
-        # Values are stored in these lists and then maximums are used to show maximum recorded values
+        # Values are stored in these lists during tests
         cpu_max_usage_list = []
         cpu_max_usage_list.clear()
 
@@ -5939,7 +5906,7 @@ try:
         swap_max_usage_list = []
         swap_max_usage_list.clear()
 
-        ping_list = ["0"]
+        ping_list = []
         ping_list.clear()
 
         download_list = []
@@ -5947,15 +5914,6 @@ try:
 
         upload_list = []
         upload_list.clear()
-
-        download_max_list = []
-        download_list.clear()
-
-        upload_max_list = []
-        upload_max_list.clear()
-
-        ping_max_list = []
-        ping_max_list.clear()
 
         # Set canvas
         canvas = tk.Canvas(root, width=1200, height=800,
@@ -5970,6 +5928,7 @@ try:
         home()
 
         # Set all the sidebar icons and buttons
+        # Different color icons will be used if certain themes are selected
         if theme_selected == "blackwhite":
             home_photo = PhotoImage(
                 file=f"{image_path}\Black_Icons\homeCrop_black.png")
