@@ -131,7 +131,7 @@ try:
                          relx=0.117, rely=0.021)
 
         loading = tk.Label(home_frame, bg=canvas_bg, fg=fg, font=(
-            "Oxygen", 30), width=100, height=50, text="Loading...")
+            loading_font), width=100, height=50, text="Loading...")
         loading.pack()
 
         def declare_home():
@@ -170,7 +170,6 @@ try:
             global cpu_max_temp_during_test
             global cpu_max_core_usage_during_test
             global cpu_max_clock_during_test
-
             root.after_cancel(dec_home)
             with tqdm(total=100) as bar:
 
@@ -229,7 +228,7 @@ try:
                                        width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=blackwhite_theme)
                 blackwhite.grid(row=0, column=3, padx=(0, 27), pady=(15, 5))
 
-                with open("Code\config.txt", "r") as config:
+                with open("Code\Config\config.txt", "r") as config:
                     for line in config:
                         if "theme_selected" in line:
                             split = line.split()
@@ -327,7 +326,7 @@ try:
                 refresh_rate = []
 
                 with open(
-                        "Code\switches.txt", "r") as file:
+                        "Code\Config\switches.txt", "r") as file:
                     for line in file:
                         for word in line.split():
                             refresh_rate.append(word)
@@ -359,7 +358,7 @@ try:
                                         anchor=tk.W, width=15, height=1, text="Refresh Rate")
                 refresh_rate.grid(row=0, column=0, padx=(10, 0), pady=(0, 20))
 
-                with open("Code\switches.txt", "r") as file:
+                with open("Code\Config\switches.txt", "r") as file:
                     for line in file:
                         if "refresh_rate" in line:
                             split = line.split()
@@ -373,7 +372,7 @@ try:
                     row=0, column=1, padx=(298, 0), pady=(0, 20))
 
                 # Choose what you want to record and put into a text file during a test | note: more options > bigger the performance impact #
-                with open("Code\switches.txt", "r") as file:
+                with open("Code\Config\switches.txt", "r") as file:
                     for line in file:
                         if "record_cpu" in line:
                             rec_cpu = line.split()
@@ -588,13 +587,13 @@ try:
             MessageBox(
                 'Warning!', f'Please choose values between 500 and 10000 - Your pick: {refresh_rate_entry.get()}', 0)
         else:
-            with open("Code\switches.txt") as f:
+            with open("Code\Config\switches.txt") as f:
                 a = f.read()
 
-            with open("Code\switches.txt") as f:
+            with open("Code\Config\switches.txt") as f:
                 s = f.readlines()
 
-            with open("Code\switches.txt", "w") as f:
+            with open("Code\Config\switches.txt", "w") as f:
                 for line in s:
                     if "refresh_rate " in line:
                         split = line.split()
@@ -614,7 +613,7 @@ except Exception as e:
 try:
     def metallic_theme():
         conf = open(
-            'Code\config.txt', 'w')
+            'Code\Config\config.txt', 'w')
         conf.write("canvas_color = #121212\nbg_color = #202020\nfg_color = #d0d0d0\nsidemenu_color = #2a2a2a\nbutton_bg_color = #16395b\ntheme_selected = metallic")
         conf.close()
         print("Metallic theme applied!")
@@ -630,7 +629,7 @@ except Exception as e:
 try:
     def denim():
         conf = open(
-            'Code\config.txt', 'w')
+            'Code\Config\config.txt', 'w')
         conf.write("canvas_color = #242f41\nbg_color = #1b2331\nfg_color = #ffffff\nsidemenu_color = #1b2331\nbutton_bg_color = #303e55\ntheme_selected = denim")
         conf.close()
         print("Denim theme applied!")
@@ -647,7 +646,7 @@ except Exception as e:
 try:
     def redblack_theme():
         conf = open(
-            'Code\config.txt', 'w')
+            'Code\Config\config.txt', 'w')
         conf.write("canvas_color = #1f1f1f\nbg_color = #1a1a1a\nfg_color = #ff3d3d\nsidemenu_color = #1a1a1a\nbutton_bg_color = #ff3d3d\ntheme_selected = redblack")
         conf.close()
         print("Red/Black theme applied!")
@@ -663,7 +662,7 @@ except Exception as e:
 try:
     def blackwhite_theme():
         conf = open(
-            'Code\config.txt', 'w')
+            'Code\Config\config.txt', 'w')
         conf.write("canvas_color = #ededed\nbg_color = #fafafa\nfg_color = #1c1c1c\nsidemenu_color = #fafafa\nbutton_bg_color = #d6d6d6\ntheme_selected = blackwhite")
         conf.close()
         print("Black/White theme applied!")
@@ -723,7 +722,7 @@ except Exception as e:
 
 try:
     def cpu_button_state():
-        with open("Code\switches.txt", "r") as file:
+        with open("Code\Config\switches.txt", "r") as file:
             for line in file:
                 if "record_cpu" in line:
                     rec_cpu = line.split()
@@ -731,13 +730,13 @@ try:
         try:
             if rec_cpu[2] == "True":
                 record_cpu_button.configure(image=off_button)
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     a = f.read()
 
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     s = f.readlines()
 
-                with open("Code\switches.txt", "w") as f:
+                with open("Code\Config\switches.txt", "w") as f:
                     for line in s:
                         if "record_cpu" in line:
                             cpu_split = line.split()
@@ -747,13 +746,13 @@ try:
                     f.write(a)
             else:
                 record_cpu_button.configure(image=on_button)
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     a = f.read()
 
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     s = f.readlines()
 
-                with open("Code\switches.txt", "w") as f:
+                with open("Code\Config\switches.txt", "w") as f:
                     for line in s:
                         if "record_cpu" in line:
                             cpu_split = line.split()
@@ -771,7 +770,7 @@ except Exception as e:
 
 try:
     def gpu_button_state():
-        with open("Code\switches.txt", "r") as file:
+        with open("Code\Config\switches.txt", "r") as file:
             for line in file:
                 if "record_gpu" in line:
                     rec_gpu = line.split()
@@ -779,13 +778,13 @@ try:
         try:
             if rec_gpu[2] == "True":
                 record_gpu_button.configure(image=off_button)
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     a = f.read()
 
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     s = f.readlines()
 
-                with open("Code\switches.txt", "w") as f:
+                with open("Code\Config\switches.txt", "w") as f:
                     for line in s:
                         if "record_gpu" in line:
                             gpu_split = line.split()
@@ -795,13 +794,13 @@ try:
                     f.write(a)
             else:
                 record_gpu_button.configure(image=on_button)
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     a = f.read()
 
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     s = f.readlines()
 
-                with open("Code\switches.txt", "w") as f:
+                with open("Code\Config\switches.txt", "w") as f:
                     for line in s:
                         if "record_gpu" in line:
                             gpu_split = line.split()
@@ -819,7 +818,7 @@ except Exception as e:
 
 try:
     def ram_button_state():
-        with open("Code\switches.txt", "r") as file:
+        with open("Code\Config\switches.txt", "r") as file:
             for line in file:
                 if "record_ram" in line:
                     rec_ram = line.split()
@@ -827,13 +826,13 @@ try:
         try:
             if rec_ram[2] == "True":
                 record_ram_button.configure(image=off_button)
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     a = f.read()
 
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     s = f.readlines()
 
-                with open("Code\switches.txt", "w") as f:
+                with open("Code\Config\switches.txt", "w") as f:
                     for line in s:
                         if "record_ram" in line:
                             ram_split = line.split()
@@ -843,13 +842,13 @@ try:
                     f.write(a)
             else:
                 record_ram_button.configure(image=on_button)
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     a = f.read()
 
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     s = f.readlines()
 
-                with open("Code\switches.txt", "w") as f:
+                with open("Code\Config\switches.txt", "w") as f:
                     for line in s:
                         if "record_ram" in line:
                             ram_split = line.split()
@@ -867,7 +866,7 @@ except Exception as e:
 
 try:
     def fan_button_state():
-        with open("Code\switches.txt", "r") as file:
+        with open("Code\Config\switches.txt", "r") as file:
             for line in file:
                 if "record_fans" in line:
                     rec_fans = line.split()
@@ -875,13 +874,13 @@ try:
         try:
             if rec_fans[2] == "True":
                 record_fan_button.configure(image=off_button)
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     a = f.read()
 
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     s = f.readlines()
 
-                with open("Code\switches.txt", "w") as f:
+                with open("Code\Config\switches.txt", "w") as f:
                     for line in s:
                         if "record_fans" in line:
                             fans_split = line.split()
@@ -891,13 +890,13 @@ try:
                     f.write(a)
             else:
                 record_fan_button.configure(image=on_button)
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     a = f.read()
 
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     s = f.readlines()
 
-                with open("Code\switches.txt", "w") as f:
+                with open("Code\Config\switches.txt", "w") as f:
                     for line in s:
                         if "record_fans" in line:
                             fans_split = line.split()
@@ -915,7 +914,7 @@ except Exception as e:
 
 try:
     def mobo_info_status():
-        with open("Code\switches.txt", "r") as file:
+        with open("Code\Config\switches.txt", "r") as file:
             for line in file:
                 if "mobo_info" in line:
                     base_inf = line.split()
@@ -923,13 +922,13 @@ try:
         try:
             if base_inf[2] == "True":
                 mobo_info_button.configure(image=off_button)
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     a = f.read()
 
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     s = f.readlines()
 
-                with open("Code\switches.txt", "w") as f:
+                with open("Code\Config\switches.txt", "w") as f:
                     for line in s:
                         if "mobo_info" in line:
                             mobo_info = line.split()
@@ -939,13 +938,13 @@ try:
                     f.write(a)
             else:
                 mobo_info_button.configure(image=on_button)
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     a = f.read()
 
-                with open("Code\switches.txt") as f:
+                with open("Code\Config\switches.txt") as f:
                     s = f.readlines()
 
-                with open("Code\switches.txt", "w") as f:
+                with open("Code\Config\switches.txt", "w") as f:
                     for line in s:
                         if "mobo_info" in line:
                             mobo_info = line.split()
@@ -976,7 +975,7 @@ try:
             relwidth=0.875, relheight=0.96, relx=0.117, rely=0.021)
 
         loading = tk.Label(combined_test_frame, bg=canvas_bg, fg=fg, font=(
-            "Oxygen", 30), width=100, height=50, text="Loading...")
+            loading_font), width=100, height=50, text="Loading...")
         loading.pack()
 
         def declare_test():
@@ -1428,7 +1427,7 @@ try:
         global sv_total
         global sv_free
         # READ CONFIG FILE
-        with open("Code\switches.txt", "r") as file:
+        with open("Code\Config\switches.txt", "r") as file:
             s = file.readlines()
             for line in s:
                 if "refresh_rate" in line:
@@ -1818,7 +1817,7 @@ try:
         main_line_separator = "-"*80
         line_separator = "-"*5
 
-        with open("Code\switches.txt", "r") as file:
+        with open("Code\Config\switches.txt", "r") as file:
             for line in file:
                 if "mobo_info" in line:
                     mobo_info = line.split()
@@ -2182,7 +2181,7 @@ try:
         main_line_separator = "-"*80
         line_separator = "-"*10
 
-        with open("Code\switches.txt", "r") as file:
+        with open("Code\Config\switches.txt", "r") as file:
             for line in file:
                 if "mobo_info" in line:
                     mobo_info = line.split()
@@ -2714,7 +2713,7 @@ try:
                          relx=0.117, rely=0.021)
 
         loading = tk.Label(main_frame, bg=canvas_bg, fg=fg, font=(
-            "Oxygen", 30), width=100, height=50, text="Loading...")
+            loading_font), width=100, height=50, text="Loading...")
         loading.pack()
 
         def declare_mobo():
@@ -2814,17 +2813,17 @@ try:
                 cpu_name.grid(row=0, column=0, padx=(10), pady=(5, 0))
 
                 physical_cores = tk.Label(procFrame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                          width=100, height=1, text=f"Physical Cores: {psutil.cpu_count(logical=False)}")
+                                          width=100, height=1, text=f"No. Cores: {psutil.cpu_count(logical=False)}")
                 physical_cores.grid(row=1, column=0, padx=(10))
 
                 total_cores = tk.Label(procFrame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                       width=100, height=1, text=f"Total Cores: {psutil.cpu_count(logical=True)}")
+                                       width=100, height=1, text=f"No. Threads: {psutil.cpu_count(logical=True)}")
                 total_cores.grid(row=2, column=0, padx=(10))
 
                 cpufreq = psutil.cpu_freq()
 
                 base_freq = tk.Label(procFrame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                     width=100, height=1, text=f"Base Frequency: {cpufreq.max:.2f}Mhz")
+                                     width=100, height=1, text=f"Base Frequency: {cpufreq.current:.2f}Mhz")
                 base_freq.grid(row=3, column=0, padx=(10))
 
                 displayInfo = tk.Frame(main_frame, bg=bg)
@@ -3125,7 +3124,7 @@ try:
         cpu_frame.place(relwidth=0.875, relheight=0.96, relx=0.117, rely=0.021)
 
         loading = tk.Label(cpu_frame, bg=canvas_bg, fg=fg, font=(
-            "Oxygen", 30), width=100, height=50, text="Loading...")
+            loading_font), width=100, height=50, text="Loading...")
         loading.pack()
 
         def declare_cpu():
@@ -3738,7 +3737,7 @@ try:
         gpu_frame.place(relwidth=0.875, relheight=0.96, relx=0.117, rely=0.021)
 
         loading = tk.Label(gpu_frame, bg=canvas_bg, fg=fg, font=(
-            "Oxygen", 30), width=100, height=50, text="Loading...")
+            loading_font), width=100, height=50, text="Loading...")
         loading.pack()
 
         def declare_gpu():
@@ -4504,7 +4503,7 @@ try:
         ram_frame.place(relwidth=0.875, relheight=0.96, relx=0.117, rely=0.021)
 
         loading = tk.Label(ram_frame, bg=canvas_bg, fg=fg, font=(
-            "Oxygen", 30), width=100, height=50, text="Loading...")
+            loading_font), width=100, height=50, text="Loading...")
         loading.pack()
 
         def declare_ram():
@@ -5836,7 +5835,7 @@ try:
         color_list = []
         theme_selected = ""
 
-        with open("Code\config.txt", "r") as config:
+        with open("Code\Config\config.txt", "r") as config:
             for line in config:
                 for word in line.split():
                     if word.startswith("#"):
@@ -5866,6 +5865,7 @@ try:
         time_font = ("Oxygen", 10)
         usage_font = ("Oxygen", 15, 'bold')
         net_font = ("Oxygen", 25)
+        loading_font = ("Oxygen", 30)
         # Anchors
         anchor = tk.SW
         lbl_anchor = tk.W

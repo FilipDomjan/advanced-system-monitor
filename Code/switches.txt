@@ -1,6 +1,0 @@
-refresh_rate = 2000
-record_cpu = True
-record_gpu = True
-record_ram = True
-record_fans = False
-mobo_info = False
