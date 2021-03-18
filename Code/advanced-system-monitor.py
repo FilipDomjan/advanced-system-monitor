@@ -1,34 +1,38 @@
-from json import load
-from string import digits
-import sys
 import tkinter as tk
-from tkinter import PhotoImage, Toplevel
+import tkinter.ttk as ttk
+import datetime
+import wmi
+import sys
 import time
-from tkinter.constants import E, SUNKEN
-from cpuinfo.cpuinfo import main
 import psutil
 import platform
-import datetime
-from datetime import date
-from datetime import datetime
 import GPUtil
-from win32com.client.gencache import usage
-import wmi
 import speedtest
-from time import sleep, time_ns
 import cpuinfo
 import multiprocessing
 import os
 import subprocess
-from tkinter import filedialog, Text
 import ctypes
 import locale
-from win32api import GetSystemMetrics
 import win32api
 import os.path
+import random
+import webbrowser
+import smtplib
+from tkinter import PhotoImage, StringVar, Toplevel
+from datetime import datetime
+from json import load
+from re import RegexFlag
+from string import digits
+from tkinter.constants import E, SUNKEN
+from cpuinfo.cpuinfo import main
+from datetime import date
+from win32com.client.gencache import usage
+from time import sleep, time_ns
+from tkinter import filedialog, Text
+from win32api import GetSystemMetrics
 from os import path, times
 from InfoBox import CreateToolTip
-import random
 from tqdm import tqdm
 
 
@@ -170,6 +174,11 @@ try:
             global cpu_max_temp_during_test
             global cpu_max_core_usage_during_test
             global cpu_max_clock_during_test
+            global report_bugs_image
+            global patreon_image
+            global support_container
+            global support_text_frame
+            global support_frame
             root.after_cancel(dec_home)
             with tqdm(total=100) as bar:
 
@@ -535,6 +544,7 @@ try:
 
                 bar.update(10)
 
+                """
                 # Fun facts about the app
 
                 fun_facts_frame = tk.Frame(home_frame, bg=bg)
@@ -558,11 +568,51 @@ try:
                 fun_fact.pack()
 
                 rand_num_list = []
+                """
+
+                support_frame = tk.Frame(home_frame, bg=bg)
+                support_frame.place(
+                    relwidth=0.59, relheight=0.30, relx=0.415, rely=0.7)
+
+                support_text_frame = tk.Frame(support_frame, bg=bg)
+                support_text_frame.place(
+                    relwidth=0.4, relheight=0.1, relx=0.015, rely=0.05)
+
+                support_text = tk.Label(support_text_frame, bg=bg, fg=fg,
+                                        font=font, anchor=tk.W, width=100, height=1, text="SUPPORT")
+                support_text.pack()
+
+                support_container = tk.Frame(support_frame, bg=bg)
+                support_container.place(
+                    relwidth=1, relheight=0.7, relx=0, rely=0.20)
+
+                report_bugs_image = PhotoImage(
+                    file=f"{image_path}\warning_50px_white.png")
+
+                report_bugs_button = tk.Button(support_container, bg=bg, fg=fg, font=font, width=50, height=50, bd=0,
+                                               image=report_bugs_image, activebackground=bg, activeforeground=bg, command=contact_form)
+                report_bugs_button.grid(
+                    row=0, column=0, padx=(150, 60), pady=(40, 10))
+
+                report_bugs_text = tk.Label(
+                    support_container, bg=bg, fg=fg, font=font, anchor=tk.CENTER, width=10, height=1, text="Report Bugs")
+                report_bugs_text.grid(row=1, column=0, padx=(150, 60), pady=0)
+
+                patreon_image = PhotoImage(
+                    file=f"{image_path}\patreon_edited_white.png")
+
+                patreon_button = tk.Button(support_container, bg=bg, fg=fg, font=font, width=50, height=50, bd=0,
+                                           image=patreon_image, activebackground=bg, activeforeground=bg, relief=SUNKEN, command=lambda: webbrowser.open(url="www.patreon.com/filipdomjan", new=2, autoraise=True))
+                patreon_button.grid(
+                    row=0, column=1, padx=0, pady=(40, 10))
+
+                patreon_text = tk.Label(
+                    support_container, bg=bg, fg=fg, font=font, anchor=tk.CENTER, width=10, height=1, text="My Patreon")
+                patreon_text.grid(row=1, column=1, padx=0, pady=0)
 
                 bar.update(10)
 
                 get_time()
-                fun_facts()
 
                 bar.update(40)
 
@@ -2641,6 +2691,134 @@ except Exception as e:
     f = open("errorFile.txt", "a")
     f.write("Get size function error: {}".format(e))
     f.close()
+
+
+try:
+    def contact_form():
+        global password_entry
+        global email_entry
+        global message_entry
+        global report_container
+        try:
+            support_container.place_forget()
+            support_text_frame.place_forget()
+        except Exception as e:
+            print(e)
+
+        def add_placeholder_password():
+            if len(password_entry.get()) == 0:
+                password_entry.insert(0, 'password')
+                password_entry.configure(fg="#454545", show="")
+            else:
+                pass
+
+        def delete_placeholder_password():
+            if password_entry.get() == "password":
+                password_entry.delete(0, 'end')
+                password_entry.configure(fg=fg, show="*")
+            else:
+                pass
+
+        def add_placeholder_email():
+            if len(email_entry.get()) == 0:
+                email_entry.insert(0, 'example@mail.com')
+                email_entry.configure(fg="#454545")
+            else:
+                pass
+
+        def delete_placeholder_email():
+            if email_entry.get() == "example@mail.com":
+                email_entry.delete(0, 'end')
+                email_entry.configure(fg=fg)
+            else:
+                pass
+
+        def add_placeholder_message():
+            if len(message_entry.get('1.0', 'end')) == 1:
+                message_entry.insert('end', "message")
+                message_entry.configure(fg="#454545")
+            else:
+                pass
+
+        def delete_placeholder_message():
+            if message_entry.get('1.0', 'end') == "message\n":
+                message_entry.delete('1.0', 'end')
+                message_entry.configure(fg=fg)
+            else:
+                pass
+
+        password_var = tk.StringVar()
+        email_var = tk.StringVar()
+
+        report_container = tk.Frame(support_frame, bg=bg)
+        report_container.place(relwidth=1, relheight=1, relx=0, rely=0)
+
+        email_frame = tk.Frame(report_container, bg=sidemenu_bg)
+        email_frame.place(relwidth=0.63, relheight=0.20, relx=0.022, rely=0.07)
+
+        email_entry = tk.Entry(email_frame, bg=sidemenu_bg, fg="#454545", font=font,
+                               width=30, bd=0, textvariable=email_var, justify='left')
+        email_entry.insert(0, 'example@mail.com')
+        email_entry.bind("<FocusIn>", lambda f: delete_placeholder_email())
+        email_entry.bind(
+            "<FocusOut>", lambda f: add_placeholder_email())
+        email_entry.pack(ipady=8)
+
+        password_frame = tk.Frame(report_container, bg=sidemenu_bg)
+        password_frame.place(relwidth=0.30, relheight=0.20,
+                             relx=0.673, rely=0.07)
+
+        password_entry = tk.Entry(password_frame, bg=sidemenu_bg, fg="#454545", font=font,
+                                  width=13, bd=0, textvariable=password_var, justify='left')
+        password_entry.insert(0, 'password')
+        password_entry.bind(
+            "<FocusIn>", lambda f: delete_placeholder_password())
+        password_entry.bind("<FocusOut>", lambda f: add_placeholder_password())
+        password_entry.pack(ipady=8)
+
+        message_frame = tk.Frame(report_container, bg=sidemenu_bg)
+        message_frame.place(relwidth=0.95, relheight=0.40,
+                            relx=0.022, rely=0.32)
+
+        message_entry = tk.Text(message_frame, bg=sidemenu_bg, fg="#454545", font=(
+            "Oxygen", 13), width=56, bd=0)
+        message_entry.insert('end', "message")
+        message_entry.bind("<FocusIn>", lambda f: delete_placeholder_message())
+        message_entry.bind("<FocusOut>", lambda f: add_placeholder_message())
+        message_entry.pack(pady=10)
+
+        send_message = tk.Frame(report_container, bg=sidemenu_bg)
+        send_message.place(relwidth=0.95, relheight=0.16,
+                           relx=0.022, rely=0.78)
+
+        send_message_button = tk.Button(send_message, bg=sidemenu_bg, fg=fg, font=("Oxygen", 13), width=100,
+                                        height=2, text="SUBMIT REPORT", activeforeground=fg, activebackground=button_bg, bd=0, relief=SUNKEN, command=send_email)
+        send_message_button.pack()
+except Exception as e:
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
+
+
+try:
+    def send_email():
+        sender = email_entry.get()
+        receiver = ['filip.domjan@hotmail.com']
+
+        message = message_entry.get('1.0', 'end')
+
+        try:
+            smtpObj = smtplib.SMTP('mail.hotmail.com', 25)
+            smtpObj.sendmail(sender, receiver, message)
+            print("Successfully sent!")
+        except smtplib.SMTPException:
+            print("Unable to send mail!")
+except Exception as e:
+    f = open("errorFile.txt", "a")
+    f.write("Get size function error: {}".format(e))
+    f.close()
+
+
 # Mobo function grabs and displays wide range of data related to the system
 
 try:
@@ -5686,7 +5864,6 @@ except Exception as e:
     f.write("Get size function error: {}".format(e))
     f.close()
 # get_speed function handles the speedtesting
-
 try:
     def get_speed():
 
@@ -5814,14 +5991,12 @@ try:
         upload_value.configure(text="...", fg=fg)
 
         start_speedtest = root.after(10, start_test)
-
-
-# all the basic stuff is setup in this section
 except Exception as e:
     f = open("errorFile.txt", "a")
     f.write("Get size function error: {}".format(e))
     f.close()
 
+# all the basic stuff is setup in this section
 try:
     if __name__ == '__main__':
         multiprocessing.freeze_support()

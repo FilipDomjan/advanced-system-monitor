@@ -1,5 +1,6 @@
 from cx_Freeze import setup, Executable
 import sys
+from tkinter import font
 
 base = None
 
@@ -11,11 +12,15 @@ executables = [Executable("advanced-system-monitor.py",
 
 includefiles = ["Visual\images\ASM_Logo_ICO.ico"]
 
-packages = ["idna"]
+packages = ["idna", "tkinter", "tkinter.font"]
+
+include = ["tkinter", "tkinter.font"]
+
 options = {
     'build_exe': {
         'packages': packages,
         'include_files': includefiles
+        'includes': include
     },
 }
 
