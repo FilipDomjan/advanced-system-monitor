@@ -34,6 +34,8 @@ from win32api import GetSystemMetrics
 from os import path, times
 from InfoBox import CreateToolTip
 from tqdm import tqdm
+from email.message import EmailMessage
+from SendEmail import initiante_email
 
 
 # Basic function for size conversion
@@ -174,10 +176,6 @@ try:
             global cpu_max_temp_during_test
             global cpu_max_core_usage_during_test
             global cpu_max_clock_during_test
-            global report_bugs_image
-            global patreon_image
-            global support_container
-            global support_text_frame
             global support_frame
             root.after_cancel(dec_home)
             with tqdm(total=100) as bar:
@@ -214,7 +212,7 @@ try:
 
                 metallic = tk.Button(themes_container, bg=bg, fg="white", image=metallic_photo, bd=0,
                                      width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=metallic_theme)
-                metallic.grid(row=0, column=0, padx=27, pady=(15, 5))
+                metallic.grid(row=0, column=0, padx=(22, 27), pady=(15, 5))
 
                 denim_photo = PhotoImage(
                     file=f"{themes_image_path}\pdenim.png")
@@ -544,71 +542,11 @@ try:
 
                 bar.update(10)
 
-                """
-                # Fun facts about the app
-
-                fun_facts_frame = tk.Frame(home_frame, bg=bg)
-                fun_facts_frame.place(
-                    relwidth=0.59, relheight=0.30, relx=0.415, rely=0.7)
-
-                fun_facts_text_frame = tk.Frame(fun_facts_frame, bg=bg)
-                fun_facts_text_frame.place(
-                    relwidth=0.4, relheight=0.1, relx=0.015, rely=0.05)
-
-                fun_facts_text = tk.Label(fun_facts_text_frame, bg=bg, fg=fg,
-                                          font=font, anchor=tk.W, width=100, height=1, text="FUN FACTS")
-                fun_facts_text.pack()
-
-                ff_container = tk.Frame(fun_facts_frame, bg=bg)
-                ff_container.place(
-                    relwidth=1, relheight=0.7, relx=0, rely=0.20)
-
-                fun_fact = tk.Label(ff_container, bg=bg, fg=fg, font=("Oxygen", 20), anchor=tk.CENTER, width=100,
-                                    height=10, text="")
-                fun_fact.pack()
-
-                rand_num_list = []
-                """
-
                 support_frame = tk.Frame(home_frame, bg=bg)
                 support_frame.place(
                     relwidth=0.59, relheight=0.30, relx=0.415, rely=0.7)
 
-                support_text_frame = tk.Frame(support_frame, bg=bg)
-                support_text_frame.place(
-                    relwidth=0.4, relheight=0.1, relx=0.015, rely=0.05)
-
-                support_text = tk.Label(support_text_frame, bg=bg, fg=fg,
-                                        font=font, anchor=tk.W, width=100, height=1, text="SUPPORT")
-                support_text.pack()
-
-                support_container = tk.Frame(support_frame, bg=bg)
-                support_container.place(
-                    relwidth=1, relheight=0.7, relx=0, rely=0.20)
-
-                report_bugs_image = PhotoImage(
-                    file=f"{image_path}\warning_50px_white.png")
-
-                report_bugs_button = tk.Button(support_container, bg=bg, fg=fg, font=font, width=50, height=50, bd=0,
-                                               image=report_bugs_image, activebackground=bg, activeforeground=bg, command=contact_form)
-                report_bugs_button.grid(
-                    row=0, column=0, padx=(150, 60), pady=(40, 10))
-
-                report_bugs_text = tk.Label(
-                    support_container, bg=bg, fg=fg, font=font, anchor=tk.CENTER, width=10, height=1, text="Report Bugs")
-                report_bugs_text.grid(row=1, column=0, padx=(150, 60), pady=0)
-
-                patreon_image = PhotoImage(
-                    file=f"{image_path}\patreon_edited_white.png")
-
-                patreon_button = tk.Button(support_container, bg=bg, fg=fg, font=font, width=50, height=50, bd=0,
-                                           image=patreon_image, activebackground=bg, activeforeground=bg, relief=SUNKEN, command=lambda: webbrowser.open(url="www.patreon.com/filipdomjan", new=2, autoraise=True))
-                patreon_button.grid(
-                    row=0, column=1, padx=0, pady=(40, 10))
-
-                patreon_text = tk.Label(
-                    support_container, bg=bg, fg=fg, font=font, anchor=tk.CENTER, width=10, height=1, text="My Patreon")
-                patreon_text.grid(row=1, column=1, padx=0, pady=0)
+                make_support_frame()
 
                 bar.update(10)
 
@@ -657,6 +595,81 @@ except Exception as e:
     f = open("errorFile.txt", "a")
     f.write("Get size function error: {}".format(e))
     f.close()
+
+try:
+    def make_support_frame():
+        global support_text_frame
+        global support_container
+        global report_bugs_image
+        global patreon_image
+        global instagram_image
+
+        try:
+            root.after_cancel(make_frame)
+        except Exception as e:
+            print(e)
+
+        support_text_frame = tk.Frame(support_frame, bg=bg)
+        support_text_frame.place(
+            relwidth=0.4, relheight=0.1, relx=0.015, rely=0.05)
+
+        support_text = tk.Label(support_text_frame, bg=bg, fg=fg,
+                                font=font, anchor=tk.W, width=100, height=1, text="SUPPORT")
+        support_text.pack()
+
+        support_container = tk.Frame(support_frame, bg=bg)
+        support_container.place(
+            relwidth=1, relheight=0.7, relx=0, rely=0.20)
+
+        with open("Code\Config\config.txt", "r") as config:
+            for line in config:
+                for word in line.split():
+                    if word == "blackwhite":
+                        report_bugs_image = PhotoImage(
+                            file=f"{image_path}\Black_Icons\warning_50px_black.png")
+
+                        patreon_image = PhotoImage(
+                            file=f"{image_path}\Black_Icons\patreon_edited.png")
+
+                        instagram_image = PhotoImage(
+                            file=f"{image_path}\instagram_colorful.png")
+                    else:
+                        report_bugs_image = PhotoImage(
+                            file=f"{image_path}\warning_50px_white.png")
+
+                        patreon_image = PhotoImage(
+                            file=f"{image_path}\patreon_edited_white.png")
+
+                        instagram_image = PhotoImage(
+                            file=f"{image_path}\instagram_colorful.png")
+
+        report_bugs_button = tk.Button(support_container, bg=bg, fg=fg, font=font, width=50, height=50, bd=0,
+                                       image=report_bugs_image, activebackground=bg, activeforeground=bg, command=contact_form)
+        report_bugs_button.grid(
+            row=0, column=0, padx=(73, 60), pady=(40, 10))
+
+        report_bugs_text = tk.Label(
+            support_container, bg=bg, fg=fg, font=font, anchor=tk.CENTER, width=10, height=1, text="Report Bugs")
+        report_bugs_text.grid(row=1, column=0, padx=(73, 60), pady=0)
+
+        patreon_button = tk.Button(support_container, bg=bg, fg=fg, font=font, width=50, height=50, bd=0,
+                                   image=patreon_image, activebackground=bg, activeforeground=bg, relief=SUNKEN, command=lambda: webbrowser.open(url="www.patreon.com/filipdomjan", new=2, autoraise=True))
+        patreon_button.grid(
+            row=0, column=1, padx=0, pady=(40, 10))
+
+        patreon_text = tk.Label(
+            support_container, bg=bg, fg=fg, font=font, anchor=tk.CENTER, width=10, height=1, text="Patreon")
+        patreon_text.grid(row=1, column=1, padx=0, pady=0)
+
+        instagram_button = tk.Button(support_container, bg=bg, fg=fg, font=font, width=50, height=50, bd=0,
+                                     image=instagram_image, activebackground=bg, activeforeground=bg, relief=SUNKEN, command=lambda: webbrowser.open(url="www.instagram.com/rgb_domi", new=2, autoraise=True))
+        instagram_button.grid(row=0, column=2, padx=(30, 0), pady=(40, 10))
+
+        instagram_text = tk.Label(support_container, bg=bg, fg=fg, font=font,
+                                  anchor=tk.CENTER, width=15, height=1, text="Instagram")
+        instagram_text.grid(row=1, column=2, padx=(30, 0), pady=0)
+except Exception as e:
+    print(e)
 
 
 # Metallic theme
@@ -2649,54 +2662,13 @@ except Exception as e:
     f = open("errorFile.txt", "a")
     f.write("Get size function error: {}".format(e))
     f.close()
-# Function to generate random fun facts about Advanced System Monitor
 
-try:
-    def fun_facts():
-        global ff
-        random_number = random.randint(1, 10)
-
-        if random_number == 1:
-            fun_fact.configure(
-                text="This app has 5.2k lines of code and\n15k+ words in total.")
-        elif random_number == 2:
-            fun_fact.configure(
-                text="Advanced System Monitor was written\nby only one developer.")
-        elif random_number == 3:
-            fun_fact.configure(
-                text="Development of this app took 2 months,\nand its still being worked on.")
-        elif random_number == 4:
-            fun_fact.configure(
-                text="Most of the app is improvised\nand unplanned.")
-        elif random_number == 5:
-            fun_fact.configure(
-                text="Developer studied Python for a month\nbefore starting this project.")
-        elif random_number == 6:
-            fun_fact.configure(
-                text="This app is developers first big project.")
-        elif random_number == 7:
-            fun_fact.configure(
-                text="Point of this app is to be unlike any other\napp of this kind on the market.")
-        elif random_number == 8:
-            fun_fact.configure(
-                text="AVS is open source and its code can be viewed\nby anybody if they are interested.")
-        elif random_number == 9:
-            fun_fact.configure(text="There are 20 fun facts in total.")
-        elif random_number == 10:
-            fun_fact.configure(
-                text="There is a secret fun fact that appears\nonly in special conditions.")
-
-        ff = root.after(7000, fun_facts)
-except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
-
+# Function which creates a contact form for sending emails
 
 try:
     def contact_form():
-        global password_entry
-        global email_entry
+        global subject_entry
+        global name_entry
         global message_entry
         global report_container
         try:
@@ -2705,31 +2677,31 @@ try:
         except Exception as e:
             print(e)
 
-        def add_placeholder_password():
-            if len(password_entry.get()) == 0:
-                password_entry.insert(0, 'password')
-                password_entry.configure(fg="#454545", show="")
+        def add_placeholder_subject():
+            if len(subject_entry.get()) == 0:
+                subject_entry.insert(0, 'subject')
+                subject_entry.configure(fg="#454545")
             else:
                 pass
 
-        def delete_placeholder_password():
-            if password_entry.get() == "password":
-                password_entry.delete(0, 'end')
-                password_entry.configure(fg=fg, show="*")
+        def delete_placeholder_subject():
+            if subject_entry.get() == "subject":
+                subject_entry.delete(0, 'end')
+                subject_entry.configure(fg=fg)
             else:
                 pass
 
-        def add_placeholder_email():
-            if len(email_entry.get()) == 0:
-                email_entry.insert(0, 'example@mail.com')
-                email_entry.configure(fg="#454545")
+        def add_placeholder_name():
+            if len(name_entry.get()) == 0:
+                name_entry.insert(0, 'your name')
+                name_entry.configure(fg="#454545")
             else:
                 pass
 
-        def delete_placeholder_email():
-            if email_entry.get() == "example@mail.com":
-                email_entry.delete(0, 'end')
-                email_entry.configure(fg=fg)
+        def delete_placeholder_name():
+            if name_entry.get() == "your name":
+                name_entry.delete(0, 'end')
+                name_entry.configure(fg=fg)
             else:
                 pass
 
@@ -2747,34 +2719,34 @@ try:
             else:
                 pass
 
-        password_var = tk.StringVar()
-        email_var = tk.StringVar()
+        subject_var = tk.StringVar()
+        name_var = tk.StringVar()
 
         report_container = tk.Frame(support_frame, bg=bg)
         report_container.place(relwidth=1, relheight=1, relx=0, rely=0)
 
-        email_frame = tk.Frame(report_container, bg=sidemenu_bg)
-        email_frame.place(relwidth=0.63, relheight=0.20, relx=0.022, rely=0.07)
+        name_frame = tk.Frame(report_container, bg=sidemenu_bg)
+        name_frame.place(relwidth=0.30, relheight=0.20, relx=0.022, rely=0.07)
 
-        email_entry = tk.Entry(email_frame, bg=sidemenu_bg, fg="#454545", font=font,
-                               width=30, bd=0, textvariable=email_var, justify='left')
-        email_entry.insert(0, 'example@mail.com')
-        email_entry.bind("<FocusIn>", lambda f: delete_placeholder_email())
-        email_entry.bind(
-            "<FocusOut>", lambda f: add_placeholder_email())
-        email_entry.pack(ipady=8)
+        name_entry = tk.Entry(name_frame, bg=sidemenu_bg, fg="#454545", font=font,
+                              width=13, bd=0, textvariable=name_var, justify='left')
+        name_entry.insert(0, 'your name')
+        name_entry.bind("<FocusIn>", lambda f: delete_placeholder_name())
+        name_entry.bind(
+            "<FocusOut>", lambda f: add_placeholder_name())
+        name_entry.pack(ipady=8)
 
-        password_frame = tk.Frame(report_container, bg=sidemenu_bg)
-        password_frame.place(relwidth=0.30, relheight=0.20,
-                             relx=0.673, rely=0.07)
+        subject_frame = tk.Frame(report_container, bg=sidemenu_bg)
+        subject_frame.place(relwidth=0.63, relheight=0.20,
+                            relx=0.343, rely=0.07)
 
-        password_entry = tk.Entry(password_frame, bg=sidemenu_bg, fg="#454545", font=font,
-                                  width=13, bd=0, textvariable=password_var, justify='left')
-        password_entry.insert(0, 'password')
-        password_entry.bind(
-            "<FocusIn>", lambda f: delete_placeholder_password())
-        password_entry.bind("<FocusOut>", lambda f: add_placeholder_password())
-        password_entry.pack(ipady=8)
+        subject_entry = tk.Entry(subject_frame, bg=sidemenu_bg, fg="#454545", font=font,
+                                 width=30, bd=0, textvariable=subject_var, justify='left')
+        subject_entry.insert(0, 'subject')
+        subject_entry.bind(
+            "<FocusIn>", lambda f: delete_placeholder_subject())
+        subject_entry.bind("<FocusOut>", lambda f: add_placeholder_subject())
+        subject_entry.pack(ipady=8)
 
         message_frame = tk.Frame(report_container, bg=sidemenu_bg)
         message_frame.place(relwidth=0.95, relheight=0.40,
@@ -2799,20 +2771,21 @@ except Exception as e:
     f.write("Get size function error: {}".format(e))
     f.close()
 
-
+# Function to send an email
 try:
     def send_email():
-        sender = email_entry.get()
-        receiver = ['filip.domjan@hotmail.com']
+        global make_frame
 
-        message = message_entry.get('1.0', 'end')
+        initiante_email(message_entry.get('1.0', 'end'),
+                        name_entry.get(), subject_entry.get())
 
-        try:
-            smtpObj = smtplib.SMTP('mail.hotmail.com', 25)
-            smtpObj.sendmail(sender, receiver, message)
-            print("Successfully sent!")
-        except smtplib.SMTPException:
-            print("Unable to send mail!")
+        report_container.place_forget()
+
+        message_sent = tk.Label(support_frame, bg=bg, fg=fg, font=(
+            "Oxygen", 20), width=100, height=10, anchor=tk.CENTER, text="Report successfully sent!")
+        message_sent.pack(padx=(0, 10))
+
+        make_frame = root.after(2000, make_support_frame)
 except Exception as e:
     f = open("errorFile.txt", "a")
     f.write("Get size function error: {}".format(e))
@@ -6107,118 +6080,70 @@ try:
         if theme_selected == "blackwhite":
             home_photo = PhotoImage(
                 file=f"{image_path}\Black_Icons\homeCrop_black.png")
-
-            homeButton = tk.Button(
-                sidebar, bg=button_bg, fg="white", image=home_photo, width=124, height=105, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=home)
-            homeButton.place(relx=0, rely=0)
-
             motherboard_photo = PhotoImage(
                 file=f"{image_path}\Black_Icons\motherboardCrop_black.png")
-
-            motherboardButton = tk.Button(
-                sidebar, bg=sidemenu_bg, fg="white", image=motherboard_photo, width=124, height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=mobo)
-            motherboardButton.place(relx=0, rely=0.127)
-
             cpu_photo = PhotoImage(
                 file=f"{image_path}\Black_Icons\cpuCrop_black.png")
-
-            cpuButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=cpu_photo,
-                                  height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=cpu)
-            cpuButton.place(relx=0, rely=0.252)
-
             gpu_photo = PhotoImage(
                 file=f"{image_path}\Black_Icons\gpuCrop_black.png")
-
-            gpuButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=gpu_photo,
-                                  height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=gpu)
-            gpuButton.place(relx=0, rely=0.377)
-
             ram_photo = PhotoImage(
                 file=f"{image_path}\Black_Icons\pramCrop_black.png")
-
-            ramButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=ram_photo,
-                                  height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=ram)
-            ramButton.place(relx=0, rely=0.502)
-
             hdd_photo = PhotoImage(
                 file=f"{image_path}\Black_Icons\hddCrop_black.png")
-
-            hddButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=hdd_photo,
-                                  height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=drives)
-            hddButton.place(relx=0, rely=0.627)
-
             fan_photo = PhotoImage(
                 file=f"{image_path}\Black_Icons\pfanCrop_black.png")
-
-            fanButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=fan_photo,
-                                  height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=fans)
-            fanButton.place(relx=0, rely=0.752)
-
             net_photo = PhotoImage(
                 file=f"{image_path}\Black_Icons\pnetworkCrop_black.png")
-
-            netButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=net_photo,
-                                  height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=network)
-            netButton.place(relx=0, rely=0.877)
-
         else:
 
             home_photo = PhotoImage(
                 file=f"{image_path}\homeCrop.png")
-
-            homeButton = tk.Button(
-                sidebar, bg=button_bg, fg="white", image=home_photo, width=124, height=105, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=home)
-            homeButton.place(relx=0, rely=0)
-
             motherboard_photo = PhotoImage(
                 file=f"{image_path}\motherboardCrop.png")
-
-            motherboardButton = tk.Button(
-                sidebar, bg=sidemenu_bg, fg="white", image=motherboard_photo, width=124, height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=mobo)
-            motherboardButton.place(relx=0, rely=0.127)
-
             cpu_photo = PhotoImage(
                 file=f"{image_path}\cpuCrop.png")
-
-            cpuButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=cpu_photo,
-                                  height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=cpu)
-            cpuButton.place(relx=0, rely=0.252)
-
             gpu_photo = PhotoImage(
                 file=f"{image_path}\gpuCrop.png")
-
-            gpuButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=gpu_photo,
-                                  height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=gpu)
-            gpuButton.place(relx=0, rely=0.377)
-
             ram_photo = PhotoImage(
                 file=f"{image_path}\pramCrop.png")
-
-            ramButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=ram_photo,
-                                  height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=ram)
-            ramButton.place(relx=0, rely=0.502)
-
             hdd_photo = PhotoImage(
                 file=f"{image_path}\hddCrop.png")
-
-            hddButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=hdd_photo,
-                                  height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=drives)
-            hddButton.place(relx=0, rely=0.627)
-
             fan_photo = PhotoImage(
                 file=f"{image_path}\pfanCrop.png")
-
-            fanButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=fan_photo,
-                                  height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=fans)
-            fanButton.place(relx=0, rely=0.752)
-
             net_photo = PhotoImage(
                 file=f"{image_path}\pnetworkCrop.png")
 
-            netButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=net_photo,
-                                  height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=network)
-            netButton.place(relx=0, rely=0.877)
+        homeButton = tk.Button(
+            sidebar, bg=button_bg, fg="white", image=home_photo, width=124, height=105, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=home)
+        homeButton.place(relx=0, rely=0)
 
+        motherboardButton = tk.Button(
+            sidebar, bg=sidemenu_bg, fg="white", image=motherboard_photo, width=124, height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=mobo)
+        motherboardButton.place(relx=0, rely=0.127)
+
+        cpuButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=cpu_photo,
+                              height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=cpu)
+        cpuButton.place(relx=0, rely=0.252)
+
+        gpuButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=gpu_photo,
+                              height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=gpu)
+        gpuButton.place(relx=0, rely=0.377)
+
+        ramButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=ram_photo,
+                              height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=ram)
+        ramButton.place(relx=0, rely=0.502)
+
+        hddButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=hdd_photo,
+                              height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=drives)
+        hddButton.place(relx=0, rely=0.627)
+
+        fanButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=fan_photo,
+                              height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=fans)
+        fanButton.place(relx=0, rely=0.752)
+
+        netButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=net_photo,
+                              height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=network)
+        netButton.place(relx=0, rely=0.877)
         root.mainloop()
 except Exception as e:
     f = open("errorFile.txt", "a")
