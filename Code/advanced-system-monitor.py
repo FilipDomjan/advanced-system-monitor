@@ -1,8 +1,6 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 import datetime
 import wmi
-import sys
 import time
 import psutil
 import platform
@@ -11,30 +9,19 @@ import speedtest
 import cpuinfo
 import multiprocessing
 import os
-import subprocess
 import ctypes
 import locale
 import win32api
 import os.path
-import random
 import webbrowser
-import smtplib
-from tkinter import PhotoImage, StringVar, Toplevel
+from tkinter import PhotoImage
 from datetime import datetime
-from json import load
-from re import RegexFlag
-from string import digits
 from tkinter.constants import E, SUNKEN
-from cpuinfo.cpuinfo import main
 from datetime import date
-from win32com.client.gencache import usage
-from time import sleep, time_ns
-from tkinter import filedialog, Text
 from win32api import GetSystemMetrics
-from os import path, times
+from os import path
 from InfoBox import CreateToolTip
 from tqdm import tqdm
-from email.message import EmailMessage
 from SendEmail import initiante_email
 
 
@@ -48,9 +35,9 @@ try:
                 return f"{bytes:.2f}{unit}{suffix}"
             bytes /= factor
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 
 
 # Pop-Up message box
@@ -59,9 +46,9 @@ try:
     def MessageBox(title, text, style):
         ctypes.windll.user32.MessageBoxW(0, text, title, style)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("MessageBox error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("MessageBox error: {}".format(e))
+    y.close()
 
 # Home page which holds various settings and options
 
@@ -74,61 +61,79 @@ try:
         try:
             homeButton.configure(bg=button_bg)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             combined_test_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             root.after_cancel(ref)
             cpu_frame.place_forget()
             cpuButton.configure(bg=sidemenu_bg)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             root.after_cancel(gpu_update)
             gpu_frame.place_forget()
             gpuButton.configure(bg=sidemenu_bg)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             main_frame.place_forget()
             motherboardButton.configure(bg=sidemenu_bg)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             root.after_cancel(ram_ref)
             ram_frame.place_forget()
             ramButton.configure(bg=sidemenu_bg)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             root.after_cancel(drive_ref)
             drive_frame.place_forget()
             hddButton.configure(bg=sidemenu_bg)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             root.after_cancel(net_ref)
             network_frame.place_forget()
             netButton.configure(bg=sidemenu_bg)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             root.after_cancel(fan_ref)
             fans_frame.place_forget()
             fanButton.configure(bg=sidemenu_bg)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Setup main frame
 
@@ -557,9 +562,9 @@ try:
                 loading.pack_forget()
         dec_home = root.after(15, declare_home)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # Following functions change the theme of the app #
 
 try:
@@ -592,9 +597,9 @@ try:
                 print(
                     f"Refresh Rate saved! - New Value: {refresh_rate_entry.get()}")
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 
 try:
     def make_support_frame():
@@ -607,7 +612,9 @@ try:
         try:
             root.after_cancel(make_frame)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         support_text_frame = tk.Frame(support_frame, bg=bg)
         support_text_frame.place(
@@ -669,7 +676,9 @@ try:
                                   anchor=tk.CENTER, width=15, height=1, text="Instagram")
         instagram_text.grid(row=1, column=2, padx=(30, 0), pady=0)
 except Exception as e:
-    print(e)
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 
 
 # Metallic theme
@@ -684,9 +693,9 @@ try:
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 
 # Denim theme
 try:
@@ -700,9 +709,9 @@ try:
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 
 
 # Red/Black theme
@@ -717,9 +726,9 @@ try:
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 
 # Black/White theme
 try:
@@ -733,9 +742,9 @@ try:
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 
 
 # Function for the clock located on the home page
@@ -777,9 +786,9 @@ try:
 
         time = root.after(1000, get_time)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 
 # RECORD_CPU - BUTTON STATE #
 
@@ -824,11 +833,13 @@ try:
                             break
                     f.write(a)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # RECORD_GPU - BUTTON STATE #
 
 try:
@@ -872,11 +883,13 @@ try:
                             break
                     f.write(a)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # RECORD_RAM - BUTTON STATE #
 
 try:
@@ -920,11 +933,13 @@ try:
                             break
                     f.write(a)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # RECORD_FANS - BUTTON STATE #
 
 try:
@@ -968,11 +983,13 @@ try:
                             break
                     f.write(a)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # mobo_info - BUTTON STATE #
 
 try:
@@ -1016,9 +1033,13 @@ try:
                             break
                     f.write(a)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 except Exception as e:
-    print(e)
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # Combined test function
 
 try:
@@ -1029,9 +1050,10 @@ try:
         try:
             home_frame.place_forget()
             root.after_cancel(time)
-            root.after_cancel(ff)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         combined_test_frame = tk.Frame(root, bg=canvas_bg)
         combined_test_frame.place(
@@ -1465,9 +1487,9 @@ try:
 
         dec_test = root.after(15, declare_test)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # Refresh combined test set amount of miliseconds
 
 try:
@@ -1502,7 +1524,9 @@ try:
         try:
             cpuPerc = psutil.cpu_percent()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # MAX USAGE
         try:
@@ -1514,7 +1538,9 @@ try:
                     max_cpu_usage.configure(
                         text=f"{max(cpu_max_usage_during_test)}%")
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             total_usage_num.configure(text=f"{cpuPerc}%")
@@ -1523,7 +1549,9 @@ try:
 
             total_usage_bar.configure(text=f"|"*int(usage_perc))
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             if cpuPerc < 40:
@@ -1535,7 +1563,9 @@ try:
             if cpuPerc > 80:
                 total_usage_bar.configure(fg=asm_red)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             if max(cpu_max_usage_during_test) <= 40:
@@ -1547,7 +1577,9 @@ try:
             elif max(cpu_max_usage_during_test) > 80:
                 max_cpu_usage.configure(fg=asm_red)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # TEMPERATURE
 
@@ -1598,7 +1630,9 @@ try:
                             max_cpu_temp.configure(fg=asm_red)
                         break
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # FREQUENCY
         try:
@@ -1623,7 +1657,9 @@ try:
                             text=f"{clock_last:.1f} MHz")
 
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # POWER
 
@@ -1669,7 +1705,9 @@ try:
                         elif max(cpu_max_power_during_test) > max(cpu_max_power_during_test) * 0.9:
                             max_cpu_pwr.configure(fg=asm_red)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
         # UPDATING GPU #
 
         # USAGE
@@ -1690,7 +1728,9 @@ try:
                          float(gpu_total_memory_test)) * 100) / 1.65
             temp_perc = ((float(gpu_temperature) / 120) * 100) / 1.65
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             # Update usage
@@ -1700,7 +1740,9 @@ try:
                 total_gpu_usage_bar.configure(text="|"*int(load_perc))
                 total_gpu_usage_num.configure(text=f"{float(gpu_load):.1f}%")
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             # Adjust colors for usage
@@ -1713,7 +1755,9 @@ try:
             elif float(gpu_load) > 80:
                 total_gpu_usage_bar.configure(fg=asm_red)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # MAX USAGE
         try:
@@ -1732,14 +1776,18 @@ try:
                 max_gpu_usage.configure(
                     text=f"{max(gpu_max_usage_during_test)}%")
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # TEMPERATURE
         try:
             current_temp_bar.configure(text="|"*int(temp_perc))
             current_temp_num_label.configure(text=f"{gpu_temperature}°C")
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             # Adjust colors for temperature
@@ -1752,7 +1800,9 @@ try:
             elif float(gpu_temperature) > 75:
                 current_temp_bar.configure(fg=asm_red)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
         # MAX TEMPERATURE
         try:
             if gpu_temperature not in gpu_max_temp_during_test:
@@ -1770,7 +1820,9 @@ try:
                 max_gpu_temp.configure(
                     text=f"{max(gpu_max_temp_during_test)}°C")
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # VRAM
         try:
@@ -1781,7 +1833,9 @@ try:
             mem_perc_unop = (
                 (float(gpu_used_memory) / float(gpu_total_memory_test)) * 100)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             if mem_perc_unop < 10:
@@ -1795,7 +1849,9 @@ try:
             elif mem_perc_unop > 80:
                 vram_bar.configure(fg=asm_red)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
         # UPDATING RAM #
         vmem = psutil.virtual_memory()
         vmem_used = vmem.used
@@ -1825,7 +1881,9 @@ try:
             else:
                 pass
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             # Adjusting colors for RAM usages
@@ -1838,7 +1896,9 @@ try:
             if usg_perc > 90:
                 ram_usage_bar.configure(fg=asm_red)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # MAX USAGE
         try:
@@ -1846,7 +1906,9 @@ try:
                 text=f"{get_size(max(ram_max_usage_during_test))}")
             max_perc = (max(ram_max_usage_during_test) / vmem.total) * 100
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             # Adjusting colors for MAX RAM usage
@@ -1860,16 +1922,18 @@ try:
                 max_ram_usage.configure(fg=asm_red)
 
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         full_test()
 
         # Update test
         rct = root.after(split[2], refresh_combined_test)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 
 # WRITING STATISTICS TO A FILE - FULL TEST #
 try:
@@ -1904,7 +1968,9 @@ try:
 
             currentTime = currentTime.strftime("%H:%M:%S")
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         f.write(main_line_separator)
 
@@ -1963,7 +2029,9 @@ try:
                 try:
                     partition_usage = psutil.disk_usage(part.mountpoint)
                 except Exception as e:
-                    print(e)
+                    y = open("errorFile.txt", "a")
+                    y.write("Error: {}".format(e))
+                    y.close()
 
                 if path.exists(f'{part.mountpoint}Windows'):
                     windows_path += part.mountpoint
@@ -2040,7 +2108,9 @@ try:
                 f.write(f"Usage (last): {cpuPerc}%\n")
                 f.write(f"Max Usage: {max(cpu_max_usage_during_test)}%\n\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             f.write("PER CORE\n")
             # Usage per core
             try:
@@ -2049,7 +2119,9 @@ try:
                         f"Core #{i+1} (last): {percentage}%\n")
 
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             # Temperature
             f.write(f"\n{line_separator} Temperature {line_separator}\n\n")
             try:
@@ -2058,7 +2130,9 @@ try:
                 f.write(
                     f"Max Temperature: {max(cpu_max_temp_during_test):.3f}°C\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             # Voltage
             f.write(f"\n{line_separator} Voltage {line_separator}\n\n")
             try:
@@ -2070,14 +2144,18 @@ try:
                             f.write(f"Voltage (last): {sensor.Value:.3f}V\n")
                             break
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             # Frequency
             f.write(f"\n{line_separator} Frequency {line_separator}\n\n")
             try:
                 f.write(f"Frequency (last): {clock_last:.2f}Mhz\n")
                 f.write(f"Max Frequency: {clock_max:.2f}Mhz\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             # Power
             f.write(f"\n{line_separator} Power Usage {line_separator}\n\n")
             try:
@@ -2085,7 +2163,9 @@ try:
                 f.write(
                     f"Max Power Usage: {max(cpu_max_power_during_test):.3f} W\n\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             f.write(main_line_separator)
         else:
             pass
@@ -2108,7 +2188,9 @@ try:
                             fan_perc = sensor.Value
                             fan_perc_max = sensor.Max
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
             try:
                 m = wmi.WMI(namespace=r"root\OpenHardwareMonitor")
@@ -2125,7 +2207,9 @@ try:
                             core_clk = sensor.Value
                             core_clk_max = sensor.Max
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
             # Usage
             f.write(f"{line_separator} Usage {line_separator}\n\n")
@@ -2134,7 +2218,9 @@ try:
                 f.write(
                     f"Max Usage: {float(max(gpu_max_usage_during_test)):.2f}%\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
             # Memory
             f.write(f"\n{line_separator} VRAM {line_separator}\n\n")
@@ -2145,7 +2231,9 @@ try:
                 f.write(
                     f"Percentage used: {((float(gpu_used_memory) / float(gpu_total_memory_test)) * 100):.2f}%\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             # Temperature
             f.write(f"\n{line_separator} Temperature {line_separator}\n\n")
             try:
@@ -2153,7 +2241,9 @@ try:
                 f.write(
                     f"Max Temperature: {max(gpu_max_temp_during_test)}°C\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             # Fans
             f.write(f"\n{line_separator} Fans {line_separator}\n\n")
             try:
@@ -2161,7 +2251,9 @@ try:
                 f.write(
                     f"Max Fan Speed: {fan_value_max}RPM | {fan_perc_max}%\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             # Clocks
             f.write(f"\n{line_separator} Clocks {line_separator}\n\n")
             try:
@@ -2172,7 +2264,9 @@ try:
                 f.write(f"Memory Clock: {memory_clk:.2f}Mhz\n")
                 f.write(f"Max Memory Clock: {memory_clk_max:.2f}Mhz\n\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             f.write(main_line_separator)
         else:
             pass
@@ -2191,7 +2285,9 @@ try:
                 f.write(
                     f"Max RAM Usage: {get_size(max(ram_max_usage_during_test))} ({((max(ram_max_usage_during_test) / vmem_total)*100):.2f}%)\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
             f.write(
                 f"\n{line_separator} SWAP Memory Usage {line_separator}\n\n")
@@ -2204,7 +2300,9 @@ try:
                 f.write(
                     f"Max SWAP Usage: {get_size(max(swap_max_usage_during_test))} ({((max(swap_max_usage_during_test) / sv_total)*100):.2f}%)\n\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
             f.write(main_line_separator)
         else:
@@ -2226,13 +2324,15 @@ try:
                     else:
                         pass
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
         f.close()
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 
 
 # WRITING STATISTICS TO A FILE - WRITE ONLY #
@@ -2269,7 +2369,9 @@ try:
 
             currentTime = currentTime.strftime("%H:%M:%S")
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         f.write(main_line_separator)
 
@@ -2328,7 +2430,9 @@ try:
                 try:
                     partition_usage = psutil.disk_usage(part.mountpoint)
                 except Exception as e:
-                    print(e)
+                    y = open("errorFile.txt", "a")
+                    y.write("Error: {}".format(e))
+                    y.close()
 
                 if path.exists(f'{part.mountpoint}Windows'):
                     windows_path += part.mountpoint
@@ -2413,7 +2517,9 @@ try:
                 f.write(f"Usage (last): {cpu_perc}%\n")
                 f.write(f"Max Usage: {max(cpu_max_usage_during_test)}%\n\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             f.write("PER CORE\n")
             # Usage per core
             try:
@@ -2422,7 +2528,9 @@ try:
                         f"Core #{i+1} (last): {percentage}%\n")
 
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             # Temperature
             f.write(f"\n{line_separator} Temperature {line_separator}\n\n")
             try:
@@ -2441,7 +2549,9 @@ try:
                             f.write(
                                 f"Max Temperature: {max(cpu_max_temp_during_test):.3f}°C\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
             # Voltage
             f.write(f"\n{line_separator} Voltage {line_separator}\n\n")
@@ -2454,7 +2564,9 @@ try:
                             f.write(f"Voltage (last): {sensor.Value:.3f}V\n")
                             break
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             # Frequency
             f.write(f"\n{line_separator} Frequency {line_separator}\n\n")
             try:
@@ -2467,7 +2579,9 @@ try:
                                 f"Frequency (last): {sensor.Value:.2f}Mhz\n")
                             f.write(f"Max Frequency: {sensor.Max:.2f}Mhz\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
             # Power
             f.write(f"\n{line_separator} Power Usage {line_separator}\n\n")
@@ -2486,7 +2600,9 @@ try:
                             f.write(
                                 f"Max Power Usage: {max(cpu_max_power_during_test):.3f} W\n\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             f.write(main_line_separator)
         else:
             pass
@@ -2527,7 +2643,9 @@ try:
                             fan_perc = sensor.Value
                             fan_perc_max = sensor.Max
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
             try:
                 m = wmi.WMI(namespace=r"root\OpenHardwareMonitor")
@@ -2544,7 +2662,9 @@ try:
                             core_clk = sensor.Value
                             core_clk_max = sensor.Max
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
             # Usage
             try:
@@ -2553,7 +2673,9 @@ try:
                 f.write(
                     f"Max Usage: {float(max(gpu_max_usage_during_test)):.2f}%\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
             # Memory
             try:
@@ -2563,7 +2685,9 @@ try:
                 f.write(
                     f"Percentage used: {((float(gpu_used_memory) / float(gpu_total_memory)) * 100):.2f}%\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             # Temperature
             try:
                 f.write(f"\n{line_separator} Temperature {line_separator}\n\n")
@@ -2571,7 +2695,9 @@ try:
                 f.write(
                     f"Max Temperature: {max(gpu_max_temp_during_test)}°C\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             # Fans
             try:
                 f.write(f"\n{line_separator} Fans {line_separator}\n\n")
@@ -2579,7 +2705,9 @@ try:
                 f.write(
                     f"Max Fan Speed: {fan_value_max}RPM | {fan_perc_max}%\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             # Clocks
             try:
                 f.write(f"\n{line_separator} Clocks {line_separator}\n\n")
@@ -2590,7 +2718,9 @@ try:
                 f.write(f"Memory Clock: {memory_clk:.2f}Mhz\n")
                 f.write(f"Max Memory Clock: {memory_clk_max:.2f}Mhz\n\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
             f.write(main_line_separator)
         else:
             pass
@@ -2622,7 +2752,9 @@ try:
                 f.write(
                     f"Max RAM Usage: {get_size(max(ram_max_usage_during_test))} ({((max(ram_max_usage_during_test) / vmem.total)*100):.2f}%)\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
             f.write(
                 f"\n{line_separator} SWAP Memory Usage {line_separator}\n\n")
@@ -2635,7 +2767,9 @@ try:
                 f.write(
                     f"Max SWAP Usage: {get_size(max(swap_max_usage_during_test))} ({((max(swap_max_usage_during_test) / swapmem.total)*100):.2f}%)\n\n")
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
             f.write(main_line_separator)
         else:
@@ -2655,13 +2789,15 @@ try:
                     else:
                         pass
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
         f.close()
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 
 # Function which creates a contact form for sending emails
 
@@ -2675,7 +2811,9 @@ try:
             support_container.place_forget()
             support_text_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         def add_placeholder_subject():
             if len(subject_entry.get()) == 0:
@@ -2767,9 +2905,9 @@ try:
                                         height=2, text="SUBMIT REPORT", activeforeground=fg, activebackground=button_bg, bd=0, relief=SUNKEN, command=send_email)
         send_message_button.pack()
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 
 # Function to send an email
 try:
@@ -2787,9 +2925,9 @@ try:
 
         make_frame = root.after(2000, make_support_frame)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 
 
 # Mobo function grabs and displays wide range of data related to the system
@@ -2801,63 +2939,80 @@ try:
         try:
             motherboardButton.configure(bg=button_bg)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             combined_test_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             homeButton.configure(bg=sidemenu_bg)
             root.after_cancel(time)
-            root.after_cancel(ff)
             home_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             cpuButton.configure(bg=sidemenu_bg)
             root.after_cancel(ref)
             combined_test_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             gpuButton.configure(bg=sidemenu_bg)
             root.after_cancel(gpu_update)
             gpu_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             ramButton.configure(bg=sidemenu_bg)
             root.after_cancel(ram_ref)
             ram_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             hddButton.configure(bg=sidemenu_bg)
             root.after_cancel(drive_ref)
             drive_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             netButton.configure(bg=sidemenu_bg)
             root.after_cancel(net_ref)
             network_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             fanButton.configure(bg=sidemenu_bg)
             root.after_cancel(fan_ref)
             fans_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         main_frame = tk.Frame(root, bg=canvas_bg)
         main_frame.place(relwidth=0.875, relheight=0.96,
@@ -3138,7 +3293,9 @@ try:
                     try:
                         partition_usage = psutil.disk_usage(part.mountpoint)
                     except Exception as e:
-                        print(e)
+                        y = open("errorFile.txt", "a")
+                        y.write("Error: {}".format(e))
+                        y.close()
 
                     if path.exists(f'{part.mountpoint}Windows'):
                         windows_path += part.mountpoint
@@ -3198,9 +3355,9 @@ try:
 
         dec_mobo = root.after(15, declare_mobo)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # CPU function grabs various information about your CPU and displays it
 
 try:
@@ -3212,62 +3369,79 @@ try:
         try:
             cpuButton.configure(bg=button_bg)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             combined_test_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             homeButton.configure(bg=sidemenu_bg)
             root.after_cancel(time)
-            root.after_cancel(ff)
             home_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             motherboardButton.configure(bg=sidemenu_bg)
             main_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             gpuButton.configure(bg=sidemenu_bg)
             gpu_frame.place_forget()
             root.after_cancel(gpu_update)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             ramButton.configure(bg=sidemenu_bg)
             root.after_cancel(ram_ref)
             ram_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             hddButton.configure(bg=sidemenu_bg)
             root.after_cancel(drive_ref)
             drive_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             netButton.configure(bg=sidemenu_bg)
             root.after_cancel(net_ref)
             network_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             fanButton.configure(bg=sidemenu_bg)
             root.after_cancel(fan_ref)
             fans_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Setup frames and lables
 
@@ -3607,9 +3781,9 @@ try:
 
         dec_cpu = root.after(15, declare_cpu)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # refresh_cpu function updates cpu information every x amount of miliseconds
 
 try:
@@ -3712,7 +3886,9 @@ try:
                             package_temp_bar.configure(fg=asm_red)
                         break
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Update voltage
         try:
@@ -3728,7 +3904,9 @@ try:
                             text=f"{sensor.Value:.2f}V")
                         break
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Update CPU Power
 
@@ -3765,7 +3943,9 @@ try:
 
                     break
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Update frequency
         try:
@@ -3784,7 +3964,9 @@ try:
                         max_freq.configure(text=f"{sensor.Max:.1f} MHz")
                         break
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             if max(cpu_max_usage_list) <= 40:
@@ -3796,7 +3978,9 @@ try:
             elif max(cpu_max_usage_list) > 80:
                 max_usage.configure(fg=asm_red)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             if max_temp_sensor <= 50:
@@ -3808,13 +3992,15 @@ try:
             elif max_temp_sensor > 90:
                 max_temp.configure(fg=asm_red)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         ref = root.after(1500, refresh_cpu)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # GPU function gets all the information available for the GPU
 
 try:
@@ -3826,62 +4012,79 @@ try:
         try:
             gpuButton.configure(bg=button_bg)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             combined_test_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             homeButton.configure(bg=sidemenu_bg)
             root.after_cancel(time)
-            root.after_cancel(ff)
             home_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             cpuButton.configure(bg=sidemenu_bg)
             root.after_cancel(ref)
             cpu_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             motherboardButton.configure(bg=sidemenu_bg)
             main_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             ramButton.configure(bg=sidemenu_bg)
             root.after_cancel(ram_ref)
             ram_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             hddButton.configure(bg=sidemenu_bg)
             root.after_cancel(drive_ref)
             drive_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             netButton.configure(bg=sidemenu_bg)
             root.after_cancel(net_ref)
             network_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             fanButton.configure(bg=sidemenu_bg)
             root.after_cancel(fan_ref)
             fans_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Set up frames and labels
         gpu_frame = tk.Frame(root, bg=canvas_bg)
@@ -4295,9 +4498,9 @@ try:
                 refresh_gpu()
         dec_gpu = root.after(15, declare_gpu)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # This function refreshes GPU information every x amount of miliseconds
 
 try:
@@ -4389,7 +4592,9 @@ try:
                         core_clock_bar.configure(
                             text="|"*int(clock_bar_percentage))
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Update memory clock
         try:
@@ -4405,7 +4610,9 @@ try:
                         memory_clock_bar.configure(
                             text=f"|"*int(clock_bar_percentage))
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Update shader clock
         try:
@@ -4422,7 +4629,9 @@ try:
                         shader_clock_bar.configure(
                             text="|"*int(shader_bar_percentage))
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Update loads
 
@@ -4440,7 +4649,9 @@ try:
                         bus_interface.configure(
                             text=f"Bus Interface\n{sensor.Value:.1f}%")
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Update fan RPM
 
@@ -4485,7 +4696,9 @@ try:
                                 gpu_max_rpm.configure(fg=asm_red)
 
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Update video engine usage
 
@@ -4515,7 +4728,9 @@ try:
                             video_engine_usage_bar.configure(
                                 text="|"*int(ve_quotient))
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Update maximum values
 
@@ -4535,7 +4750,9 @@ try:
                 gpu_max_usage.configure(
                     text=f"{max(gpu_max_load_list)}%")
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             if gpu_temperature not in gpu_max_temp_list:
@@ -4553,7 +4770,9 @@ try:
                 gpu_max_temp.configure(
                     text=f"{max(gpu_max_temp_list)}°C")
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             if gpu_used_memory not in gpu_max_vram_list:
@@ -4573,13 +4792,15 @@ try:
                 gpu_max_vram.configure(
                     text=f"{max(gpu_max_vram_list)}GB")
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         gpu_update = root.after(1000, refresh_gpu)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # RAM function gets all available information for RAM and SWAP memory
 
 try:
@@ -4591,62 +4812,79 @@ try:
         try:
             ramButton.configure(bg=button_bg)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             combined_test_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             homeButton.configure(bg=sidemenu_bg)
             root.after_cancel(time)
-            root.after_cancel(ff)
             home_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             cpuButton.configure(bg=sidemenu_bg)
             root.after_cancel(ref)
             cpu_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             motherboardButton.configure(bg=sidemenu_bg)
             main_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             gpuButton.configure(bg=sidemenu_bg)
             root.after_cancel(gpu_update)
             gpu_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             hddButton.configure(bg=sidemenu_bg)
             root.after_cancel(drive_ref)
             drive_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             netButton.configure(bg=sidemenu_bg)
             root.after_cancel(net_ref)
             network_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             fanButton.configure(bg=sidemenu_bg)
             root.after_cancel(fan_ref)
             fans_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Setup main container
 
@@ -4900,9 +5138,9 @@ try:
                 refresh_ram()
         dec_ram = root.after(5, declare_ram)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # refresh_ram function refreshes ram and swap memory information every x amount of miliseconds
 
 try:
@@ -4929,7 +5167,9 @@ try:
             else:
                 pass
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Update free memory
 
@@ -4939,7 +5179,9 @@ try:
             free_perc_optimized = free_perc / 1.65
             ram_free_bar.configure(text="|"*int(free_perc_optimized))
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Update max usage
 
@@ -4950,7 +5192,9 @@ try:
             max_perc_optimized = max_perc / 1.65
             ram_max_usage_bar.configure(text="|"*int(max_perc_optimized))
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Update swap usage
 
@@ -4970,7 +5214,9 @@ try:
             else:
                 pass
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Update swap free
 
@@ -4980,7 +5226,9 @@ try:
             sw_free_perc_optimized = sw_free_perc / 1.65
             swap_free_bar.configure(text="|"*int(sw_free_perc_optimized))
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Update swap maximum usage
 
@@ -4991,7 +5239,9 @@ try:
             sw_max_perc_optimized = sw_max_perc / 1.65
             swap_max_usage_bar.configure(text="|"*int(sw_max_perc_optimized))
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Adjust colors
 
@@ -5027,7 +5277,9 @@ try:
                 ram_free_bar.configure(fg=asm_red)
 
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             # Adjusting colors for SWAP memory
@@ -5062,13 +5314,15 @@ try:
                 swap_free_bar.configure(fg=asm_red)
 
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         ram_ref = root.after(1000, refresh_ram)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # Drives function gets all available partitions and shows their usage and free space
 
 try:
@@ -5078,62 +5332,79 @@ try:
         try:
             hddButton.configure(bg=button_bg)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             combined_test_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             homeButton.configure(bg=sidemenu_bg)
             root.after_cancel(time)
-            root.after_cancel(ff)
             home_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             cpuButton.configure(bg=sidemenu_bg)
             root.after_cancel(ref)
             cpu_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             motherboardButton.configure(bg=sidemenu_bg)
             main_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             ramButton.configure(bg=sidemenu_bg)
             root.after_cancel(ram_ref)
             ram_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             gpuButton.configure(bg=sidemenu_bg)
             root.after_cancel(gpu_update)
             gpu_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             netButton.configure(bg=sidemenu_bg)
             root.after_cancel(net_ref)
             network_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             fanButton.configure(bg=sidemenu_bg)
             root.after_cancel(fan_ref)
             fans_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         drive_frame = tk.Frame(root, bg=canvas_bg)
         drive_frame.place(relwidth=0.875, relheight=0.96,
@@ -5141,9 +5412,9 @@ try:
 
         refresh_drives()
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # refresh_drives function refreshes partition data every x amount of seconds
 
 try:
@@ -5159,7 +5430,9 @@ try:
             try:
                 partition_usage = psutil.disk_usage(part.mountpoint)
             except Exception as e:
-                print(e)
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
             usage_perc = (partition_usage.used / partition_usage.total) * 100
 
@@ -5259,9 +5532,9 @@ try:
 
         drive_ref = root.after(10000, refresh_drives)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # fans function sets up basic frame and closes all previous processes
 
 try:
@@ -5273,61 +5546,78 @@ try:
         try:
             fanButton.configure(bg=button_bg)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             combined_test_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             homeButton.configure(bg=sidemenu_bg)
             root.after_cancel(time)
-            root.after_cancel(ff)
             home_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
         try:
             cpuButton.configure(bg=sidemenu_bg)
             root.after_cancel(ref)
             cpu_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             gpuButton.configure(bg=sidemenu_bg)
             root.after_cancel(gpu_update)
             gpu_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             motherboardButton.configure(bg=sidemenu_bg)
             main_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             ramButton.configure(bg=sidemenu_bg)
             root.after_cancel(ram_ref)
             ram_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             hddButton.configure(bg=sidemenu_bg)
             root.after_cancel(drive_ref)
             drive_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             netButton.configure(bg=sidemenu_bg)
             root.after_cancel(net_ref)
             network_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         fans_frame = tk.Frame(root, bg=canvas_bg)
         fans_frame.place(relwidth=0.875, relheight=0.96,
@@ -5335,9 +5625,9 @@ try:
 
         refresh_fans()
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # refresh_fans finds all the fans connected to the system, displays and refreshes them every x amount of miliseconds
 
 try:
@@ -5404,13 +5694,15 @@ try:
                         fan_speed_bar.configure(fg=asm_red)
 
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         fan_ref = root.after(1000, refresh_fans)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # network function sets up frames and labels for various network information and removes previously active services
 
 try:
@@ -5432,62 +5724,79 @@ try:
         try:
             netButton.configure(bg=button_bg)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             combined_test_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             homeButton.configure(bg=sidemenu_bg)
             root.after_cancel(time)
-            root.after_cancel(ff)
             home_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             cpuButton.configure(bg=sidemenu_bg)
             root.after_cancel(ref)
             cpu_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             gpuButton.configure(bg=sidemenu_bg)
             root.after_cancel(gpu_update)
             gpu_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             motherboardButton.configure(bg=sidemenu_bg)
             main_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             ramButton.configure(bg=sidemenu_bg)
             root.after_cancel(ram_ref)
             ram_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             hddButton.configure(bg=sidemenu_bg)
             root.after_cancel(drive_ref)
             drive_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         try:
             fanButton.configure(bg=sidemenu_bg)
             root.after_cancel(fan_ref)
             fans_frame.place_forget()
         except Exception as e:
-            print(e)
+            y = open("errorFile.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         # Main network frame containing all elements
 
@@ -5771,9 +6080,9 @@ try:
 
         refresh_net()
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # refresh_net function refreshes network information every x amount of miliseconds
 
 try:
@@ -5833,9 +6142,9 @@ try:
 
         net_ref = root.after(1000, refresh_net)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 # get_speed function handles the speedtesting
 try:
     def get_speed():
@@ -5877,12 +6186,16 @@ try:
                     download_value.configure(
                         text=f"{download:.2f}Mbps")
                 except Exception as e:
-                    print(e)
+                    y = open("errorFile.txt", "a")
+                    y.write("Error: {}".format(e))
+                    y.close()
                 try:
                     best_download_value.configure(
                         text=f"{max(download_list)}Mbps")
                 except Exception as e:
-                    print(e)
+                    y = open("errorFile.txt", "a")
+                    y.write("Error: {}".format(e))
+                    y.close()
 
                 bar.update(1)
 
@@ -5913,13 +6226,17 @@ try:
                 try:
                     upload_value.configure(text=f"{upload:.2f}Mbps")
                 except Exception as e:
-                    print(e)
+                    y = open("errorFile.txt", "a")
+                    y.write("Error: {}".format(e))
+                    y.close()
 
                 try:
                     best_upload_value.configure(
                         text=f"{max(upload_list)}Mbps")
                 except Exception as e:
-                    print(e)
+                    y = open("errorFile.txt", "a")
+                    y.write("Error: {}".format(e))
+                    y.close()
 
                 bar.update(1)
 
@@ -5950,13 +6267,17 @@ try:
                 try:
                     ping_value.configure(text=f"{ping:.2f}ms")
                 except Exception as e:
-                    print(e)
+                    y = open("errorFile.txt", "a")
+                    y.write("Error: {}".format(e))
+                    y.close()
 
                 try:
                     best_ping_value.configure(
                         text=f"{min(ping_list)}ms")
                 except Exception as e:
-                    print(e)
+                    y = open("errorFile.txt", "a")
+                    y.write("Error: {}".format(e))
+                    y.close()
                 bar.update(1)
 
         ping_value.configure(text="...", fg=fg)
@@ -5965,9 +6286,9 @@ try:
 
         start_speedtest = root.after(10, start_test)
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
 
 # all the basic stuff is setup in this section
 try:
@@ -6146,6 +6467,6 @@ try:
         netButton.place(relx=0, rely=0.877)
         root.mainloop()
 except Exception as e:
-    f = open("errorFile.txt", "a")
-    f.write("Get size function error: {}".format(e))
-    f.close()
+    y = open("errorFile.txt", "a")
+    y.write("Error: {}".format(e))
+    y.close()
