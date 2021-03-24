@@ -14,9 +14,10 @@ import locale
 import win32api
 import os.path
 import webbrowser
+import subprocess
 from tkinter import PhotoImage
 from datetime import datetime
-from tkinter.constants import E, SUNKEN
+from tkinter.constants import E, LEFT, SUNKEN
 from datetime import date
 from win32api import GetSystemMetrics
 from os import path
@@ -138,8 +139,8 @@ try:
         # Setup main frame
 
         home_frame = tk.Frame(root, bg=canvas_bg)
-        home_frame.place(relwidth=0.872, relheight=0.96,
-                         relx=0.117, rely=0.021)
+        home_frame.place(relwidth=0.872, relheight=0.915,
+                         relx=0.117, rely=0.066)
 
         loading = tk.Label(home_frame, bg=canvas_bg, fg=fg, font=(
             loading_font), width=100, height=50, text="Loading...")
@@ -190,7 +191,7 @@ try:
                     relwidth=1, relheight=0.08, relx=0, rely=0)
 
                 system_monitor_label = tk.Label(system_monitor, bg=bg, fg=fg, font=font,
-                                                anchor=tk.CENTER, width=100, height=100, text="ADVANCED SYSTEM MONITOR")
+                                                anchor=tk.CENTER, width=100, height=100, text="SETTINGS | BENCHMARK | THEMES")
                 system_monitor_label.pack()
 
                 # Themes frame
@@ -348,7 +349,7 @@ try:
                     relwidth=0.5, relheight=0.15, relx=0.015, rely=0.018)
 
                 combined_test_text = tk.Label(combined_test_text_frame, bg=bg, fg=fg,
-                                              font=font, anchor=tk.W, width=14, height=1, text="COMBINED TEST")
+                                              font=font, anchor=tk.W, width=12, height=1, text="BENCHMARK")
                 combined_test_text.grid(row=0, column=0, padx=0, pady=0)
 
                 info_symbol_photo = PhotoImage(
@@ -356,9 +357,9 @@ try:
 
                 info_symbol = tk.Label(combined_test_text_frame, bg=bg,
                                        fg=fg, width=19, height=19, image=info_symbol_photo)
-                info_symbol.grid(row=0, column=1, padx=10, pady=(2, 0))
+                info_symbol.grid(row=0, column=1, padx=0, pady=(2, 0))
 
-                CreateToolTip(info_symbol, text="What is combined test?\nIts a tool that shows you only the most important data\nthat you need when benchmarking.\n\nWhat do the switches do?\nSwitches represent what is written into a text file\nduring the test, you can use all of them,\nbut beware, more information means higher performance impact,\nmeaning that the ASM will run slower. We recommend\nkeeping everything on except Mobo Data during the test,\nas it is the most demanding one.\n\nWhere is the text file?\nText file will be created on your desktop and\nwill contain only the data you choose to write\nin the combined test settings.\n\nWhat is 'WRITE ONLY' button?\nOnce clicked it will only do one run of performance check\nand write it into a file.\n\nWhat is the 'FULL TEST' button?\nOnce clicked the home layout will be replaced with\na new layout containing the combined test information.\nYou can return to home at any time by pressing the home\nbutton given in the bottom-right corner of the combined\ntest or by pressing the home button in the sidemenu.\n\nWhat is Refresh Rate field?\nThere you can choose how fast does the app refresh.\nYou can choose from 500 to 10000ms.\nNote: 1000ms = 1s", backg=bg, foreg=fg)
+                CreateToolTip(info_symbol, text="What is a benchmark?\nIts a tool that shows you only the most important data\nthat you need when benchmarking.\n\nWhat do the switches do?\nSwitches represent what is written into a text file\nduring the benchmark, you can use all of them,\nbut beware, more information means higher performance impact,\nmeaning that the ASM will run slower. We recommend\nkeeping everything on except Mobo Data during the benchmark,\nas it is the most demanding one.\n\nWhere is the text file?\nText file will be created on your desktop and\nwill contain only the data you choose to write\nin the combined test settings.\n\nWhat is 'WRITE ONLY' button?\nOnce clicked it will only do one run of performance check\nand write it into a file.\n\nWhat is the 'BENCHMARK' button?\nOnce clicked the home layout will be replaced with\na new layout containing the combined test information.\nYou can return to home at any time by pressing the home\nbutton given in the bottom-right corner of the benchmark\nor by pressing the home button in the sidemenu.\n\nWhat is Refresh Rate field?\nThere you can choose how fast does the benchmark refresh.\nYou can choose from 500 to 10000ms.\nNote: 1000ms = 1s", backg=bg, foreg=fg)
 
                 settings_container = tk.Frame(combined_test, bg=bg)
                 settings_container.place(
@@ -512,7 +513,7 @@ try:
                     relwidth=1, relheight=0.10, relx=0, rely=0.87)
 
                 start_test = tk.Button(start_button_frame, bg="#b50000", fg="#d0d0d0", activebackground="#a10000", activeforeground="#d0d0d0",
-                                       width=12, height=1, bd=0, anchor=tk.CENTER, font=font, text="FULL TEST", relief=SUNKEN, command=combined_test_function)
+                                       width=12, height=1, bd=0, anchor=tk.CENTER, font=font, text="BENCHMARK", relief=SUNKEN, command=combined_test_function)
                 start_test.grid(row=0, column=0, padx=(150, 10), pady=0)
 
                 write_only = tk.Button(start_button_frame, bg="#16395b", fg="#d0d0d0", activebackground="#11314f", relief=SUNKEN, activeforeground="#d0d0d0",
@@ -1057,7 +1058,7 @@ try:
 
         combined_test_frame = tk.Frame(root, bg=canvas_bg)
         combined_test_frame.place(
-            relwidth=0.875, relheight=0.96, relx=0.117, rely=0.021)
+            relwidth=0.875, relheight=0.915, relx=0.117, rely=0.066)
 
         loading = tk.Label(combined_test_frame, bg=canvas_bg, fg=fg, font=(
             loading_font), width=100, height=50, text="Loading...")
@@ -1388,7 +1389,7 @@ try:
 
                 cpu_gpu_max_text_frame = tk.Frame(cpu_gpu_max, bg=bg)
                 cpu_gpu_max_text_frame.place(
-                    relwidth=0.4, relheight=0.12, relx=0.02, rely=0.10)
+                    relwidth=0.4, relheight=0.13, relx=0.02, rely=0.10)
 
                 cpu_gpu_max_text = tk.Label(cpu_gpu_max_text_frame, bg=bg, fg=fg,
                                             font=font, anchor=tk.W, width=100, height=10, text="CPU/GPU MAX")
@@ -1437,7 +1438,7 @@ try:
                 # RAM MAX
 
                 ram_max = tk.Frame(combined_test_frame, bg=bg)
-                ram_max.place(relwidth=0.37, relheight=0.17,
+                ram_max.place(relwidth=0.37, relheight=0.18,
                               relx=0.505, rely=0.84)
 
                 ram_max_text_frame = tk.Frame(ram_max, bg=bg)
@@ -3015,8 +3016,8 @@ try:
             y.close()
 
         main_frame = tk.Frame(root, bg=canvas_bg)
-        main_frame.place(relwidth=0.875, relheight=0.96,
-                         relx=0.117, rely=0.021)
+        main_frame.place(relwidth=0.875, relheight=0.915,
+                         relx=0.117, rely=0.066)
 
         loading = tk.Label(main_frame, bg=canvas_bg, fg=fg, font=(
             loading_font), width=100, height=50, text="Loading...")
@@ -3446,7 +3447,8 @@ try:
         # Setup frames and lables
 
         cpu_frame = tk.Frame(root, bg=canvas_bg)
-        cpu_frame.place(relwidth=0.875, relheight=0.96, relx=0.117, rely=0.021)
+        cpu_frame.place(relwidth=0.875, relheight=0.915,
+                        relx=0.117, rely=0.066)
 
         loading = tk.Label(cpu_frame, bg=canvas_bg, fg=fg, font=(
             loading_font), width=100, height=50, text="Loading...")
@@ -4088,7 +4090,8 @@ try:
 
         # Set up frames and labels
         gpu_frame = tk.Frame(root, bg=canvas_bg)
-        gpu_frame.place(relwidth=0.875, relheight=0.96, relx=0.117, rely=0.021)
+        gpu_frame.place(relwidth=0.875, relheight=0.915,
+                        relx=0.117, rely=0.066)
 
         loading = tk.Label(gpu_frame, bg=canvas_bg, fg=fg, font=(
             loading_font), width=100, height=50, text="Loading...")
@@ -4889,7 +4892,8 @@ try:
         # Setup main container
 
         ram_frame = tk.Frame(root, bg=canvas_bg)
-        ram_frame.place(relwidth=0.875, relheight=0.96, relx=0.117, rely=0.021)
+        ram_frame.place(relwidth=0.875, relheight=0.915,
+                        relx=0.117, rely=0.066)
 
         loading = tk.Label(ram_frame, bg=canvas_bg, fg=fg, font=(
             loading_font), width=100, height=50, text="Loading...")
@@ -5407,8 +5411,8 @@ try:
             y.close()
 
         drive_frame = tk.Frame(root, bg=canvas_bg)
-        drive_frame.place(relwidth=0.875, relheight=0.96,
-                          relx=0.117, rely=0.021)
+        drive_frame.place(relwidth=0.875, relheight=0.915,
+                          relx=0.117, rely=0.066)
 
         refresh_drives()
 except Exception as e:
@@ -5620,8 +5624,8 @@ try:
             y.close()
 
         fans_frame = tk.Frame(root, bg=canvas_bg)
-        fans_frame.place(relwidth=0.875, relheight=0.96,
-                         relx=0.117, rely=0.021)
+        fans_frame.place(relwidth=0.875, relheight=0.915,
+                         relx=0.117, rely=0.066)
 
         refresh_fans()
 except Exception as e:
@@ -5801,8 +5805,8 @@ try:
         # Main network frame containing all elements
 
         network_frame = tk.Frame(root, bg=canvas_bg)
-        network_frame.place(relwidth=0.875, relheight=0.96,
-                            relx=0.117, rely=0.021)
+        network_frame.place(relwidth=0.875, relheight=0.915,
+                            relx=0.117, rely=0.066)
 
         # Ping information
 
@@ -6299,6 +6303,18 @@ try:
         root = tk.Tk()
         root.title("Advanced System Monitor (BETA)")
         root.resizable(False, False)
+        root.overrideredirect(1)
+
+        """
+        # Try to start OpenHardwareMonitor
+        try:
+            info = subprocess.STARTUPINFO()
+            info.dwFlags = 1
+            subprocess.Popen(
+                r"Code\OpenHardwareMonitor\OpenHardwareMonitor.exe", startupinfo=info, shell=True)
+        except Exception as e:
+            print(e)
+        """
 
         # Read color and theme from file
         color_list = []
@@ -6384,18 +6400,66 @@ try:
         upload_list = []
         upload_list.clear()
 
+        root.geometry("1200x815")
+
         # Set canvas
-        canvas = tk.Canvas(root, width=1200, height=800,
+        canvas = tk.Canvas(root, width=1200, height=815,
                            bg=canvas_bg, highlightthickness=0)
         canvas.pack()
 
         # Set sidebar
         sidebar = tk.Frame(root, bg=sidemenu_bg)
-        sidebar.place(relwidth=0.104, relheight=1, relx=0, rely=0)
+        sidebar.place(relwidth=0.104, relheight=0.960, relx=0, rely=0.040)
 
+        def minimize_window():
+            root.overrideredirect(0)
+            root.iconify()
+
+        def app_appear(event):
+            root.overrideredirect(1)
+
+        def callback(event):
+            root.geometry("+{0}+{1}".format(event.x_root, event.y_root))
+
+        # Set title bar
+
+        try:
+            exit_image = PhotoImage(file=f"{image_path}\exit_white.png")
+
+            minimize_image = PhotoImage(
+                file=f"{image_path}\minimize_white.png")
+
+            asm_logo_image = PhotoImage(
+                file=f"{image_path}\pasm_logo_small.png")
+
+            title_bar_frame = tk.Frame(root, bg=bg)
+            title_bar_frame.place(relwidth=1, relheight=0.045, relx=0, rely=0)
+
+            asm_logo = tk.Button(title_bar_frame, bg=bg, fg=fg, image=asm_logo_image,
+                                 width=23, height=23, activeforeground=fg, activebackground=bg, relief=SUNKEN, bd=0)
+            asm_logo.grid(row=0, column=0, padx=(5, 2), pady=6)
+
+            title_bar_title = tk.Label(title_bar_frame, bg=bg, fg=fg, font=(
+                "Oxygen", 12), width=40, height=1, anchor=tk.W, text="ADVANCED SYSTEM MONITOR")
+            title_bar_title.grid(row=0, column=1, padx=5, pady=0)
+
+            title_bar_minimize = tk.Button(title_bar_frame, bg=bg, fg=fg, bd=0, activebackground=button_bg, activeforeground=fg, relief=SUNKEN, font=(
+                "Oxygen", 12), width=50, height=35, image=minimize_image, command=minimize_window)
+            title_bar_minimize.grid(row=0, column=2, padx=(688, 0), pady=0)
+
+            title_bar_exit = tk.Button(title_bar_frame, bg=bg, fg=fg, bd=0, activebackground=button_bg, activeforeground=fg, relief=SUNKEN, font=(
+                "Oxygen", 12), width=50, height=35, image=exit_image, command=root.destroy)
+            title_bar_exit.grid(row=0, column=3, padx=0, pady=0)
+
+            # Bindings
+
+            title_bar_frame.bind("<Map>", app_appear)
+            title_bar_frame.bind("<B1-Motion>", callback)
+
+        except Exception as e:
+            print(e)
         # Set home screen
         home()
-
         # Set all the sidebar icons and buttons
         # Different color icons will be used if certain themes are selected
         if theme_selected == "blackwhite":

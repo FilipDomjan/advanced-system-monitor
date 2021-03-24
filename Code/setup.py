@@ -19,7 +19,7 @@ include = ["tkinter", "tkinter.font"]
 options = {
     'build_exe': {
         'packages': packages,
-        'include_files': includefiles
+        'include_files': includefiles,
         'includes': include
     },
 }
