@@ -4,8 +4,8 @@ from tkinter import font
 
 base = None
 
-# if (sys.platform == "win32"):
-#base = "Win32GUI"
+if (sys.platform == "win32"):
+    base = "Win32GUI"
 
 executables = [Executable("advanced-system-monitor.py",
                           base=base, icon="Visual\images\ASM_Logo_ICO.ico", target_name="Advanced System Monitor")]

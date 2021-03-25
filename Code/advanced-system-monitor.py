@@ -15,6 +15,13 @@ import win32api
 import os.path
 import webbrowser
 import subprocess
+import configparser
+import logging
+import sys
+from LoggerWriter import LoggerWriter
+from pathlib import Path
+from logging.handlers import TimedRotatingFileHandler
+from threading import Timer
 from tkinter import PhotoImage
 from datetime import datetime
 from tkinter.constants import E, LEFT, SUNKEN
@@ -184,383 +191,393 @@ try:
             global cpu_max_clock_during_test
             global support_frame
             root.after_cancel(dec_home)
-            with tqdm(total=100) as bar:
 
-                system_monitor = tk.Frame(home_frame, bg=bg)
-                system_monitor.place(
-                    relwidth=1, relheight=0.08, relx=0, rely=0)
+            try:
+                with tqdm(total=100) as bar:
 
-                system_monitor_label = tk.Label(system_monitor, bg=bg, fg=fg, font=font,
-                                                anchor=tk.CENTER, width=100, height=100, text="SETTINGS | BENCHMARK | THEMES")
-                system_monitor_label.pack()
+                    system_monitor = tk.Frame(home_frame, bg=bg)
+                    system_monitor.place(
+                        relwidth=1, relheight=0.08, relx=0, rely=0)
 
-                # Themes frame
+                    system_monitor_label = tk.Label(system_monitor, bg=bg, fg=fg, font=font,
+                                                    anchor=tk.CENTER, width=100, height=100, text="SETTINGS | BENCHMARK | THEMES")
+                    system_monitor_label.pack()
 
-                themes = tk.Frame(home_frame, bg=bg)
-                themes.place(relwidth=0.40, relheight=0.58, relx=0, rely=0.1)
+                    # Themes frame
 
-                themes_text_frame = tk.Frame(themes, bg=bg)
-                themes_text_frame.place(
-                    relwidth=0.3, relheight=0.05, relx=0.01, rely=0.03)
+                    themes = tk.Frame(home_frame, bg=bg)
+                    themes.place(relwidth=0.40, relheight=0.58,
+                                 relx=0, rely=0.1)
 
-                themes_label = tk.Label(themes_text_frame, bg=bg, fg=fg, font=font,
-                                        width=10, height=1, anchor=tk.W, text="THEMES")
-                themes_label.pack()
+                    themes_text_frame = tk.Frame(themes, bg=bg)
+                    themes_text_frame.place(
+                        relwidth=0.3, relheight=0.05, relx=0.01, rely=0.03)
 
-                themes_container = tk.Frame(themes, bg=bg)
-                themes_container.place(
-                    relwidth=1, relheight=0.85, relx=0, rely=0.1)
+                    themes_label = tk.Label(themes_text_frame, bg=bg, fg=fg, font=font,
+                                            width=10, height=1, anchor=tk.W, text="THEMES")
+                    themes_label.pack()
 
-                # Theme profiles
+                    themes_container = tk.Frame(themes, bg=bg)
+                    themes_container.place(
+                        relwidth=1, relheight=0.85, relx=0, rely=0.1)
 
-                metallic_photo = PhotoImage(
-                    file=f"{themes_image_path}\pmetallic.png")
+                    # Theme profiles
 
-                metallic = tk.Button(themes_container, bg=bg, fg="white", image=metallic_photo, bd=0,
-                                     width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=metallic_theme)
-                metallic.grid(row=0, column=0, padx=(22, 27), pady=(15, 5))
+                    metallic_photo = PhotoImage(
+                        file=f"{themes_image_path}\pmetallic.png")
 
-                denim_photo = PhotoImage(
-                    file=f"{themes_image_path}\pdenim.png")
+                    metallic = tk.Button(themes_container, bg=bg, fg="white", image=metallic_photo, bd=0,
+                                         width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=metallic_theme)
+                    metallic.grid(row=0, column=0, padx=(22, 27), pady=(15, 5))
 
-                denim_theme = tk.Button(
-                    themes_container, bg=bg, fg="white", bd=0, image=denim_photo, width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=denim)
-                denim_theme.grid(row=0, column=1, padx=(0, 27), pady=(15, 5))
+                    denim_photo = PhotoImage(
+                        file=f"{themes_image_path}\pdenim.png")
 
-                redblack_photo = PhotoImage(
-                    file=f"{themes_image_path}\predblack.png")
+                    denim_theme = tk.Button(
+                        themes_container, bg=bg, fg="white", bd=0, image=denim_photo, width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=denim)
+                    denim_theme.grid(
+                        row=0, column=1, padx=(0, 27), pady=(15, 5))
 
-                redblack = tk.Button(
-                    themes_container, bg=bg, fg="white", image=redblack_photo, bd=0, width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=redblack_theme)
-                redblack.grid(row=0, column=2, padx=(0, 27), pady=(15, 5))
+                    redblack_photo = PhotoImage(
+                        file=f"{themes_image_path}\predblack.png")
 
-                blackwhite_photo = PhotoImage(
-                    file=f"{themes_image_path}\pblackwhite.png")
+                    redblack = tk.Button(
+                        themes_container, bg=bg, fg="white", image=redblack_photo, bd=0, width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=redblack_theme)
+                    redblack.grid(row=0, column=2, padx=(0, 27), pady=(15, 5))
 
-                blackwhite = tk.Button(themes_container, bg=bg, fg="white", image=blackwhite_photo, bd=0,
-                                       width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=blackwhite_theme)
-                blackwhite.grid(row=0, column=3, padx=(0, 27), pady=(15, 5))
+                    blackwhite_photo = PhotoImage(
+                        file=f"{themes_image_path}\pblackwhite.png")
 
-                with open("Code\Config\config.txt", "r") as config:
-                    for line in config:
-                        if "theme_selected" in line:
-                            split = line.split()
+                    blackwhite = tk.Button(themes_container, bg=bg, fg="white", image=blackwhite_photo, bd=0,
+                                           width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=blackwhite_theme)
+                    blackwhite.grid(row=0, column=3,
+                                    padx=(0, 27), pady=(15, 5))
 
-                            if split[2] == "metallic":
-                                metallic.configure(
-                                    borderwidth=2, relief="solid")
-                            elif split[2] == "denim":
-                                denim_theme.configure(
-                                    borderwidth=2, relief="solid")
-                            elif split[2] == "redblack":
-                                redblack.configure(
-                                    borderwidth=2, relief="solid")
-                            elif split[2] == "blackwhite":
-                                blackwhite.configure(
-                                    borderwidth=2, relief="solid")
+                    with open("Code\Config\config.txt", "r") as config:
+                        for line in config:
+                            if "theme_selected" in line:
+                                split = line.split()
 
-                bar.update(10)
+                                if split[2] == "metallic":
+                                    metallic.configure(
+                                        borderwidth=2, relief="solid")
+                                elif split[2] == "denim":
+                                    denim_theme.configure(
+                                        borderwidth=2, relief="solid")
+                                elif split[2] == "redblack":
+                                    redblack.configure(
+                                        borderwidth=2, relief="solid")
+                                elif split[2] == "blackwhite":
+                                    blackwhite.configure(
+                                        borderwidth=2, relief="solid")
 
-                # Clock frame
+                    bar.update(10)
 
-                time_frame = tk.Frame(home_frame, bg=bg)
-                time_frame.place(
-                    relwidth=0.40, relheight=0.30, relx=0, rely=0.7)
+                    # Clock frame
 
-                lines = tk.Frame(time_frame, bg=bg)
-                lines.place(relwidth=1, relheight=1, relx=0.05, rely=-0.05)
+                    time_frame = tk.Frame(home_frame, bg=bg)
+                    time_frame.place(
+                        relwidth=0.40, relheight=0.30, relx=0, rely=0.7)
 
-                hours = tk.Frame(lines, bg=bg)
-                hours.place(relwidth=1, relheight=0.3, relx=0, rely=0.13)
+                    lines = tk.Frame(time_frame, bg=bg)
+                    lines.place(relwidth=1, relheight=1, relx=0.05, rely=-0.05)
 
-                hours_label = tk.Label(hours, bg=bg, fg=asm_yellow, font=time_font,
-                                       anchor=tk.W, width=100, height=0, text="Hours")
-                hours_label.pack()
+                    hours = tk.Frame(lines, bg=bg)
+                    hours.place(relwidth=1, relheight=0.3, relx=0, rely=0.13)
 
-                h = tk.Label(hours, bg=bg, fg=asm_yellow, font=font,
-                             anchor=tk.W, width=100, height=0, text="")
-                h.pack()
+                    hours_label = tk.Label(hours, bg=bg, fg=asm_yellow, font=time_font,
+                                           anchor=tk.W, width=100, height=0, text="Hours")
+                    hours_label.pack()
 
-                h_accurate = tk.Frame(lines, bg=bg)
-                h_accurate.place(relwidth=0.1, relheight=0.1,
-                                 relx=0.8, rely=0.13)
+                    h = tk.Label(hours, bg=bg, fg=asm_yellow, font=font,
+                                 anchor=tk.W, width=100, height=0, text="")
+                    h.pack()
 
-                h_accurate_time = tk.Label(h_accurate, bg=bg, fg=asm_yellow, font=time_font,
-                                           anchor=tk.CENTER, width=5, height=5, text="H")
-                h_accurate_time.pack()
+                    h_accurate = tk.Frame(lines, bg=bg)
+                    h_accurate.place(relwidth=0.1, relheight=0.1,
+                                     relx=0.8, rely=0.13)
 
-                minutes = tk.Frame(lines, bg=bg)
-                minutes.place(relwidth=1, relheight=0.4, relx=0, rely=0.42)
+                    h_accurate_time = tk.Label(h_accurate, bg=bg, fg=asm_yellow, font=time_font,
+                                               anchor=tk.CENTER, width=5, height=5, text="H")
+                    h_accurate_time.pack()
 
-                minutes_label = tk.Label(minutes, bg=bg, fg="#10b1eb", font=time_font,
-                                         anchor=tk.W, width=100, height=0, text="Minutes")
-                minutes_label.pack()
-
-                m_accurate = tk.Frame(lines, bg=bg)
-                m_accurate.place(relwidth=0.1, relheight=0.1,
-                                 relx=0.8, rely=0.42)
-
-                m_accurate_time = tk.Label(m_accurate, bg=bg, fg="#10b1eb", font=time_font,
-                                           anchor=tk.CENTER, width=5, height=5, text="M")
-                m_accurate_time.pack()
-
-                m = tk.Label(minutes, bg=bg, fg="#10b1eb", font=font,
-                             anchor=tk.W, width=100, height=0, text="")
-                m.pack()
-
-                seconds = tk.Frame(lines, bg=bg)
-                seconds.place(relwidth=1, relheight=0.3, relx=0, rely=0.72)
-
-                s_accurate = tk.Frame(lines, bg=bg)
-                s_accurate.place(relwidth=0.1, relheight=0.1,
-                                 relx=0.8, rely=0.72)
-
-                s_accurate_time = tk.Label(s_accurate, bg=bg, fg=asm_red, font=time_font,
-                                           anchor=tk.CENTER, width=5, height=5, text="S")
-                s_accurate_time.pack()
-
-                seconds_label = tk.Label(seconds, bg=bg, fg=asm_red, font=time_font,
-                                         anchor=tk.W, width=100, height=0, text="Seconds")
-                seconds_label.pack()
-
-                s = tk.Label(seconds, bg=bg, fg=asm_red, font=font,
-                             anchor=tk.W, width=100, height=0, text="")
-                s.pack()
-
-                bar.update(10)
-
-                # Combined test frame holds settings for a combined test which will exchange current "home" profile with different system monitors (cpu usage, gpu usage etc.)
-                # Its purpose is to show important information in one place so one doesn't have to travel between tabs constantly
-
-                combined_test = tk.Frame(home_frame, bg=bg)
-                combined_test.place(relwidth=0.59, relheight=0.58,
-                                    relx=0.415, rely=0.1)
-
-                refresh_rate = []
-
-                with open(
-                        "Code\Config\switches.txt", "r") as file:
-                    for line in file:
-                        for word in line.split():
-                            refresh_rate.append(word)
-
-                combined_test_text_frame = tk.Frame(combined_test, bg=bg)
-                combined_test_text_frame.place(
-                    relwidth=0.5, relheight=0.15, relx=0.015, rely=0.018)
-
-                combined_test_text = tk.Label(combined_test_text_frame, bg=bg, fg=fg,
-                                              font=font, anchor=tk.W, width=12, height=1, text="BENCHMARK")
-                combined_test_text.grid(row=0, column=0, padx=0, pady=0)
-
-                info_symbol_photo = PhotoImage(
-                    file=f"{image_path}\info_19px_white.png")
-
-                info_symbol = tk.Label(combined_test_text_frame, bg=bg,
-                                       fg=fg, width=19, height=19, image=info_symbol_photo)
-                info_symbol.grid(row=0, column=1, padx=0, pady=(2, 0))
-
-                CreateToolTip(info_symbol, text="What is a benchmark?\nIts a tool that shows you only the most important data\nthat you need when benchmarking.\n\nWhat do the switches do?\nSwitches represent what is written into a text file\nduring the benchmark, you can use all of them,\nbut beware, more information means higher performance impact,\nmeaning that the ASM will run slower. We recommend\nkeeping everything on except Mobo Data during the benchmark,\nas it is the most demanding one.\n\nWhere is the text file?\nText file will be created on your desktop and\nwill contain only the data you choose to write\nin the combined test settings.\n\nWhat is 'WRITE ONLY' button?\nOnce clicked it will only do one run of performance check\nand write it into a file.\n\nWhat is the 'BENCHMARK' button?\nOnce clicked the home layout will be replaced with\na new layout containing the combined test information.\nYou can return to home at any time by pressing the home\nbutton given in the bottom-right corner of the benchmark\nor by pressing the home button in the sidemenu.\n\nWhat is Refresh Rate field?\nThere you can choose how fast does the benchmark refresh.\nYou can choose from 500 to 10000ms.\nNote: 1000ms = 1s", backg=bg, foreg=fg)
-
-                settings_container = tk.Frame(combined_test, bg=bg)
-                settings_container.place(
-                    relwidth=1, relheight=0.70, relx=0, rely=0.15)
-
-                # Adjust refresh rate (how fast it refresh statistics)
-
-                refresh_rate = tk.Label(settings_container, bg=bg, fg=fg, font=font,
-                                        anchor=tk.W, width=15, height=1, text="Refresh Rate")
-                refresh_rate.grid(row=0, column=0, padx=(10, 0), pady=(0, 20))
-
-                with open("Code\Config\switches.txt", "r") as file:
-                    for line in file:
-                        if "refresh_rate" in line:
-                            split = line.split()
-
-                refresh_rate_entry = tk.Entry(
-                    settings_container, bg=canvas_bg, fg=fg, bd=0, width=10, textvariable=1, font=font, justify='center')
-                refresh_rate_entry.delete(0, 'end')
-                refresh_rate_entry.insert(0, f'{split[2]}')
-                refresh_rate_entry.bind("<Return>", write_to_file)
-                refresh_rate_entry.grid(
-                    row=0, column=1, padx=(298, 0), pady=(0, 20))
-
-                # Choose what you want to record and put into a text file during a test | note: more options > bigger the performance impact #
-                with open("Code\Config\switches.txt", "r") as file:
-                    for line in file:
-                        if "record_cpu" in line:
-                            rec_cpu = line.split()
-                        if "record_gpu" in line:
-                            rec_gpu = line.split()
-                        if "record_ram" in line:
-                            rec_ram = line.split()
-                        if "record_fans" in line:
-                            rec_fan = line.split()
-                        if "mobo_info" in line:
-                            base_inf = line.split()
-
-                on_button = PhotoImage(
-                    file=f"{image_path}\switch-on_small.png")
-                off_button = PhotoImage(
-                    file=f"{image_path}\switch-off_small.png")
-
-                # BASE INFO
-
-                if base_inf[2] == "True":
-                    mobo_info_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Mobo Data")
-                    mobo_info_label.grid(
-                        row=1, column=0, padx=(10, 0), pady=(0, 20))
-                    mobo_info_button = tk.Button(
-                        settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=mobo_info_status)
-                    mobo_info_button.grid(
-                        row=1, column=1, padx=(298, 0), pady=(0, 20))
-                else:
-                    mobo_info_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Mobo Data")
-                    mobo_info_label.grid(
-                        row=1, column=0, padx=(10, 0), pady=(0, 20))
-                    mobo_info_button = tk.Button(
-                        settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=mobo_info_status)
-                    mobo_info_button.grid(
-                        row=1, column=1, padx=(298, 0), pady=(0, 20))
-
-                # CPU RECORDING
-                if rec_cpu[2] == "True":
-                    record_cpu_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report CPU Data")
-                    record_cpu_label.grid(
-                        row=2, column=0, padx=(10, 0), pady=(0, 20))
-                    record_cpu_button = tk.Button(
-                        settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=cpu_button_state)
-                    record_cpu_button.grid(
-                        row=2, column=1, padx=(298, 0), pady=(0, 20))
-                else:
-                    record_cpu_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report CPU Data")
-                    record_cpu_label.grid(
-                        row=2, column=0, padx=(10, 0), pady=(0, 20))
-                    record_cpu_button = tk.Button(
-                        settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=cpu_button_state)
-                    record_cpu_button.grid(
-                        row=2, column=1, padx=(298, 0), pady=(0, 20))
-
-                # GPU RECORDING
-                if rec_gpu[2] == "True":
-                    record_gpu_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report GPU Data")
-                    record_gpu_label.grid(
-                        row=3, column=0, padx=(10, 0), pady=(0, 20))
-                    record_gpu_button = tk.Button(
-                        settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=gpu_button_state)
-                    record_gpu_button.grid(
-                        row=3, column=1, padx=(298, 0), pady=(0, 20))
-                else:
-                    record_gpu_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report GPU Data")
-                    record_gpu_label.grid(
-                        row=3, column=0, padx=(10, 0), pady=(0, 20))
-                    record_gpu_button = tk.Button(
-                        settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=gpu_button_state)
-                    record_gpu_button.grid(
-                        row=3, column=1, padx=(298, 0), pady=(0, 20))
-
-                # RAM RECORDING
-                if rec_ram[2] == "True":
-                    record_ram_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report RAM Data")
-                    record_ram_label.grid(
-                        row=4, column=0, padx=(10, 0), pady=(0, 20))
-                    record_ram_button = tk.Button(
-                        settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=ram_button_state)
-                    record_ram_button.grid(
-                        row=4, column=1, padx=(298, 0), pady=(0, 20))
-                else:
-                    record_ram_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report RAM Data")
-                    record_ram_label.grid(
-                        row=4, column=0, padx=(10, 0), pady=(0, 20))
-                    record_ram_button = tk.Button(
-                        settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=ram_button_state)
-                    record_ram_button.grid(
-                        row=4, column=1, padx=(298, 0), pady=(0, 20))
-
-                # FAN RECORDING
-                if rec_fan[2] == "True":
-                    record_fan_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Fans Data")
-                    record_fan_label.grid(
-                        row=5, column=0, padx=(10, 0), pady=(0, 20))
-                    record_fan_button = tk.Button(
-                        settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=fan_button_state)
-                    record_fan_button.grid(
-                        row=5, column=1, padx=(298, 0), pady=(0, 20))
-                else:
-                    record_fan_label = tk.Label(
-                        settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Fans Data")
-                    record_fan_label.grid(
-                        row=5, column=0, padx=(10, 0), pady=(0, 20))
-                    record_fan_button = tk.Button(
-                        settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=fan_button_state)
-                    record_fan_button.grid(
-                        row=5, column=1, padx=(298, 0), pady=(0, 20))
-
-                bar.update(10)
-
-                # Start test
-
-                start_button_frame = tk.Frame(combined_test, bg=bg)
-                start_button_frame.place(
-                    relwidth=1, relheight=0.10, relx=0, rely=0.87)
-
-                start_test = tk.Button(start_button_frame, bg="#b50000", fg="#d0d0d0", activebackground="#a10000", activeforeground="#d0d0d0",
-                                       width=12, height=1, bd=0, anchor=tk.CENTER, font=font, text="BENCHMARK", relief=SUNKEN, command=combined_test_function)
-                start_test.grid(row=0, column=0, padx=(150, 10), pady=0)
-
-                write_only = tk.Button(start_button_frame, bg="#16395b", fg="#d0d0d0", activebackground="#11314f", relief=SUNKEN, activeforeground="#d0d0d0",
-                                       width=12, height=1, bd=0, anchor=tk.CENTER, font=font, text="WRITE ONLY", command=save_write_only)
-                write_only.grid(row=0, column=1, padx=10, pady=0)
-
-                bar.update(10)
-
-                # Presets for a text file which will be written
-
-                cpu_max_usage_during_test = []
-                cpu_max_power_during_test = []
-                cpu_max_temp_during_test = []
-                cpu_max_clock_during_test = []
-                cpu_max_core_usage_during_test = {}
-                gpu_max_usage_during_test = []
-                gpu_max_temp_during_test = []
-                ram_max_usage_during_test = []
-                swap_max_usage_during_test = []
-
-                cpu_max_usage_during_test.clear()
-                cpu_max_power_during_test.clear()
-                cpu_max_temp_during_test.clear()
-                cpu_max_core_usage_during_test.clear()
-                gpu_max_usage_during_test.clear()
-                gpu_max_temp_during_test.clear()
-                ram_max_usage_during_test.clear()
-                swap_max_usage_during_test.clear()
-
-                max_cpu_usg = 0
-                max_gpu_usg = 0
-
-                bar.update(10)
-
-                support_frame = tk.Frame(home_frame, bg=bg)
-                support_frame.place(
-                    relwidth=0.59, relheight=0.30, relx=0.415, rely=0.7)
-
-                make_support_frame()
-
-                bar.update(10)
-
-                get_time()
-
-                bar.update(40)
-
-                loading.pack_forget()
+                    minutes = tk.Frame(lines, bg=bg)
+                    minutes.place(relwidth=1, relheight=0.4, relx=0, rely=0.42)
+
+                    minutes_label = tk.Label(minutes, bg=bg, fg="#10b1eb", font=time_font,
+                                             anchor=tk.W, width=100, height=0, text="Minutes")
+                    minutes_label.pack()
+
+                    m_accurate = tk.Frame(lines, bg=bg)
+                    m_accurate.place(relwidth=0.1, relheight=0.1,
+                                     relx=0.8, rely=0.42)
+
+                    m_accurate_time = tk.Label(m_accurate, bg=bg, fg="#10b1eb", font=time_font,
+                                               anchor=tk.CENTER, width=5, height=5, text="M")
+                    m_accurate_time.pack()
+
+                    m = tk.Label(minutes, bg=bg, fg="#10b1eb", font=font,
+                                 anchor=tk.W, width=100, height=0, text="")
+                    m.pack()
+
+                    seconds = tk.Frame(lines, bg=bg)
+                    seconds.place(relwidth=1, relheight=0.3, relx=0, rely=0.72)
+
+                    s_accurate = tk.Frame(lines, bg=bg)
+                    s_accurate.place(relwidth=0.1, relheight=0.1,
+                                     relx=0.8, rely=0.72)
+
+                    s_accurate_time = tk.Label(s_accurate, bg=bg, fg=asm_red, font=time_font,
+                                               anchor=tk.CENTER, width=5, height=5, text="S")
+                    s_accurate_time.pack()
+
+                    seconds_label = tk.Label(seconds, bg=bg, fg=asm_red, font=time_font,
+                                             anchor=tk.W, width=100, height=0, text="Seconds")
+                    seconds_label.pack()
+
+                    s = tk.Label(seconds, bg=bg, fg=asm_red, font=font,
+                                 anchor=tk.W, width=100, height=0, text="")
+                    s.pack()
+
+                    bar.update(10)
+
+                    # Combined test frame holds settings for a combined test which will exchange current "home" profile with different system monitors (cpu usage, gpu usage etc.)
+                    # Its purpose is to show important information in one place so one doesn't have to travel between tabs constantly
+
+                    combined_test = tk.Frame(home_frame, bg=bg)
+                    combined_test.place(relwidth=0.59, relheight=0.58,
+                                        relx=0.415, rely=0.1)
+
+                    refresh_rate = []
+
+                    with open(
+                            "Code\Config\switches.txt", "r") as file:
+                        for line in file:
+                            for word in line.split():
+                                refresh_rate.append(word)
+
+                    combined_test_text_frame = tk.Frame(combined_test, bg=bg)
+                    combined_test_text_frame.place(
+                        relwidth=0.5, relheight=0.15, relx=0.015, rely=0.018)
+
+                    combined_test_text = tk.Label(combined_test_text_frame, bg=bg, fg=fg,
+                                                  font=font, anchor=tk.W, width=12, height=1, text="BENCHMARK")
+                    combined_test_text.grid(row=0, column=0, padx=0, pady=0)
+
+                    info_symbol_photo = PhotoImage(
+                        file=f"{image_path}\info_19px_white.png")
+
+                    info_symbol = tk.Label(combined_test_text_frame, bg=bg,
+                                           fg=fg, width=19, height=19, image=info_symbol_photo)
+                    info_symbol.grid(row=0, column=1, padx=0, pady=(2, 0))
+
+                    CreateToolTip(info_symbol, text="What is a benchmark?\nIts a tool that shows you only the most important data\nthat you need when benchmarking.\n\nWhat do the switches do?\nSwitches represent what is written into a text file\nduring the benchmark, you can use all of them,\nbut beware, more information means higher performance impact,\nmeaning that the ASM will run slower. We recommend\nkeeping everything on except Mobo Data during the benchmark,\nas it is the most demanding one.\n\nWhere is the text file?\nText file will be created on your desktop and\nwill contain only the data you choose to write\nin the combined test settings.\n\nWhat is 'WRITE ONLY' button?\nOnce clicked it will only do one run of performance check\nand write it into a file.\n\nWhat is the 'BENCHMARK' button?\nOnce clicked the home layout will be replaced with\na new layout containing the combined test information.\nYou can return to home at any time by pressing the home\nbutton given in the bottom-right corner of the benchmark\nor by pressing the home button in the sidemenu.\n\nWhat is Refresh Rate field?\nThere you can choose how fast does the benchmark refresh.\nYou can choose from 500 to 10000ms.\nNote: 1000ms = 1s", backg=bg, foreg=fg)
+
+                    settings_container = tk.Frame(combined_test, bg=bg)
+                    settings_container.place(
+                        relwidth=1, relheight=0.70, relx=0, rely=0.15)
+
+                    # Adjust refresh rate (how fast it refresh statistics)
+
+                    refresh_rate = tk.Label(settings_container, bg=bg, fg=fg, font=font,
+                                            anchor=tk.W, width=15, height=1, text="Refresh Rate")
+                    refresh_rate.grid(
+                        row=0, column=0, padx=(10, 0), pady=(0, 20))
+
+                    with open("Code\Config\switches.txt", "r") as file:
+                        for line in file:
+                            if "refresh_rate" in line:
+                                split = line.split()
+
+                    refresh_rate_entry = tk.Entry(
+                        settings_container, bg=canvas_bg, fg=fg, bd=0, width=10, textvariable=1, font=font, justify='center')
+                    refresh_rate_entry.delete(0, 'end')
+                    refresh_rate_entry.insert(0, f'{split[2]}')
+                    refresh_rate_entry.bind("<Return>", write_to_file)
+                    refresh_rate_entry.grid(
+                        row=0, column=1, padx=(298, 0), pady=(0, 20))
+
+                    # Choose what you want to record and put into a text file during a test | note: more options > bigger the performance impact #
+                    with open("Code\Config\switches.txt", "r") as file:
+                        for line in file:
+                            if "record_cpu" in line:
+                                rec_cpu = line.split()
+                            if "record_gpu" in line:
+                                rec_gpu = line.split()
+                            if "record_ram" in line:
+                                rec_ram = line.split()
+                            if "record_fans" in line:
+                                rec_fan = line.split()
+                            if "mobo_info" in line:
+                                base_inf = line.split()
+
+                    on_button = PhotoImage(
+                        file=f"{image_path}\switch-on_small.png")
+                    off_button = PhotoImage(
+                        file=f"{image_path}\switch-off_small.png")
+
+                    # BASE INFO
+
+                    if base_inf[2] == "True":
+                        mobo_info_label = tk.Label(
+                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Mobo Data")
+                        mobo_info_label.grid(
+                            row=1, column=0, padx=(10, 0), pady=(0, 20))
+                        mobo_info_button = tk.Button(
+                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=mobo_info_status)
+                        mobo_info_button.grid(
+                            row=1, column=1, padx=(298, 0), pady=(0, 20))
+                    else:
+                        mobo_info_label = tk.Label(
+                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Mobo Data")
+                        mobo_info_label.grid(
+                            row=1, column=0, padx=(10, 0), pady=(0, 20))
+                        mobo_info_button = tk.Button(
+                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=mobo_info_status)
+                        mobo_info_button.grid(
+                            row=1, column=1, padx=(298, 0), pady=(0, 20))
+
+                    # CPU RECORDING
+                    if rec_cpu[2] == "True":
+                        record_cpu_label = tk.Label(
+                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report CPU Data")
+                        record_cpu_label.grid(
+                            row=2, column=0, padx=(10, 0), pady=(0, 20))
+                        record_cpu_button = tk.Button(
+                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=cpu_button_state)
+                        record_cpu_button.grid(
+                            row=2, column=1, padx=(298, 0), pady=(0, 20))
+                    else:
+                        record_cpu_label = tk.Label(
+                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report CPU Data")
+                        record_cpu_label.grid(
+                            row=2, column=0, padx=(10, 0), pady=(0, 20))
+                        record_cpu_button = tk.Button(
+                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=cpu_button_state)
+                        record_cpu_button.grid(
+                            row=2, column=1, padx=(298, 0), pady=(0, 20))
+
+                    # GPU RECORDING
+                    if rec_gpu[2] == "True":
+                        record_gpu_label = tk.Label(
+                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report GPU Data")
+                        record_gpu_label.grid(
+                            row=3, column=0, padx=(10, 0), pady=(0, 20))
+                        record_gpu_button = tk.Button(
+                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=gpu_button_state)
+                        record_gpu_button.grid(
+                            row=3, column=1, padx=(298, 0), pady=(0, 20))
+                    else:
+                        record_gpu_label = tk.Label(
+                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report GPU Data")
+                        record_gpu_label.grid(
+                            row=3, column=0, padx=(10, 0), pady=(0, 20))
+                        record_gpu_button = tk.Button(
+                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=gpu_button_state)
+                        record_gpu_button.grid(
+                            row=3, column=1, padx=(298, 0), pady=(0, 20))
+
+                    # RAM RECORDING
+                    if rec_ram[2] == "True":
+                        record_ram_label = tk.Label(
+                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report RAM Data")
+                        record_ram_label.grid(
+                            row=4, column=0, padx=(10, 0), pady=(0, 20))
+                        record_ram_button = tk.Button(
+                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=ram_button_state)
+                        record_ram_button.grid(
+                            row=4, column=1, padx=(298, 0), pady=(0, 20))
+                    else:
+                        record_ram_label = tk.Label(
+                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report RAM Data")
+                        record_ram_label.grid(
+                            row=4, column=0, padx=(10, 0), pady=(0, 20))
+                        record_ram_button = tk.Button(
+                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=ram_button_state)
+                        record_ram_button.grid(
+                            row=4, column=1, padx=(298, 0), pady=(0, 20))
+
+                    # FAN RECORDING
+                    if rec_fan[2] == "True":
+                        record_fan_label = tk.Label(
+                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Fans Data")
+                        record_fan_label.grid(
+                            row=5, column=0, padx=(10, 0), pady=(0, 20))
+                        record_fan_button = tk.Button(
+                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=fan_button_state)
+                        record_fan_button.grid(
+                            row=5, column=1, padx=(298, 0), pady=(0, 20))
+                    else:
+                        record_fan_label = tk.Label(
+                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Fans Data")
+                        record_fan_label.grid(
+                            row=5, column=0, padx=(10, 0), pady=(0, 20))
+                        record_fan_button = tk.Button(
+                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=fan_button_state)
+                        record_fan_button.grid(
+                            row=5, column=1, padx=(298, 0), pady=(0, 20))
+
+                    bar.update(10)
+
+                    # Start test
+
+                    start_button_frame = tk.Frame(combined_test, bg=bg)
+                    start_button_frame.place(
+                        relwidth=1, relheight=0.10, relx=0, rely=0.87)
+
+                    start_test = tk.Button(start_button_frame, bg="#b50000", fg="#d0d0d0", activebackground="#a10000", activeforeground="#d0d0d0",
+                                           width=12, height=1, bd=0, anchor=tk.CENTER, font=font, text="BENCHMARK", relief=SUNKEN, command=combined_test_function)
+                    start_test.grid(row=0, column=0, padx=(150, 10), pady=0)
+
+                    write_only = tk.Button(start_button_frame, bg="#16395b", fg="#d0d0d0", activebackground="#11314f", relief=SUNKEN, activeforeground="#d0d0d0",
+                                           width=12, height=1, bd=0, anchor=tk.CENTER, font=font, text="WRITE ONLY", command=save_write_only)
+                    write_only.grid(row=0, column=1, padx=10, pady=0)
+
+                    bar.update(10)
+
+                    # Presets for a text file which will be written
+
+                    cpu_max_usage_during_test = []
+                    cpu_max_power_during_test = []
+                    cpu_max_temp_during_test = []
+                    cpu_max_clock_during_test = []
+                    cpu_max_core_usage_during_test = {}
+                    gpu_max_usage_during_test = []
+                    gpu_max_temp_during_test = []
+                    ram_max_usage_during_test = []
+                    swap_max_usage_during_test = []
+
+                    cpu_max_usage_during_test.clear()
+                    cpu_max_power_during_test.clear()
+                    cpu_max_temp_during_test.clear()
+                    cpu_max_core_usage_during_test.clear()
+                    gpu_max_usage_during_test.clear()
+                    gpu_max_temp_during_test.clear()
+                    ram_max_usage_during_test.clear()
+                    swap_max_usage_during_test.clear()
+
+                    max_cpu_usg = 0
+                    max_gpu_usg = 0
+
+                    bar.update(10)
+
+                    support_frame = tk.Frame(home_frame, bg=bg)
+                    support_frame.place(
+                        relwidth=0.59, relheight=0.30, relx=0.415, rely=0.7)
+
+                    make_support_frame()
+
+                    bar.update(10)
+
+                    get_time()
+
+                    bar.update(40)
+
+                    loading.pack_forget()
+            except Exception as e:
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
         dec_home = root.after(15, declare_home)
 except Exception as e:
     y = open("errorFile.txt", "a")
@@ -6301,11 +6318,9 @@ try:
 
         # Basic root options
         root = tk.Tk()
-        root.title("Advanced System Monitor (BETA)")
         root.resizable(False, False)
         root.overrideredirect(1)
 
-        """
         # Try to start OpenHardwareMonitor
         try:
             info = subprocess.STARTUPINFO()
@@ -6314,7 +6329,6 @@ try:
                 r"Code\OpenHardwareMonitor\OpenHardwareMonitor.exe", startupinfo=info, shell=True)
         except Exception as e:
             print(e)
-        """
 
         # Read color and theme from file
         color_list = []
@@ -6421,43 +6435,46 @@ try:
         def callback(event):
             root.geometry("+{0}+{1}".format(event.x_root, event.y_root))
 
-        # Set title bar
+        # Set title bar, images and symbols
 
-        try:
+        if theme_selected == "blackwhite":
+            exit_image = PhotoImage(file=f"{image_path}\exit.png")
+
+            minimize_image = PhotoImage(
+                file=f"{image_path}\minimize.png")
+
+        else:
             exit_image = PhotoImage(file=f"{image_path}\exit_white.png")
 
             minimize_image = PhotoImage(
                 file=f"{image_path}\minimize_white.png")
 
-            asm_logo_image = PhotoImage(
-                file=f"{image_path}\pasm_logo_small.png")
+        asm_logo_image = PhotoImage(
+            file=f"{image_path}\pasm_logo_small.png")
+        title_bar_frame = tk.Frame(root, bg=bg)
+        title_bar_frame.place(relwidth=1, relheight=0.045, relx=0, rely=0)
 
-            title_bar_frame = tk.Frame(root, bg=bg)
-            title_bar_frame.place(relwidth=1, relheight=0.045, relx=0, rely=0)
+        asm_logo = tk.Button(title_bar_frame, bg=bg, fg=fg, image=asm_logo_image,
+                             width=23, height=23, activeforeground=fg, activebackground=bg, relief=SUNKEN, bd=0)
+        asm_logo.grid(row=0, column=0, padx=(5, 2), pady=6)
 
-            asm_logo = tk.Button(title_bar_frame, bg=bg, fg=fg, image=asm_logo_image,
-                                 width=23, height=23, activeforeground=fg, activebackground=bg, relief=SUNKEN, bd=0)
-            asm_logo.grid(row=0, column=0, padx=(5, 2), pady=6)
+        title_bar_title = tk.Label(title_bar_frame, bg=bg, fg=fg, font=(
+            "Oxygen", 12), width=40, height=1, anchor=tk.W, text="ADVANCED SYSTEM MONITOR")
+        title_bar_title.grid(row=0, column=1, padx=5, pady=0)
 
-            title_bar_title = tk.Label(title_bar_frame, bg=bg, fg=fg, font=(
-                "Oxygen", 12), width=40, height=1, anchor=tk.W, text="ADVANCED SYSTEM MONITOR")
-            title_bar_title.grid(row=0, column=1, padx=5, pady=0)
+        title_bar_minimize = tk.Button(title_bar_frame, bg=bg, fg=fg, bd=0, activebackground=button_bg, activeforeground=fg, relief=SUNKEN, font=(
+            "Oxygen", 12), width=50, height=35, image=minimize_image, command=minimize_window)
+        title_bar_minimize.grid(row=0, column=2, padx=(688, 0), pady=0)
 
-            title_bar_minimize = tk.Button(title_bar_frame, bg=bg, fg=fg, bd=0, activebackground=button_bg, activeforeground=fg, relief=SUNKEN, font=(
-                "Oxygen", 12), width=50, height=35, image=minimize_image, command=minimize_window)
-            title_bar_minimize.grid(row=0, column=2, padx=(688, 0), pady=0)
+        title_bar_exit = tk.Button(title_bar_frame, bg=bg, fg=fg, bd=0, activebackground=button_bg, activeforeground=fg, relief=SUNKEN, font=(
+            "Oxygen", 12), width=50, height=35, image=exit_image, command=root.destroy)
+        title_bar_exit.grid(row=0, column=3, padx=0, pady=0)
 
-            title_bar_exit = tk.Button(title_bar_frame, bg=bg, fg=fg, bd=0, activebackground=button_bg, activeforeground=fg, relief=SUNKEN, font=(
-                "Oxygen", 12), width=50, height=35, image=exit_image, command=root.destroy)
-            title_bar_exit.grid(row=0, column=3, padx=0, pady=0)
+        # Bindings
 
-            # Bindings
+        title_bar_frame.bind("<Map>", app_appear)
+        title_bar_frame.bind("<B1-Motion>", callback)
 
-            title_bar_frame.bind("<Map>", app_appear)
-            title_bar_frame.bind("<B1-Motion>", callback)
-
-        except Exception as e:
-            print(e)
         # Set home screen
         home()
         # Set all the sidebar icons and buttons
@@ -6529,6 +6546,23 @@ try:
         netButton = tk.Button(sidebar, bg=sidemenu_bg, fg="white", width=124, image=net_photo,
                               height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=network)
         netButton.place(relx=0, rely=0.877)
+
+        # Applied fix for TQDM failing after disabling console in cx_freeze
+        # This amazing solution belongs to StackOverflow user Manoj K, below is the link to the solution
+        # https://stackoverflow.com/questions/63956413/cx-freeze-window-attributeerror-nonetype-object-has-no-attribute-write/63964910#63964910
+
+        Path("log").mkdir(parents=True, exist_ok=True)
+        formatter = logging.Formatter(
+            "%(asctime)s - %(levelname)s - %(message)s")
+        handler = TimedRotatingFileHandler('log/error.log', when="midnight",
+                                           interval=1, encoding='utf8')
+        handler.suffix = "%Y-%m-%d"
+        handler.setFormatter(formatter)
+        logger = logging.getLogger()
+        logger.setLevel(logging.ERROR)
+        logger.addHandler(handler)
+        sys.stdout = LoggerWriter(logging.debug)
+        sys.stderr = LoggerWriter(logging.warning)
         root.mainloop()
 except Exception as e:
     y = open("errorFile.txt", "a")
