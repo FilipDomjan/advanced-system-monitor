@@ -3,4 +3,4 @@ record_cpu = True
 record_gpu = True
 record_ram = True
 record_fans = True
-mobo_info = True
+mobo_info = False
