@@ -14,27 +14,42 @@ import locale
 import win32api
 import os.path
 import webbrowser
-import subprocess
-import configparser
-import logging
-import sys
-from LoggerWriter import LoggerWriter
-from pathlib import Path
-from logging.handlers import TimedRotatingFileHandler
-from threading import Timer
+import urllib.request
 from tkinter import PhotoImage
 from datetime import datetime
-from tkinter.constants import E, LEFT, SUNKEN
+from tkinter.constants import SUNKEN
 from datetime import date
 from win32api import GetSystemMetrics
 from os import path
 from InfoBox import CreateToolTip
-from tqdm import tqdm
 from SendEmail import initiante_email
 
 
-# Basic function for size conversion
+def updateChecker():
+    with open(r"Code\version.txt", "r") as version:
+        ver = version.read()
 
+    with urllib.request.urlopen("") as update:
+        read_ver = update.read()
+
+    if ver == read_ver:
+        pass
+    else:
+        MessageBox('Update available!',
+                   'Your app is out of date, new version is available to download!', 0)
+
+    print(read_ver)
+    print(ver)
+
+
+# Opened button will be assigned this command to prevent multiple clicks on the same button causing issues
+def opened():
+    y = open("errors.txt", "a")
+    y.write("Already opened..")
+    y.close()
+
+
+# Basic function for size conversion
 try:
     def get_size(bytes, suffix="B"):
         factor = 1024
@@ -43,7 +58,7 @@ try:
                 return f"{bytes:.2f}{unit}{suffix}"
             bytes /= factor
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 
@@ -54,8 +69,8 @@ try:
     def MessageBox(title, text, style):
         ctypes.windll.user32.MessageBoxW(0, text, title, style)
 except Exception as e:
-    y = open("errorFile.txt", "a")
-    y.write("MessageBox error: {}".format(e))
+    y = open("errors.txt", "a")
+    y.write("Error: {}".format(e))
     y.close()
 
 # Home page which holds various settings and options
@@ -64,82 +79,118 @@ try:
     def home():
         global ref
         global home_frame
+        global s
+        global h
+        global m
+        global h_accurate_time
+        global m_accurate_time
+        global s_accurate_time
+        global denim_photo
+        global bluegreen_photo
+        global bluepink_photo
+        global metallic_photo
+        global redblack_photo
+        global orangepink_photo
+        global blackwhite_photo
+        global info_symbol_photo
+        global refresh_rate_entry
+        global on_button
+        global off_button
+        global record_cpu_button
+        global record_gpu_button
+        global record_ram_button
+        global record_fan_button
+        global mobo_info_button
+        global max_cpu_usg
+        global cpu_max_usage_during_test
+        global gpu_max_usage_during_test
+        global max_gpu_usg
+        global gpu_max_temp_during_test
+        global ram_max_usage_during_test
+        global swap_max_usage_during_test
+        global fun_fact
+        global rand_num_list
+        global cpu_max_power_during_test
+        global cpu_max_temp_during_test
+        global cpu_max_core_usage_during_test
+        global cpu_max_clock_during_test
+        global support_frame
         # Remove other active windows and change button background
 
         try:
-            homeButton.configure(bg=button_bg)
+            homeButton.configure(bg=button_bg, command=opened)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            combined_test_frame.place_forget()
+            benchmark_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
             root.after_cancel(ref)
             cpu_frame.place_forget()
-            cpuButton.configure(bg=sidemenu_bg)
+            cpuButton.configure(bg=sidemenu_bg, command=cpu)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
             root.after_cancel(gpu_update)
             gpu_frame.place_forget()
-            gpuButton.configure(bg=sidemenu_bg)
+            gpuButton.configure(bg=sidemenu_bg, command=gpu)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
             main_frame.place_forget()
-            motherboardButton.configure(bg=sidemenu_bg)
+            motherboardButton.configure(bg=sidemenu_bg, command=mobo)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
             root.after_cancel(ram_ref)
             ram_frame.place_forget()
-            ramButton.configure(bg=sidemenu_bg)
+            ramButton.configure(bg=sidemenu_bg, command=ram)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
             root.after_cancel(drive_ref)
             drive_frame.place_forget()
-            hddButton.configure(bg=sidemenu_bg)
+            hddButton.configure(bg=sidemenu_bg, command=drives)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
             root.after_cancel(net_ref)
             network_frame.place_forget()
-            netButton.configure(bg=sidemenu_bg)
+            netButton.configure(bg=sidemenu_bg, command=network)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
             root.after_cancel(fan_ref)
             fans_frame.place_forget()
-            fanButton.configure(bg=sidemenu_bg)
+            fanButton.configure(bg=sidemenu_bg, command=fans)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -153,434 +204,371 @@ try:
             loading_font), width=100, height=50, text="Loading...")
         loading.pack()
 
-        def declare_home():
-            global s
-            global h
-            global m
-            global h_accurate_time
-            global m_accurate_time
-            global s_accurate_time
-            global denim_photo
-            global bluegreen_photo
-            global bluepink_photo
-            global metallic_photo
-            global redblack_photo
-            global orangepink_photo
-            global blackwhite_photo
-            global info_symbol_photo
-            global refresh_rate_entry
-            global on_button
-            global off_button
-            global record_cpu_button
-            global record_gpu_button
-            global record_ram_button
-            global record_fan_button
-            global mobo_info_button
-            global max_cpu_usg
-            global cpu_max_usage_during_test
-            global gpu_max_usage_during_test
-            global max_gpu_usg
-            global gpu_max_temp_during_test
-            global ram_max_usage_during_test
-            global swap_max_usage_during_test
-            global fun_fact
-            global rand_num_list
-            global cpu_max_power_during_test
-            global cpu_max_temp_during_test
-            global cpu_max_core_usage_during_test
-            global cpu_max_clock_during_test
-            global support_frame
-            root.after_cancel(dec_home)
-
-            try:
-                with tqdm(total=100) as bar:
-
-                    system_monitor = tk.Frame(home_frame, bg=bg)
-                    system_monitor.place(
-                        relwidth=1, relheight=0.08, relx=0, rely=0)
-
-                    system_monitor_label = tk.Label(system_monitor, bg=bg, fg=fg, font=font,
-                                                    anchor=tk.CENTER, width=100, height=100, text="SETTINGS | BENCHMARK | THEMES")
-                    system_monitor_label.pack()
-
-                    # Themes frame
-
-                    themes = tk.Frame(home_frame, bg=bg)
-                    themes.place(relwidth=0.40, relheight=0.58,
-                                 relx=0, rely=0.1)
-
-                    themes_text_frame = tk.Frame(themes, bg=bg)
-                    themes_text_frame.place(
-                        relwidth=0.3, relheight=0.05, relx=0.01, rely=0.03)
-
-                    themes_label = tk.Label(themes_text_frame, bg=bg, fg=fg, font=font,
-                                            width=10, height=1, anchor=tk.W, text="THEMES")
-                    themes_label.pack()
-
-                    themes_container = tk.Frame(themes, bg=bg)
-                    themes_container.place(
-                        relwidth=1, relheight=0.85, relx=0, rely=0.1)
-
-                    # Theme profiles
-
-                    metallic_photo = PhotoImage(
-                        file=f"{themes_image_path}\pmetallic.png")
-
-                    metallic = tk.Button(themes_container, bg=bg, fg="white", image=metallic_photo, bd=0,
-                                         width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=metallic_theme)
-                    metallic.grid(row=0, column=0, padx=(22, 27), pady=(15, 5))
-
-                    denim_photo = PhotoImage(
-                        file=f"{themes_image_path}\pdenim.png")
-
-                    denim_theme = tk.Button(
-                        themes_container, bg=bg, fg="white", bd=0, image=denim_photo, width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=denim)
-                    denim_theme.grid(
-                        row=0, column=1, padx=(0, 27), pady=(15, 5))
-
-                    redblack_photo = PhotoImage(
-                        file=f"{themes_image_path}\predblack.png")
-
-                    redblack = tk.Button(
-                        themes_container, bg=bg, fg="white", image=redblack_photo, bd=0, width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=redblack_theme)
-                    redblack.grid(row=0, column=2, padx=(0, 27), pady=(15, 5))
-
-                    blackwhite_photo = PhotoImage(
-                        file=f"{themes_image_path}\pblackwhite.png")
-
-                    blackwhite = tk.Button(themes_container, bg=bg, fg="white", image=blackwhite_photo, bd=0,
-                                           width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=blackwhite_theme)
-                    blackwhite.grid(row=0, column=3,
-                                    padx=(0, 27), pady=(15, 5))
-
-                    with open("Code\Config\config.txt", "r") as config:
-                        for line in config:
-                            if "theme_selected" in line:
-                                split = line.split()
+        system_monitor = tk.Frame(home_frame, bg=bg)
+        system_monitor.place(
+            relwidth=1, relheight=0.08, relx=0, rely=0)
+
+        system_monitor_label = tk.Label(system_monitor, bg=bg, fg=fg, font=font,
+                                        anchor=tk.CENTER, width=100, height=100, text="SETTINGS | BENCHMARK | THEMES")
+        system_monitor_label.pack()
 
-                                if split[2] == "metallic":
-                                    metallic.configure(
-                                        borderwidth=2, relief="solid")
-                                elif split[2] == "denim":
-                                    denim_theme.configure(
-                                        borderwidth=2, relief="solid")
-                                elif split[2] == "redblack":
-                                    redblack.configure(
-                                        borderwidth=2, relief="solid")
-                                elif split[2] == "blackwhite":
-                                    blackwhite.configure(
-                                        borderwidth=2, relief="solid")
-
-                    bar.update(10)
+        # Themes frame
+
+        themes = tk.Frame(home_frame, bg=bg)
+        themes.place(relwidth=0.40, relheight=0.58,
+                     relx=0, rely=0.1)
+
+        themes_text_frame = tk.Frame(themes, bg=bg)
+        themes_text_frame.place(
+            relwidth=0.3, relheight=0.05, relx=0.01, rely=0.03)
+
+        themes_label = tk.Label(themes_text_frame, bg=bg, fg=fg, font=font,
+                                width=10, height=1, anchor=tk.W, text="THEMES")
+        themes_label.pack()
+
+        themes_container = tk.Frame(themes, bg=bg)
+        themes_container.place(
+            relwidth=1, relheight=0.85, relx=0, rely=0.1)
+
+        # Theme profiles
 
-                    # Clock frame
+        metallic_photo = PhotoImage(
+            file=f"{themes_image_path}\pmetallic.png")
 
-                    time_frame = tk.Frame(home_frame, bg=bg)
-                    time_frame.place(
-                        relwidth=0.40, relheight=0.30, relx=0, rely=0.7)
+        metallic = tk.Button(themes_container, bg=bg, fg="white", image=metallic_photo, bd=0,
+                             width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=metallic_theme)
+        metallic.grid(row=0, column=0, padx=(22, 27), pady=(15, 5))
 
-                    lines = tk.Frame(time_frame, bg=bg)
-                    lines.place(relwidth=1, relheight=1, relx=0.05, rely=-0.05)
+        denim_photo = PhotoImage(
+            file=f"{themes_image_path}\pdenim.png")
+
+        denim_theme = tk.Button(
+            themes_container, bg=bg, fg="white", bd=0, image=denim_photo, width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=denim)
+        denim_theme.grid(
+            row=0, column=1, padx=(0, 27), pady=(15, 5))
 
-                    hours = tk.Frame(lines, bg=bg)
-                    hours.place(relwidth=1, relheight=0.3, relx=0, rely=0.13)
+        redblack_photo = PhotoImage(
+            file=f"{themes_image_path}\predblack.png")
 
-                    hours_label = tk.Label(hours, bg=bg, fg=asm_yellow, font=time_font,
-                                           anchor=tk.W, width=100, height=0, text="Hours")
-                    hours_label.pack()
+        redblack = tk.Button(
+            themes_container, bg=bg, fg="white", image=redblack_photo, bd=0, width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=redblack_theme)
+        redblack.grid(row=0, column=2, padx=(0, 27), pady=(15, 5))
 
-                    h = tk.Label(hours, bg=bg, fg=asm_yellow, font=font,
-                                 anchor=tk.W, width=100, height=0, text="")
-                    h.pack()
+        blackwhite_photo = PhotoImage(
+            file=f"{themes_image_path}\pblackwhite.png")
 
-                    h_accurate = tk.Frame(lines, bg=bg)
-                    h_accurate.place(relwidth=0.1, relheight=0.1,
-                                     relx=0.8, rely=0.13)
-
-                    h_accurate_time = tk.Label(h_accurate, bg=bg, fg=asm_yellow, font=time_font,
-                                               anchor=tk.CENTER, width=5, height=5, text="H")
-                    h_accurate_time.pack()
-
-                    minutes = tk.Frame(lines, bg=bg)
-                    minutes.place(relwidth=1, relheight=0.4, relx=0, rely=0.42)
-
-                    minutes_label = tk.Label(minutes, bg=bg, fg="#10b1eb", font=time_font,
-                                             anchor=tk.W, width=100, height=0, text="Minutes")
-                    minutes_label.pack()
-
-                    m_accurate = tk.Frame(lines, bg=bg)
-                    m_accurate.place(relwidth=0.1, relheight=0.1,
-                                     relx=0.8, rely=0.42)
-
-                    m_accurate_time = tk.Label(m_accurate, bg=bg, fg="#10b1eb", font=time_font,
-                                               anchor=tk.CENTER, width=5, height=5, text="M")
-                    m_accurate_time.pack()
-
-                    m = tk.Label(minutes, bg=bg, fg="#10b1eb", font=font,
-                                 anchor=tk.W, width=100, height=0, text="")
-                    m.pack()
-
-                    seconds = tk.Frame(lines, bg=bg)
-                    seconds.place(relwidth=1, relheight=0.3, relx=0, rely=0.72)
-
-                    s_accurate = tk.Frame(lines, bg=bg)
-                    s_accurate.place(relwidth=0.1, relheight=0.1,
-                                     relx=0.8, rely=0.72)
-
-                    s_accurate_time = tk.Label(s_accurate, bg=bg, fg=asm_red, font=time_font,
-                                               anchor=tk.CENTER, width=5, height=5, text="S")
-                    s_accurate_time.pack()
-
-                    seconds_label = tk.Label(seconds, bg=bg, fg=asm_red, font=time_font,
-                                             anchor=tk.W, width=100, height=0, text="Seconds")
-                    seconds_label.pack()
-
-                    s = tk.Label(seconds, bg=bg, fg=asm_red, font=font,
-                                 anchor=tk.W, width=100, height=0, text="")
-                    s.pack()
-
-                    bar.update(10)
-
-                    # Combined test frame holds settings for a combined test which will exchange current "home" profile with different system monitors (cpu usage, gpu usage etc.)
-                    # Its purpose is to show important information in one place so one doesn't have to travel between tabs constantly
-
-                    combined_test = tk.Frame(home_frame, bg=bg)
-                    combined_test.place(relwidth=0.59, relheight=0.58,
-                                        relx=0.415, rely=0.1)
-
-                    refresh_rate = []
-
-                    with open(
-                            "Code\Config\switches.txt", "r") as file:
-                        for line in file:
-                            for word in line.split():
-                                refresh_rate.append(word)
-
-                    combined_test_text_frame = tk.Frame(combined_test, bg=bg)
-                    combined_test_text_frame.place(
-                        relwidth=0.5, relheight=0.15, relx=0.015, rely=0.018)
-
-                    combined_test_text = tk.Label(combined_test_text_frame, bg=bg, fg=fg,
-                                                  font=font, anchor=tk.W, width=12, height=1, text="BENCHMARK")
-                    combined_test_text.grid(row=0, column=0, padx=0, pady=0)
-
-                    info_symbol_photo = PhotoImage(
-                        file=f"{image_path}\info_19px_white.png")
-
-                    info_symbol = tk.Label(combined_test_text_frame, bg=bg,
-                                           fg=fg, width=19, height=19, image=info_symbol_photo)
-                    info_symbol.grid(row=0, column=1, padx=0, pady=(2, 0))
-
-                    CreateToolTip(info_symbol, text="What is a benchmark?\nIts a tool that shows you only the most important data\nthat you need when benchmarking.\n\nWhat do the switches do?\nSwitches represent what is written into a text file\nduring the benchmark, you can use all of them,\nbut beware, more information means higher performance impact,\nmeaning that the ASM will run slower. We recommend\nkeeping everything on except Mobo Data during the benchmark,\nas it is the most demanding one.\n\nWhere is the text file?\nText file will be created on your desktop and\nwill contain only the data you choose to write\nin the combined test settings.\n\nWhat is 'WRITE ONLY' button?\nOnce clicked it will only do one run of performance check\nand write it into a file.\n\nWhat is the 'BENCHMARK' button?\nOnce clicked the home layout will be replaced with\na new layout containing the combined test information.\nYou can return to home at any time by pressing the home\nbutton given in the bottom-right corner of the benchmark\nor by pressing the home button in the sidemenu.\n\nWhat is Refresh Rate field?\nThere you can choose how fast does the benchmark refresh.\nYou can choose from 500 to 10000ms.\nNote: 1000ms = 1s", backg=bg, foreg=fg)
-
-                    settings_container = tk.Frame(combined_test, bg=bg)
-                    settings_container.place(
-                        relwidth=1, relheight=0.70, relx=0, rely=0.15)
-
-                    # Adjust refresh rate (how fast it refresh statistics)
-
-                    refresh_rate = tk.Label(settings_container, bg=bg, fg=fg, font=font,
-                                            anchor=tk.W, width=15, height=1, text="Refresh Rate")
-                    refresh_rate.grid(
-                        row=0, column=0, padx=(10, 0), pady=(0, 20))
-
-                    with open("Code\Config\switches.txt", "r") as file:
-                        for line in file:
-                            if "refresh_rate" in line:
-                                split = line.split()
-
-                    refresh_rate_entry = tk.Entry(
-                        settings_container, bg=canvas_bg, fg=fg, bd=0, width=10, textvariable=1, font=font, justify='center')
-                    refresh_rate_entry.delete(0, 'end')
-                    refresh_rate_entry.insert(0, f'{split[2]}')
-                    refresh_rate_entry.bind("<Return>", write_to_file)
-                    refresh_rate_entry.grid(
-                        row=0, column=1, padx=(298, 0), pady=(0, 20))
-
-                    # Choose what you want to record and put into a text file during a test | note: more options > bigger the performance impact #
-                    with open("Code\Config\switches.txt", "r") as file:
-                        for line in file:
-                            if "record_cpu" in line:
-                                rec_cpu = line.split()
-                            if "record_gpu" in line:
-                                rec_gpu = line.split()
-                            if "record_ram" in line:
-                                rec_ram = line.split()
-                            if "record_fans" in line:
-                                rec_fan = line.split()
-                            if "mobo_info" in line:
-                                base_inf = line.split()
-
-                    on_button = PhotoImage(
-                        file=f"{image_path}\switch-on_small.png")
-                    off_button = PhotoImage(
-                        file=f"{image_path}\switch-off_small.png")
-
-                    # BASE INFO
-
-                    if base_inf[2] == "True":
-                        mobo_info_label = tk.Label(
-                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Mobo Data")
-                        mobo_info_label.grid(
-                            row=1, column=0, padx=(10, 0), pady=(0, 20))
-                        mobo_info_button = tk.Button(
-                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=mobo_info_status)
-                        mobo_info_button.grid(
-                            row=1, column=1, padx=(298, 0), pady=(0, 20))
-                    else:
-                        mobo_info_label = tk.Label(
-                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Mobo Data")
-                        mobo_info_label.grid(
-                            row=1, column=0, padx=(10, 0), pady=(0, 20))
-                        mobo_info_button = tk.Button(
-                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=mobo_info_status)
-                        mobo_info_button.grid(
-                            row=1, column=1, padx=(298, 0), pady=(0, 20))
-
-                    # CPU RECORDING
-                    if rec_cpu[2] == "True":
-                        record_cpu_label = tk.Label(
-                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report CPU Data")
-                        record_cpu_label.grid(
-                            row=2, column=0, padx=(10, 0), pady=(0, 20))
-                        record_cpu_button = tk.Button(
-                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=cpu_button_state)
-                        record_cpu_button.grid(
-                            row=2, column=1, padx=(298, 0), pady=(0, 20))
-                    else:
-                        record_cpu_label = tk.Label(
-                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report CPU Data")
-                        record_cpu_label.grid(
-                            row=2, column=0, padx=(10, 0), pady=(0, 20))
-                        record_cpu_button = tk.Button(
-                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=cpu_button_state)
-                        record_cpu_button.grid(
-                            row=2, column=1, padx=(298, 0), pady=(0, 20))
-
-                    # GPU RECORDING
-                    if rec_gpu[2] == "True":
-                        record_gpu_label = tk.Label(
-                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report GPU Data")
-                        record_gpu_label.grid(
-                            row=3, column=0, padx=(10, 0), pady=(0, 20))
-                        record_gpu_button = tk.Button(
-                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=gpu_button_state)
-                        record_gpu_button.grid(
-                            row=3, column=1, padx=(298, 0), pady=(0, 20))
-                    else:
-                        record_gpu_label = tk.Label(
-                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report GPU Data")
-                        record_gpu_label.grid(
-                            row=3, column=0, padx=(10, 0), pady=(0, 20))
-                        record_gpu_button = tk.Button(
-                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=gpu_button_state)
-                        record_gpu_button.grid(
-                            row=3, column=1, padx=(298, 0), pady=(0, 20))
-
-                    # RAM RECORDING
-                    if rec_ram[2] == "True":
-                        record_ram_label = tk.Label(
-                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report RAM Data")
-                        record_ram_label.grid(
-                            row=4, column=0, padx=(10, 0), pady=(0, 20))
-                        record_ram_button = tk.Button(
-                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=ram_button_state)
-                        record_ram_button.grid(
-                            row=4, column=1, padx=(298, 0), pady=(0, 20))
-                    else:
-                        record_ram_label = tk.Label(
-                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report RAM Data")
-                        record_ram_label.grid(
-                            row=4, column=0, padx=(10, 0), pady=(0, 20))
-                        record_ram_button = tk.Button(
-                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=ram_button_state)
-                        record_ram_button.grid(
-                            row=4, column=1, padx=(298, 0), pady=(0, 20))
-
-                    # FAN RECORDING
-                    if rec_fan[2] == "True":
-                        record_fan_label = tk.Label(
-                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Fans Data")
-                        record_fan_label.grid(
-                            row=5, column=0, padx=(10, 0), pady=(0, 20))
-                        record_fan_button = tk.Button(
-                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=fan_button_state)
-                        record_fan_button.grid(
-                            row=5, column=1, padx=(298, 0), pady=(0, 20))
-                    else:
-                        record_fan_label = tk.Label(
-                            settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Fans Data")
-                        record_fan_label.grid(
-                            row=5, column=0, padx=(10, 0), pady=(0, 20))
-                        record_fan_button = tk.Button(
-                            settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=fan_button_state)
-                        record_fan_button.grid(
-                            row=5, column=1, padx=(298, 0), pady=(0, 20))
-
-                    bar.update(10)
-
-                    # Start test
-
-                    start_button_frame = tk.Frame(combined_test, bg=bg)
-                    start_button_frame.place(
-                        relwidth=1, relheight=0.10, relx=0, rely=0.87)
-
-                    start_test = tk.Button(start_button_frame, bg="#b50000", fg="#d0d0d0", activebackground="#a10000", activeforeground="#d0d0d0",
-                                           width=12, height=1, bd=0, anchor=tk.CENTER, font=font, text="BENCHMARK", relief=SUNKEN, command=combined_test_function)
-                    start_test.grid(row=0, column=0, padx=(150, 10), pady=0)
-
-                    write_only = tk.Button(start_button_frame, bg="#16395b", fg="#d0d0d0", activebackground="#11314f", relief=SUNKEN, activeforeground="#d0d0d0",
-                                           width=12, height=1, bd=0, anchor=tk.CENTER, font=font, text="WRITE ONLY", command=save_write_only)
-                    write_only.grid(row=0, column=1, padx=10, pady=0)
-
-                    bar.update(10)
-
-                    # Presets for a text file which will be written
-
-                    cpu_max_usage_during_test = []
-                    cpu_max_power_during_test = []
-                    cpu_max_temp_during_test = []
-                    cpu_max_clock_during_test = []
-                    cpu_max_core_usage_during_test = {}
-                    gpu_max_usage_during_test = []
-                    gpu_max_temp_during_test = []
-                    ram_max_usage_during_test = []
-                    swap_max_usage_during_test = []
-
-                    cpu_max_usage_during_test.clear()
-                    cpu_max_power_during_test.clear()
-                    cpu_max_temp_during_test.clear()
-                    cpu_max_core_usage_during_test.clear()
-                    gpu_max_usage_during_test.clear()
-                    gpu_max_temp_during_test.clear()
-                    ram_max_usage_during_test.clear()
-                    swap_max_usage_during_test.clear()
-
-                    max_cpu_usg = 0
-                    max_gpu_usg = 0
-
-                    bar.update(10)
-
-                    support_frame = tk.Frame(home_frame, bg=bg)
-                    support_frame.place(
-                        relwidth=0.59, relheight=0.30, relx=0.415, rely=0.7)
-
-                    make_support_frame()
-
-                    bar.update(10)
-
-                    get_time()
-
-                    bar.update(40)
-
-                    loading.pack_forget()
-            except Exception as e:
-                y = open("errorFile.txt", "a")
-                y.write("Error: {}".format(e))
-                y.close()
-        dec_home = root.after(15, declare_home)
+        blackwhite = tk.Button(themes_container, bg=bg, fg="white", image=blackwhite_photo, bd=0,
+                               width=70, height=70, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=blackwhite_theme)
+        blackwhite.grid(row=0, column=3,
+                        padx=(0, 27), pady=(15, 5))
+
+        with open("Code\Config\config.txt", "r") as config:
+            for line in config:
+                if "theme_selected" in line:
+                    split = line.split()
+
+                    if split[2] == "metallic":
+                        metallic.configure(
+                            borderwidth=2, relief="solid")
+                    elif split[2] == "denim":
+                        denim_theme.configure(
+                            borderwidth=2, relief="solid")
+                    elif split[2] == "redblack":
+                        redblack.configure(
+                            borderwidth=2, relief="solid")
+                    elif split[2] == "blackwhite":
+                        blackwhite.configure(
+                            borderwidth=2, relief="solid")
+
+        # Clock frame
+
+        time_frame = tk.Frame(home_frame, bg=bg)
+        time_frame.place(
+            relwidth=0.40, relheight=0.30, relx=0, rely=0.7)
+
+        lines = tk.Frame(time_frame, bg=bg)
+        lines.place(relwidth=1, relheight=1, relx=0.05, rely=-0.05)
+
+        hours = tk.Frame(lines, bg=bg)
+        hours.place(relwidth=1, relheight=0.3, relx=0, rely=0.13)
+
+        hours_label = tk.Label(hours, bg=bg, fg=asm_yellow, font=time_font,
+                               anchor=tk.W, width=100, height=0, text="Hours")
+        hours_label.pack()
+
+        h = tk.Label(hours, bg=bg, fg=asm_yellow, font=font,
+                     anchor=tk.W, width=100, height=0, text="")
+        h.pack()
+
+        h_accurate = tk.Frame(lines, bg=bg)
+        h_accurate.place(relwidth=0.1, relheight=0.1,
+                         relx=0.8, rely=0.13)
+
+        h_accurate_time = tk.Label(h_accurate, bg=bg, fg=asm_yellow, font=time_font,
+                                   anchor=tk.CENTER, width=5, height=5, text="H")
+        h_accurate_time.pack()
+
+        minutes = tk.Frame(lines, bg=bg)
+        minutes.place(relwidth=1, relheight=0.4, relx=0, rely=0.42)
+
+        minutes_label = tk.Label(minutes, bg=bg, fg="#10b1eb", font=time_font,
+                                 anchor=tk.W, width=100, height=0, text="Minutes")
+        minutes_label.pack()
+
+        m_accurate = tk.Frame(lines, bg=bg)
+        m_accurate.place(relwidth=0.1, relheight=0.1,
+                         relx=0.8, rely=0.42)
+
+        m_accurate_time = tk.Label(m_accurate, bg=bg, fg="#10b1eb", font=time_font,
+                                   anchor=tk.CENTER, width=5, height=5, text="M")
+        m_accurate_time.pack()
+
+        m = tk.Label(minutes, bg=bg, fg="#10b1eb", font=font,
+                     anchor=tk.W, width=100, height=0, text="")
+        m.pack()
+
+        seconds = tk.Frame(lines, bg=bg)
+        seconds.place(relwidth=1, relheight=0.3, relx=0, rely=0.72)
+
+        s_accurate = tk.Frame(lines, bg=bg)
+        s_accurate.place(relwidth=0.1, relheight=0.1,
+                         relx=0.8, rely=0.72)
+
+        s_accurate_time = tk.Label(s_accurate, bg=bg, fg=asm_red, font=time_font,
+                                   anchor=tk.CENTER, width=5, height=5, text="S")
+        s_accurate_time.pack()
+
+        seconds_label = tk.Label(seconds, bg=bg, fg=asm_red, font=time_font,
+                                 anchor=tk.W, width=100, height=0, text="Seconds")
+        seconds_label.pack()
+
+        s = tk.Label(seconds, bg=bg, fg=asm_red, font=font,
+                     anchor=tk.W, width=100, height=0, text="")
+        s.pack()
+
+        # benchmark frame holds settings for a benchmark which will exchange current "home" profile with different system monitors (cpu usage, gpu usage etc.)
+        # Its purpose is to show important information in one place so one doesn't have to travel between tabs constantly
+
+        benchmark = tk.Frame(home_frame, bg=bg)
+        benchmark.place(relwidth=0.59, relheight=0.58,
+                        relx=0.415, rely=0.1)
+
+        refresh_rate = []
+
+        with open(
+                "Code\Config\switches.txt", "r") as file:
+            for line in file:
+                for word in line.split():
+                    refresh_rate.append(word)
+
+        benchmark_text_frame = tk.Frame(benchmark, bg=bg)
+        benchmark_text_frame.place(
+            relwidth=0.5, relheight=0.15, relx=0.015, rely=0.018)
+
+        benchmark_text = tk.Label(benchmark_text_frame, bg=bg, fg=fg,
+                                  font=font, anchor=tk.W, width=12, height=1, text="BENCHMARK")
+        benchmark_text.grid(row=0, column=0, padx=0, pady=0)
+
+        info_symbol_photo = PhotoImage(
+            file=f"{image_path}\info_19px_white.png")
+
+        info_symbol = tk.Label(benchmark_text_frame, bg=bg,
+                               fg=fg, width=19, height=19, image=info_symbol_photo)
+        info_symbol.grid(row=0, column=1, padx=0, pady=(2, 0))
+
+        CreateToolTip(info_symbol, text="What is a benchmark?\nIts a tool that shows you only the most important data\nthat you need when benchmarking.\n\nWhat do the switches do?\nSwitches represent what is written into a text file\nduring the benchmark, you can use all of them,\nbut beware, more information means higher performance impact,\nmeaning that the ASM will run slower. We recommend\nkeeping everything on except Mobo Data during the benchmark,\nas it is the most demanding one.\n\nWhere is the text file?\nText file will be created on your desktop and\nwill contain only the data you choose to write\nin the benchmark settings.\n\nWhat is 'WRITE ONLY' button?\nOnce clicked it will only do one run of performance check\nand write it into a file.\n\nWhat is the 'BENCHMARK' button?\nOnce clicked the home layout will be replaced with\na new layout containing the benchmark information.\nYou can return to home at any time by pressing the home\nbutton given in the bottom-right corner of the benchmark\nor by pressing the home button in the sidemenu.\n\nWhat is Refresh Rate field?\nThere you can choose how fast does the benchmark refresh.\nYou can choose from 500 to 10000ms.\nNote: 1000ms = 1s", backg=bg, foreg=fg)
+
+        settings_container = tk.Frame(benchmark, bg=bg)
+        settings_container.place(
+            relwidth=1, relheight=0.70, relx=0, rely=0.15)
+
+        # Adjust refresh rate (how fast it refresh statistics)
+
+        refresh_rate = tk.Label(settings_container, bg=bg, fg=fg, font=font,
+                                anchor=tk.W, width=15, height=1, text="Refresh Rate")
+        refresh_rate.grid(
+            row=0, column=0, padx=(10, 0), pady=(0, 20))
+
+        with open("Code\Config\switches.txt", "r") as file:
+            for line in file:
+                if "refresh_rate" in line:
+                    split = line.split()
+
+        refresh_rate_entry = tk.Entry(
+            settings_container, bg=canvas_bg, fg=fg, bd=0, width=10, textvariable=1, font=font, justify='center')
+        refresh_rate_entry.delete(0, 'end')
+        refresh_rate_entry.insert(0, f'{split[2]}')
+        refresh_rate_entry.bind("<Return>", write_to_file)
+        refresh_rate_entry.grid(
+            row=0, column=1, padx=(298, 0), pady=(0, 20))
+
+        # Choose what you want to record and put into a text file during a test | note: more options > bigger the performance impact #
+        with open("Code\Config\switches.txt", "r") as file:
+            for line in file:
+                if "record_cpu" in line:
+                    rec_cpu = line.split()
+                if "record_gpu" in line:
+                    rec_gpu = line.split()
+                if "record_ram" in line:
+                    rec_ram = line.split()
+                if "record_fans" in line:
+                    rec_fan = line.split()
+                if "mobo_info" in line:
+                    base_inf = line.split()
+
+        on_button = PhotoImage(
+            file=f"{image_path}\switch-on_small.png")
+        off_button = PhotoImage(
+            file=f"{image_path}\switch-off_small.png")
+
+        # BASE INFO
+
+        if base_inf[2] == "True":
+            mobo_info_label = tk.Label(
+                settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Mobo Data")
+            mobo_info_label.grid(
+                row=1, column=0, padx=(10, 0), pady=(0, 20))
+            mobo_info_button = tk.Button(
+                settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=mobo_info_status)
+            mobo_info_button.grid(
+                row=1, column=1, padx=(298, 0), pady=(0, 20))
+        else:
+            mobo_info_label = tk.Label(
+                settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Mobo Data")
+            mobo_info_label.grid(
+                row=1, column=0, padx=(10, 0), pady=(0, 20))
+            mobo_info_button = tk.Button(
+                settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=mobo_info_status)
+            mobo_info_button.grid(
+                row=1, column=1, padx=(298, 0), pady=(0, 20))
+
+        # CPU RECORDING
+        if rec_cpu[2] == "True":
+            record_cpu_label = tk.Label(
+                settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report CPU Data")
+            record_cpu_label.grid(
+                row=2, column=0, padx=(10, 0), pady=(0, 20))
+            record_cpu_button = tk.Button(
+                settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=cpu_button_state)
+            record_cpu_button.grid(
+                row=2, column=1, padx=(298, 0), pady=(0, 20))
+        else:
+            record_cpu_label = tk.Label(
+                settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report CPU Data")
+            record_cpu_label.grid(
+                row=2, column=0, padx=(10, 0), pady=(0, 20))
+            record_cpu_button = tk.Button(
+                settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=cpu_button_state)
+            record_cpu_button.grid(
+                row=2, column=1, padx=(298, 0), pady=(0, 20))
+
+        # GPU RECORDING
+        if rec_gpu[2] == "True":
+            record_gpu_label = tk.Label(
+                settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report GPU Data")
+            record_gpu_label.grid(
+                row=3, column=0, padx=(10, 0), pady=(0, 20))
+            record_gpu_button = tk.Button(
+                settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=gpu_button_state)
+            record_gpu_button.grid(
+                row=3, column=1, padx=(298, 0), pady=(0, 20))
+        else:
+            record_gpu_label = tk.Label(
+                settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report GPU Data")
+            record_gpu_label.grid(
+                row=3, column=0, padx=(10, 0), pady=(0, 20))
+            record_gpu_button = tk.Button(
+                settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=gpu_button_state)
+            record_gpu_button.grid(
+                row=3, column=1, padx=(298, 0), pady=(0, 20))
+
+        # RAM RECORDING
+        if rec_ram[2] == "True":
+            record_ram_label = tk.Label(
+                settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report RAM Data")
+            record_ram_label.grid(
+                row=4, column=0, padx=(10, 0), pady=(0, 20))
+            record_ram_button = tk.Button(
+                settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=ram_button_state)
+            record_ram_button.grid(
+                row=4, column=1, padx=(298, 0), pady=(0, 20))
+        else:
+            record_ram_label = tk.Label(
+                settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report RAM Data")
+            record_ram_label.grid(
+                row=4, column=0, padx=(10, 0), pady=(0, 20))
+            record_ram_button = tk.Button(
+                settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=ram_button_state)
+            record_ram_button.grid(
+                row=4, column=1, padx=(298, 0), pady=(0, 20))
+
+        # FAN RECORDING
+        if rec_fan[2] == "True":
+            record_fan_label = tk.Label(
+                settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Fans Data")
+            record_fan_label.grid(
+                row=5, column=0, padx=(10, 0), pady=(0, 20))
+            record_fan_button = tk.Button(
+                settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=on_button, relief=SUNKEN, command=fan_button_state)
+            record_fan_button.grid(
+                row=5, column=1, padx=(298, 0), pady=(0, 20))
+        else:
+            record_fan_label = tk.Label(
+                settings_container, bg=bg, fg=fg, font=font, width=15, height=1, anchor=tk.W, text="Report Fans Data")
+            record_fan_label.grid(
+                row=5, column=0, padx=(10, 0), pady=(0, 20))
+            record_fan_button = tk.Button(
+                settings_container, width=50, height=23, bg=bg, fg=fg, bd=0, activebackground=bg, image=off_button, relief=SUNKEN, command=fan_button_state)
+            record_fan_button.grid(
+                row=5, column=1, padx=(298, 0), pady=(0, 20))
+
+        # Start test
+
+        start_button_frame = tk.Frame(benchmark, bg=bg)
+        start_button_frame.place(
+            relwidth=1, relheight=0.10, relx=0, rely=0.87)
+
+        start_test = tk.Button(start_button_frame, bg="#b50000", fg="#d0d0d0", activebackground="#a10000", activeforeground="#d0d0d0",
+                               width=12, height=1, bd=0, anchor=tk.CENTER, font=font, text="BENCHMARK", relief=SUNKEN, command=benchmark_function)
+        start_test.grid(row=0, column=0, padx=(150, 10), pady=0)
+
+        write_only = tk.Button(start_button_frame, bg="#16395b", fg="#d0d0d0", activebackground="#11314f", relief=SUNKEN, activeforeground="#d0d0d0",
+                               width=12, height=1, bd=0, anchor=tk.CENTER, font=font, text="WRITE ONLY", command=save_write_only)
+        write_only.grid(row=0, column=1, padx=10, pady=0)
+
+        # Presets for a text file which will be written
+
+        cpu_max_usage_during_test = []
+        cpu_max_power_during_test = []
+        cpu_max_temp_during_test = []
+        cpu_max_clock_during_test = []
+        cpu_max_core_usage_during_test = {}
+        gpu_max_usage_during_test = []
+        gpu_max_temp_during_test = []
+        ram_max_usage_during_test = []
+        swap_max_usage_during_test = []
+
+        cpu_max_usage_during_test.clear()
+        cpu_max_power_during_test.clear()
+        cpu_max_temp_during_test.clear()
+        cpu_max_core_usage_during_test.clear()
+        gpu_max_usage_during_test.clear()
+        gpu_max_temp_during_test.clear()
+        ram_max_usage_during_test.clear()
+        swap_max_usage_during_test.clear()
+
+        max_cpu_usg = 0
+        max_gpu_usg = 0
+
+        support_frame = tk.Frame(home_frame, bg=bg)
+        support_frame.place(
+            relwidth=0.59, relheight=0.30, relx=0.415, rely=0.7)
+
+        make_support_frame()
+
+        get_time()
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # Following functions change the theme of the app #
@@ -612,10 +600,8 @@ try:
                         a = a.replace(
                             f"{split[2]}", f"{refresh_rate_entry.get()}")
                 f.write(a)
-                print(
-                    f"Refresh Rate saved! - New Value: {refresh_rate_entry.get()}")
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 
@@ -630,7 +616,7 @@ try:
         try:
             root.after_cancel(make_frame)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -694,7 +680,7 @@ try:
                                   anchor=tk.CENTER, width=15, height=1, text="Instagram")
         instagram_text.grid(row=1, column=2, padx=(30, 0), pady=0)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 
@@ -706,12 +692,11 @@ try:
             'Code\Config\config.txt', 'w')
         conf.write("canvas_color = #121212\nbg_color = #202020\nfg_color = #d0d0d0\nsidemenu_color = #2a2a2a\nbutton_bg_color = #16395b\ntheme_selected = metallic")
         conf.close()
-        print("Metallic theme applied!")
 
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 
@@ -722,12 +707,11 @@ try:
             'Code\Config\config.txt', 'w')
         conf.write("canvas_color = #242f41\nbg_color = #1b2331\nfg_color = #ffffff\nsidemenu_color = #1b2331\nbutton_bg_color = #303e55\ntheme_selected = denim")
         conf.close()
-        print("Denim theme applied!")
 
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 
@@ -739,12 +723,11 @@ try:
             'Code\Config\config.txt', 'w')
         conf.write("canvas_color = #1f1f1f\nbg_color = #1a1a1a\nfg_color = #ff3d3d\nsidemenu_color = #1a1a1a\nbutton_bg_color = #ff3d3d\ntheme_selected = redblack")
         conf.close()
-        print("Red/Black theme applied!")
 
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 
@@ -755,12 +738,11 @@ try:
             'Code\Config\config.txt', 'w')
         conf.write("canvas_color = #ededed\nbg_color = #fafafa\nfg_color = #1c1c1c\nsidemenu_color = #fafafa\nbutton_bg_color = #d6d6d6\ntheme_selected = blackwhite")
         conf.close()
-        print("Black/White theme applied!")
 
         MessageBox('Theme Applied!',
                    'Theme has been successfully applied.\n\nRestart is required for changes to take effect.', 0)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 
@@ -804,7 +786,7 @@ try:
 
         time = root.after(1000, get_time)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 
@@ -851,11 +833,11 @@ try:
                             break
                     f.write(a)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # RECORD_GPU - BUTTON STATE #
@@ -901,11 +883,11 @@ try:
                             break
                     f.write(a)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # RECORD_RAM - BUTTON STATE #
@@ -951,11 +933,11 @@ try:
                             break
                     f.write(a)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # RECORD_FANS - BUTTON STATE #
@@ -1001,11 +983,11 @@ try:
                             break
                     f.write(a)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # mobo_info - BUTTON STATE #
@@ -1051,467 +1033,435 @@ try:
                             break
                     f.write(a)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
-# Combined test function
+# Benchmark function
 
 try:
-    def combined_test_function():
-        global combined_test_frame
+    def benchmark_function():
+        global benchmark_frame
         global max_record
+        global home_image
+        global total_usage_bar
+        global total_usage_num
+        global package_temp_bar
+        global package_temp_value_label
+        global frequency_bar
+        global frequency_value_label
+        global total_gpu_usage_bar
+        global total_gpu_usage_num
+        global current_temp_bar
+        global current_temp_num_label
+        global vram_bar
+        global vram_value_label
+        global ram_usage_bar
+        global ram_usage_value_label
+        global ram_free_bar
+        global ram_free_value_label
+        global max_cpu_usage
+        global max_cpu_temp
+        global max_gpu_usage
+        global max_gpu_temp
+        global max_ram_usage
+        global max_ram_free
+        global power_usage_bar
+        global power_value_label
+        global max_cpu_pwr
 
         try:
             home_frame.place_forget()
             root.after_cancel(time)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
-        combined_test_frame = tk.Frame(root, bg=canvas_bg)
-        combined_test_frame.place(
+        benchmark_frame = tk.Frame(root, bg=canvas_bg)
+        benchmark_frame.place(
             relwidth=0.875, relheight=0.915, relx=0.117, rely=0.066)
 
-        loading = tk.Label(combined_test_frame, bg=canvas_bg, fg=fg, font=(
-            loading_font), width=100, height=50, text="Loading...")
-        loading.pack()
-
-        def declare_test():
-            global home_image
-            global total_usage_bar
-            global total_usage_num
-            global package_temp_bar
-            global package_temp_value_label
-            global frequency_bar
-            global frequency_value_label
-            global total_gpu_usage_bar
-            global total_gpu_usage_num
-            global current_temp_bar
-            global current_temp_num_label
-            global vram_bar
-            global vram_value_label
-            global ram_usage_bar
-            global ram_usage_value_label
-            global ram_free_bar
-            global ram_free_value_label
-            global max_cpu_usage
-            global max_cpu_temp
-            global max_gpu_usage
-            global max_gpu_temp
-            global max_ram_usage
-            global max_ram_free
-            global power_usage_bar
-            global power_value_label
-            global max_cpu_pwr
-
-            root.after_cancel(dec_test)
-            with tqdm(total=100) as bar:
-                # CPU USAGE
-
-                usage_frame = tk.Frame(combined_test_frame, bg=bg)
-                usage_frame.place(
-                    relwidth=0.49, relheight=0.19, relx=0, rely=0)
-
-                usage_label_frame = tk.Frame(usage_frame, bg=bg)
-                usage_label_frame.place(
-                    relwidth=0.45, relheight=0.15, relx=0.02, rely=0.08)
-
-                usage_label = tk.Label(usage_label_frame, bg=bg, fg=fg, width=100,
-                                       height=1, anchor=tk.W, font=font, text="CPU USAGE")
-                usage_label.pack()
-
-                total_usage_frame = tk.Frame(usage_frame, bg=bg)
-                total_usage_frame.place(
-                    relwidth=1, relheight=0.90, relx=0.02, rely=0.426)
-
-                total_usage = tk.Label(total_usage_frame, bg=bg, fg=fg, anchor=tk.W,
-                                       font=font, width=100, height=1, text="Total usage")
-                total_usage.pack()
-
-                total_usage_bar = tk.Label(total_usage_frame, bg=bg, fg=fg, anchor=tk.W,
-                                           font=font, width=100, height=1, text="|")
-                total_usage_bar.pack()
-
-                total_usage_num_frame = tk.Frame(usage_frame, bg=bg)
-                total_usage_num_frame.place(
-                    relwidth=0.25, relheight=0.15, relx=0.72, rely=0.465)
-
-                total_usage_num = tk.Label(total_usage_num_frame, bg=bg, fg=fg,
-                                           font=font, anchor=tk.E, width=15, height=15, text="0%")
-                total_usage_num.pack()
-
-                bar.update(10)
-
-                # CPU TEMPERATURE
-
-                temp_frame = tk.Frame(combined_test_frame, bg=bg)
-                temp_frame.place(
-                    relwidth=0.49, relheight=0.19, relx=0, rely=0.21)
-
-                temperature_frame = tk.Frame(temp_frame, bg=bg)
-                temperature_frame.place(
-                    relwidth=0.40, relheight=0.15, relx=0.02, rely=0.08)
-
-                temp_label = tk.Label(temperature_frame, bg=bg, fg=fg, width=100,
-                                      height=100, anchor=tk.W, font=font, text="CPU TEMPERATURE")
-                temp_label.pack()
-
-                package_temp = tk.Frame(temp_frame, bg=bg)
-                package_temp.place(relwidth=0.963, relheight=0.50,
-                                   relx=0.018, rely=0.426)
-
-                package_temp_label = tk.Label(package_temp, bg=bg, fg=fg, font=font,
-                                              anchor=tk.W, width=100, height=1, text="Package Temperature")
-                package_temp_label.pack()
-
-                package_temp_bar = tk.Label(
-                    package_temp, bg=bg, fg=fg, font=font, anchor=tk.W, width=200, height=1, text="|")
-                package_temp_bar.pack()
-
-                package_temp_value = tk.Frame(temp_frame, bg="white")
-                package_temp_value.place(
-                    relwidth=0.15, relheight=0.25, relx=0.83, rely=0.40)
-
-                package_temp_value_label = tk.Label(
-                    package_temp_value, bg=bg, fg=fg, font=font, anchor=tk.E, width=15, height=15, text="0°C")
-                package_temp_value_label.pack()
+        # CPU USAGE
 
-                bar.update(10)
+        usage_frame = tk.Frame(benchmark_frame, bg=bg)
+        usage_frame.place(
+            relwidth=0.49, relheight=0.19, relx=0, rely=0)
 
-                # CPU FREQUENCY
+        usage_label_frame = tk.Frame(usage_frame, bg=bg)
+        usage_label_frame.place(
+            relwidth=0.45, relheight=0.15, relx=0.02, rely=0.08)
 
-                cpu_frequency = tk.Frame(combined_test_frame, bg=bg)
-                cpu_frequency.place(
-                    relwidth=0.49, relheight=0.19, relx=0, rely=0.42)
+        usage_label = tk.Label(usage_label_frame, bg=bg, fg=fg, width=100,
+                               height=1, anchor=tk.W, font=font, text="CPU USAGE")
+        usage_label.pack()
 
-                frequency_frame = tk.Frame(cpu_frequency, bg=bg)
-                frequency_frame.place(
-                    relwidth=0.4, relheight=0.15, relx=0.02, rely=0.08)
+        total_usage_frame = tk.Frame(usage_frame, bg=bg)
+        total_usage_frame.place(
+            relwidth=1, relheight=0.90, relx=0.02, rely=0.426)
 
-                frequency_frame_label = tk.Label(
-                    frequency_frame, bg=bg, fg=fg, font=font, anchor=tk.W, width=100, height=10, text="CPU FREQUENCY")
-                frequency_frame_label.pack()
+        total_usage = tk.Label(total_usage_frame, bg=bg, fg=fg, anchor=tk.W,
+                               font=font, width=100, height=1, text="Total usage")
+        total_usage.pack()
 
-                frequency = tk.Frame(cpu_frequency, bg=bg)
-                frequency.place(relwidth=0.963, relheight=0.50,
-                                relx=0.021, rely=0.426)
+        total_usage_bar = tk.Label(total_usage_frame, bg=bg, fg=fg, anchor=tk.W,
+                                   font=font, width=100, height=1, text="|")
+        total_usage_bar.pack()
 
-                frequency_label = tk.Label(frequency, bg=bg, fg=fg, font=font,
-                                           anchor=tk.W, width=100, height=1, text="Current Frequency")
-                frequency_label.pack()
+        total_usage_num_frame = tk.Frame(usage_frame, bg=bg)
+        total_usage_num_frame.place(
+            relwidth=0.25, relheight=0.15, relx=0.72, rely=0.465)
 
-                frequency_bar = tk.Label(
-                    frequency, bg=bg, fg=asm_cyan, font=font, anchor=tk.W, width=100, height=1, text="|")
-                frequency_bar.pack()
+        total_usage_num = tk.Label(total_usage_num_frame, bg=bg, fg=fg,
+                                   font=font, anchor=tk.E, width=15, height=15, text="0%")
+        total_usage_num.pack()
 
-                frequency_value = tk.Frame(cpu_frequency, bg=bg)
-                frequency_value.place(relwidth=0.3, relheight=0.2,
-                                      relx=0.72, rely=0.426)
+        # CPU TEMPERATURE
 
-                frequency_value_label = tk.Label(
-                    frequency_value, bg=bg, fg=fg, font=font, anchor=tk.E, width=10, height=10, text="0 MHz")
-                frequency_value_label.pack()
+        temp_frame = tk.Frame(benchmark_frame, bg=bg)
+        temp_frame.place(
+            relwidth=0.49, relheight=0.19, relx=0, rely=0.21)
 
-                bar.update(10)
+        temperature_frame = tk.Frame(temp_frame, bg=bg)
+        temperature_frame.place(
+            relwidth=0.40, relheight=0.15, relx=0.02, rely=0.08)
 
-                # CPU POWER
+        temp_label = tk.Label(temperature_frame, bg=bg, fg=fg, width=100,
+                              height=100, anchor=tk.W, font=font, text="CPU TEMPERATURE")
+        temp_label.pack()
 
-                cpu_power = tk.Frame(combined_test_frame, bg=bg)
-                cpu_power.place(relwidth=0.49, relheight=0.19,
-                                relx=0, rely=0.63)
+        package_temp = tk.Frame(temp_frame, bg=bg)
+        package_temp.place(relwidth=0.963, relheight=0.50,
+                           relx=0.018, rely=0.426)
 
-                cpu_power_frame = tk.Frame(cpu_power, bg=bg)
-                cpu_power_frame.place(
-                    relwidth=0.40, relheight=0.15, relx=0.02, rely=0.08)
+        package_temp_label = tk.Label(package_temp, bg=bg, fg=fg, font=font,
+                                      anchor=tk.W, width=100, height=1, text="Package Temperature")
+        package_temp_label.pack()
 
-                cpu_power_label = tk.Label(cpu_power_frame, bg=bg, fg=fg, font=font,
-                                           anchor=tk.W, width=100, height=10, text="CPU POWER")
-                cpu_power_label.pack()
+        package_temp_bar = tk.Label(
+            package_temp, bg=bg, fg=fg, font=font, anchor=tk.W, width=200, height=1, text="|")
+        package_temp_bar.pack()
 
-                power_consumption = tk.Frame(cpu_power, bg=bg)
-                power_consumption.place(
-                    relwidth=0.963, relheight=0.50, relx=0.021, rely=0.426)
+        package_temp_value = tk.Frame(temp_frame, bg="white")
+        package_temp_value.place(
+            relwidth=0.15, relheight=0.25, relx=0.83, rely=0.40)
 
-                power_consumption_label = tk.Label(
-                    power_consumption, bg=bg, fg=fg, font=font, anchor=tk.W, width=100, height=1, text="Power Usage")
-                power_consumption_label.pack()
+        package_temp_value_label = tk.Label(
+            package_temp_value, bg=bg, fg=fg, font=font, anchor=tk.E, width=15, height=15, text="0°C")
+        package_temp_value_label.pack()
 
-                power_usage_bar = tk.Label(power_consumption, bg=bg, fg=fg,
-                                           font=font, anchor=tk.W, width=100, height=1, text="|")
-                power_usage_bar.pack()
+        # CPU FREQUENCY
 
-                power_value = tk.Frame(cpu_power, bg=bg)
-                power_value.place(relwidth=0.2, relheight=0.2,
-                                  relx=0.78, rely=0.426)
+        cpu_frequency = tk.Frame(benchmark_frame, bg=bg)
+        cpu_frequency.place(
+            relwidth=0.49, relheight=0.19, relx=0, rely=0.42)
 
-                power_value_label = tk.Label(
-                    power_value, bg=bg, fg=fg, font=font, anchor=tk.E, width=10, height=10, text="0 W")
-                power_value_label.pack()
+        frequency_frame = tk.Frame(cpu_frequency, bg=bg)
+        frequency_frame.place(
+            relwidth=0.4, relheight=0.15, relx=0.02, rely=0.08)
 
-                bar.update(10)
+        frequency_frame_label = tk.Label(
+            frequency_frame, bg=bg, fg=fg, font=font, anchor=tk.W, width=100, height=10, text="CPU FREQUENCY")
+        frequency_frame_label.pack()
 
-                # GPU USAGE
+        frequency = tk.Frame(cpu_frequency, bg=bg)
+        frequency.place(relwidth=0.963, relheight=0.50,
+                        relx=0.021, rely=0.426)
 
-                gpu_usage = tk.Frame(combined_test_frame, bg=bg)
-                gpu_usage.place(relwidth=0.49, relheight=0.19,
-                                relx=0.505, rely=0)
+        frequency_label = tk.Label(frequency, bg=bg, fg=fg, font=font,
+                                   anchor=tk.W, width=100, height=1, text="Current Frequency")
+        frequency_label.pack()
 
-                usage_frame = tk.Frame(gpu_usage, bg=bg)
-                usage_frame.place(relwidth=0.4, relheight=0.15,
-                                  relx=0.02, rely=0.08)
+        frequency_bar = tk.Label(
+            frequency, bg=bg, fg=asm_cyan, font=font, anchor=tk.W, width=100, height=1, text="|")
+        frequency_bar.pack()
 
-                usage_label = tk.Label(usage_frame, bg=bg, fg=fg, width=100,
-                                       height=1, anchor=tk.W, font=font, text="GPU USAGE")
-                usage_label.pack()
+        frequency_value = tk.Frame(cpu_frequency, bg=bg)
+        frequency_value.place(relwidth=0.3, relheight=0.2,
+                              relx=0.72, rely=0.426)
 
-                total_gpu_usage = tk.Frame(gpu_usage, bg=bg)
-                total_gpu_usage.place(relwidth=1, relheight=0.90,
-                                      relx=0.02, rely=0.426)
+        frequency_value_label = tk.Label(
+            frequency_value, bg=bg, fg=fg, font=font, anchor=tk.E, width=10, height=10, text="0 MHz")
+        frequency_value_label.pack()
 
-                total_gpu_usage_label = tk.Label(total_gpu_usage, bg=bg, fg=fg, width=100,
-                                                 height=1, anchor=tk.W, font=font, text="Total usage")
-                total_gpu_usage_label.pack()
+        # CPU POWER
 
-                total_gpu_usage_bar = tk.Label(total_gpu_usage, bg=bg, fg=fg, width=100,
-                                               height=1, anchor=tk.W, font=font, text="|")
-                total_gpu_usage_bar.pack()
+        cpu_power = tk.Frame(benchmark_frame, bg=bg)
+        cpu_power.place(relwidth=0.49, relheight=0.19,
+                        relx=0, rely=0.63)
 
-                total_gpu_usage_num_frame = tk.Frame(gpu_usage, bg=bg)
-                total_gpu_usage_num_frame.place(
-                    relwidth=0.25, relheight=0.15, relx=0.72, rely=0.465)
+        cpu_power_frame = tk.Frame(cpu_power, bg=bg)
+        cpu_power_frame.place(
+            relwidth=0.40, relheight=0.15, relx=0.02, rely=0.08)
 
-                total_gpu_usage_num = tk.Label(total_gpu_usage_num_frame, bg=bg,
-                                               fg=fg, font=font, anchor=tk.E, width=15, height=15, text="0%")
-                total_gpu_usage_num.pack()
+        cpu_power_label = tk.Label(cpu_power_frame, bg=bg, fg=fg, font=font,
+                                   anchor=tk.W, width=100, height=10, text="CPU POWER")
+        cpu_power_label.pack()
 
-                bar.update(10)
+        power_consumption = tk.Frame(cpu_power, bg=bg)
+        power_consumption.place(
+            relwidth=0.963, relheight=0.50, relx=0.021, rely=0.426)
 
-                # GPU TEMPERATURE
+        power_consumption_label = tk.Label(
+            power_consumption, bg=bg, fg=fg, font=font, anchor=tk.W, width=100, height=1, text="Power Usage")
+        power_consumption_label.pack()
 
-                gpu_temp = tk.Frame(combined_test_frame, bg=bg)
-                gpu_temp.place(relwidth=0.49, relheight=0.19,
-                               relx=0.505, rely=0.21)
+        power_usage_bar = tk.Label(power_consumption, bg=bg, fg=fg,
+                                   font=font, anchor=tk.W, width=100, height=1, text="|")
+        power_usage_bar.pack()
 
-                gpu_temp_frame = tk.Frame(gpu_temp, bg=bg)
-                gpu_temp_frame.place(relwidth=0.40, relheight=0.15,
-                                     relx=0.02, rely=0.08)
+        power_value = tk.Frame(cpu_power, bg=bg)
+        power_value.place(relwidth=0.2, relheight=0.2,
+                          relx=0.78, rely=0.426)
 
-                gpu_temp_label = tk.Label(gpu_temp_frame, bg=bg, fg=fg, width=100,
-                                          height=100, anchor=tk.W, font=font, text="GPU TEMPERATURE")
-                gpu_temp_label.pack()
+        power_value_label = tk.Label(
+            power_value, bg=bg, fg=fg, font=font, anchor=tk.E, width=10, height=10, text="0 W")
+        power_value_label.pack()
 
-                temp_container = tk.Frame(gpu_temp, bg=bg)
-                temp_container.place(relwidth=0.963, relheight=0.50,
-                                     relx=0.018, rely=0.426)
+        # GPU USAGE
 
-                current_temp = tk.Label(temp_container, bg=bg, fg=fg, width=100,
-                                        height=1, anchor=tk.W, font=font, text="Package Temperature")
-                current_temp.pack()
+        gpu_usage = tk.Frame(benchmark_frame, bg=bg)
+        gpu_usage.place(relwidth=0.49, relheight=0.19,
+                        relx=0.505, rely=0)
 
-                current_temp_bar = tk.Label(temp_container, bg=bg, fg=fg, width=100,
-                                            height=1, anchor=tk.W, font=font, text="|")
-                current_temp_bar.pack()
+        usage_frame = tk.Frame(gpu_usage, bg=bg)
+        usage_frame.place(relwidth=0.4, relheight=0.15,
+                          relx=0.02, rely=0.08)
 
-                current_temp_num = tk.Frame(gpu_temp, bg=bg)
-                current_temp_num.place(
-                    relwidth=0.15, relheight=0.25, relx=0.83, rely=0.40)
+        usage_label = tk.Label(usage_frame, bg=bg, fg=fg, width=100,
+                               height=1, anchor=tk.W, font=font, text="GPU USAGE")
+        usage_label.pack()
 
-                current_temp_num_label = tk.Label(current_temp_num, bg=bg, fg=fg, width=15,
-                                                  height=15, anchor=tk.E, font=font, text="0°C")
-                current_temp_num_label.pack()
+        total_gpu_usage = tk.Frame(gpu_usage, bg=bg)
+        total_gpu_usage.place(relwidth=1, relheight=0.90,
+                              relx=0.02, rely=0.426)
 
-                bar.update(10)
+        total_gpu_usage_label = tk.Label(total_gpu_usage, bg=bg, fg=fg, width=100,
+                                         height=1, anchor=tk.W, font=font, text="Total usage")
+        total_gpu_usage_label.pack()
 
-                # GPU VRAM
-                gpu_vram_usage = tk.Frame(combined_test_frame, bg=bg)
-                gpu_vram_usage.place(relwidth=0.49, relheight=0.19,
-                                     relx=0.505, rely=0.42)
+        total_gpu_usage_bar = tk.Label(total_gpu_usage, bg=bg, fg=fg, width=100,
+                                       height=1, anchor=tk.W, font=font, text="|")
+        total_gpu_usage_bar.pack()
 
-                vram_frame = tk.Frame(gpu_vram_usage, bg=bg)
-                vram_frame.place(relwidth=0.4, relheight=0.15,
-                                 relx=0.02, rely=0.08)
+        total_gpu_usage_num_frame = tk.Frame(gpu_usage, bg=bg)
+        total_gpu_usage_num_frame.place(
+            relwidth=0.25, relheight=0.15, relx=0.72, rely=0.465)
 
-                vram_label = tk.Label(vram_frame, bg=bg, fg=fg, font=font,
-                                      anchor=tk.W, width=100, height=10, text="VRAM USAGE")
-                vram_label.pack()
+        total_gpu_usage_num = tk.Label(total_gpu_usage_num_frame, bg=bg,
+                                       fg=fg, font=font, anchor=tk.E, width=15, height=15, text="0%")
+        total_gpu_usage_num.pack()
 
-                vram = tk.Frame(gpu_vram_usage, bg=bg)
-                vram.place(relwidth=0.963, relheight=0.50,
-                           relx=0.021, rely=0.426)
+        # GPU TEMPERATURE
 
-                vram_label = tk.Label(vram, bg=bg, fg=fg, font=font,
-                                      anchor=tk.W, width=100, height=1, text="VRAM")
-                vram_label.pack()
+        gpu_temp = tk.Frame(benchmark_frame, bg=bg)
+        gpu_temp.place(relwidth=0.49, relheight=0.19,
+                       relx=0.505, rely=0.21)
 
-                vram_bar = tk.Label(vram, bg=bg, fg=fg, font=font,
-                                    anchor=tk.W, width=100, height=1, text="|")
-                vram_bar.pack()
+        gpu_temp_frame = tk.Frame(gpu_temp, bg=bg)
+        gpu_temp_frame.place(relwidth=0.40, relheight=0.15,
+                             relx=0.02, rely=0.08)
 
-                vram_value = tk.Frame(gpu_vram_usage, bg=bg)
-                vram_value.place(relwidth=0.3, relheight=0.2,
-                                 relx=0.684, rely=0.426)
+        gpu_temp_label = tk.Label(gpu_temp_frame, bg=bg, fg=fg, width=100,
+                                  height=100, anchor=tk.W, font=font, text="GPU TEMPERATURE")
+        gpu_temp_label.pack()
 
-                vram_value_label = tk.Label(
-                    vram_value, bg=bg, fg=fg, anchor=tk.E, font=font, width=40, height=15, text="0GB/0GB")
-                vram_value_label.pack()
+        temp_container = tk.Frame(gpu_temp, bg=bg)
+        temp_container.place(relwidth=0.963, relheight=0.50,
+                             relx=0.018, rely=0.426)
 
-                bar.update(10)
+        current_temp = tk.Label(temp_container, bg=bg, fg=fg, width=100,
+                                height=1, anchor=tk.W, font=font, text="Package Temperature")
+        current_temp.pack()
 
-                # RAM USAGE
+        current_temp_bar = tk.Label(temp_container, bg=bg, fg=fg, width=100,
+                                    height=1, anchor=tk.W, font=font, text="|")
+        current_temp_bar.pack()
 
-                ram_usage_frame = tk.Frame(combined_test_frame, bg=bg)
-                ram_usage_frame.place(
-                    relwidth=0.49, relheight=0.19, relx=0.505, rely=0.63)
+        current_temp_num = tk.Frame(gpu_temp, bg=bg)
+        current_temp_num.place(
+            relwidth=0.15, relheight=0.25, relx=0.83, rely=0.40)
 
-                ram_usage_label_frame = tk.Frame(ram_usage_frame, bg=bg)
-                ram_usage_label_frame.place(
-                    relwidth=0.30, relheight=0.15, relx=0.02, rely=0.08)
+        current_temp_num_label = tk.Label(current_temp_num, bg=bg, fg=fg, width=15,
+                                          height=15, anchor=tk.E, font=font, text="0°C")
+        current_temp_num_label.pack()
 
-                ram_usage_label = tk.Label(ram_usage_label_frame, bg=bg, fg=fg,
-                                           font=font, anchor=tk.W, width=100, height=10, text="RAM USAGE")
-                ram_usage_label.pack()
+        # GPU VRAM
+        gpu_vram_usage = tk.Frame(benchmark_frame, bg=bg)
+        gpu_vram_usage.place(relwidth=0.49, relheight=0.19,
+                             relx=0.505, rely=0.42)
 
-                ram_usage_container = tk.Frame(ram_usage_frame, bg=bg)
-                ram_usage_container.place(
-                    relwidth=0.963, relheight=0.5, relx=0.018, rely=0.426)
+        vram_frame = tk.Frame(gpu_vram_usage, bg=bg)
+        vram_frame.place(relwidth=0.4, relheight=0.15,
+                         relx=0.02, rely=0.08)
 
-                ram_usage = tk.Label(ram_usage_container, bg=bg, fg=fg, font=font,
-                                     anchor=tk.W, width=100, height=1, text="Total Usage")
-                ram_usage.pack()
+        vram_label = tk.Label(vram_frame, bg=bg, fg=fg, font=font,
+                              anchor=tk.W, width=100, height=10, text="VRAM USAGE")
+        vram_label.pack()
 
-                ram_usage_bar = tk.Label(ram_usage_container, bg=bg, fg=fg,
-                                         font=font, anchor=tk.W, width=100, height=1, text="|")
-                ram_usage_bar.pack()
+        vram = tk.Frame(gpu_vram_usage, bg=bg)
+        vram.place(relwidth=0.963, relheight=0.50,
+                   relx=0.021, rely=0.426)
 
-                ram_usage_value_frame = tk.Frame(ram_usage_frame, bg=bg)
-                ram_usage_value_frame.place(
-                    relwidth=0.30, relheight=0.2, relx=0.684, rely=0.426)
+        vram_label = tk.Label(vram, bg=bg, fg=fg, font=font,
+                              anchor=tk.W, width=100, height=1, text="VRAM")
+        vram_label.pack()
 
-                ram_usage_value_label = tk.Label(
-                    ram_usage_value_frame, bg=bg, fg=fg, font=font, anchor=tk.E, width=40, height=15, text="0GB/0GB")
-                ram_usage_value_label.pack()
+        vram_bar = tk.Label(vram, bg=bg, fg=fg, font=font,
+                            anchor=tk.W, width=100, height=1, text="|")
+        vram_bar.pack()
 
-                bar.update(10)
+        vram_value = tk.Frame(gpu_vram_usage, bg=bg)
+        vram_value.place(relwidth=0.3, relheight=0.2,
+                         relx=0.684, rely=0.426)
 
-                # CPU/GPU MAX
+        vram_value_label = tk.Label(
+            vram_value, bg=bg, fg=fg, anchor=tk.E, font=font, width=40, height=15, text="0GB/0GB")
+        vram_value_label.pack()
 
-                cpu_gpu_max = tk.Frame(combined_test_frame, bg=bg)
-                cpu_gpu_max.place(
-                    relwidth=0.49, relheight=0.17, relx=0, rely=0.84)
+        # RAM USAGE
 
-                cpu_gpu_max_text_frame = tk.Frame(cpu_gpu_max, bg=bg)
-                cpu_gpu_max_text_frame.place(
-                    relwidth=0.4, relheight=0.13, relx=0.02, rely=0.10)
+        ram_usage_frame = tk.Frame(benchmark_frame, bg=bg)
+        ram_usage_frame.place(
+            relwidth=0.49, relheight=0.19, relx=0.505, rely=0.63)
 
-                cpu_gpu_max_text = tk.Label(cpu_gpu_max_text_frame, bg=bg, fg=fg,
-                                            font=font, anchor=tk.W, width=100, height=10, text="CPU/GPU MAX")
-                cpu_gpu_max_text.pack()
+        ram_usage_label_frame = tk.Frame(ram_usage_frame, bg=bg)
+        ram_usage_label_frame.place(
+            relwidth=0.30, relheight=0.15, relx=0.02, rely=0.08)
 
-                # MAX CPU USAGE
-                max_cpu_usage_text = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
-                                              anchor=tk.CENTER, width=10, height=1, text="CPU Usage")
-                max_cpu_usage_text.grid(
-                    row=0, column=0, padx=(7), pady=(50, 0))
+        ram_usage_label = tk.Label(ram_usage_label_frame, bg=bg, fg=fg,
+                                   font=font, anchor=tk.W, width=100, height=10, text="RAM USAGE")
+        ram_usage_label.pack()
 
-                max_cpu_usage = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
-                                         anchor=tk.CENTER, width=10, height=1, text="0%")
-                max_cpu_usage.grid(row=1, column=0, padx=(7), pady=(0))
+        ram_usage_container = tk.Frame(ram_usage_frame, bg=bg)
+        ram_usage_container.place(
+            relwidth=0.963, relheight=0.5, relx=0.018, rely=0.426)
 
-                # MAX CPU TEMPERATURE
-                max_cpu_temp_text = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
-                                             anchor=tk.CENTER, width=10, height=1, text="CPU Temp")
-                max_cpu_temp_text.grid(row=0, column=1, padx=(7), pady=(50, 0))
+        ram_usage = tk.Label(ram_usage_container, bg=bg, fg=fg, font=font,
+                             anchor=tk.W, width=100, height=1, text="Total Usage")
+        ram_usage.pack()
 
-                max_cpu_temp = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
-                                        anchor=tk.CENTER, width=10, height=1, text="0°C")
-                max_cpu_temp.grid(row=1, column=1, padx=(7), pady=(0))
+        ram_usage_bar = tk.Label(ram_usage_container, bg=bg, fg=fg,
+                                 font=font, anchor=tk.W, width=100, height=1, text="|")
+        ram_usage_bar.pack()
 
-                # MAX GPU USAGE
-                max_gpu_usage_text = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
-                                              anchor=tk.CENTER, width=10, height=1, text="GPU Usage")
-                max_gpu_usage_text.grid(
-                    row=0, column=2, padx=(7), pady=(50, 0))
+        ram_usage_value_frame = tk.Frame(ram_usage_frame, bg=bg)
+        ram_usage_value_frame.place(
+            relwidth=0.30, relheight=0.2, relx=0.684, rely=0.426)
 
-                max_gpu_usage = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
-                                         anchor=tk.CENTER, width=10, height=1, text="0%")
-                max_gpu_usage.grid(row=1, column=2, padx=(7), pady=(0))
+        ram_usage_value_label = tk.Label(
+            ram_usage_value_frame, bg=bg, fg=fg, font=font, anchor=tk.E, width=40, height=15, text="0GB/0GB")
+        ram_usage_value_label.pack()
 
-                # MAX GPU TEMPERATURE
-                max_gpu_temp_text = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
-                                             anchor=tk.CENTER, width=10, height=1, text="GPU Temp")
-                max_gpu_temp_text.grid(row=0, column=3, padx=(7), pady=(50, 0))
+        # CPU/GPU MAX
 
-                max_gpu_temp = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
-                                        anchor=tk.CENTER, width=10, height=1, text="0°C")
-                max_gpu_temp.grid(row=1, column=3, padx=(7), pady=(0))
+        cpu_gpu_max = tk.Frame(benchmark_frame, bg=bg)
+        cpu_gpu_max.place(
+            relwidth=0.49, relheight=0.17, relx=0, rely=0.84)
 
-                bar.update(10)
+        cpu_gpu_max_text_frame = tk.Frame(cpu_gpu_max, bg=bg)
+        cpu_gpu_max_text_frame.place(
+            relwidth=0.4, relheight=0.13, relx=0.02, rely=0.10)
 
-                # RAM MAX
+        cpu_gpu_max_text = tk.Label(cpu_gpu_max_text_frame, bg=bg, fg=fg,
+                                    font=font, anchor=tk.W, width=100, height=10, text="CPU/GPU MAX")
+        cpu_gpu_max_text.pack()
 
-                ram_max = tk.Frame(combined_test_frame, bg=bg)
-                ram_max.place(relwidth=0.37, relheight=0.18,
-                              relx=0.505, rely=0.84)
+        # MAX CPU USAGE
+        max_cpu_usage_text = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
+                                      anchor=tk.CENTER, width=10, height=1, text="CPU Usage")
+        max_cpu_usage_text.grid(
+            row=0, column=0, padx=(7), pady=(50, 0))
 
-                ram_max_text_frame = tk.Frame(ram_max, bg=bg)
-                ram_max_text_frame.place(
-                    relwidth=0.4, relheight=0.12, relx=0.02, rely=0.10)
+        max_cpu_usage = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
+                                 anchor=tk.CENTER, width=10, height=1, text="0%")
+        max_cpu_usage.grid(row=1, column=0, padx=(7), pady=(0))
 
-                ram_max_text = tk.Label(ram_max_text_frame, bg=bg, fg=fg,
-                                        font=font, anchor=tk.W, width=100, height=10, text="RAM/CPU MAX")
-                ram_max_text.pack()
+        # MAX CPU TEMPERATURE
+        max_cpu_temp_text = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
+                                     anchor=tk.CENTER, width=10, height=1, text="CPU Temp")
+        max_cpu_temp_text.grid(row=0, column=1, padx=(7), pady=(50, 0))
 
-                # MAX RAM USAGE
-                max_ram_usage_text = tk.Label(ram_max, bg=bg, fg=fg, font=font,
-                                              anchor=tk.CENTER, width=10, height=1, text="RAM USED")
-                max_ram_usage_text.grid(
-                    row=0, column=0, padx=(50, 50), pady=(50, 0))
+        max_cpu_temp = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
+                                anchor=tk.CENTER, width=10, height=1, text="0°C")
+        max_cpu_temp.grid(row=1, column=1, padx=(7), pady=(0))
 
-                max_ram_usage = tk.Label(ram_max, bg=bg, fg=fg, font=font,
-                                         anchor=tk.CENTER, width=10, height=1, text="0%")
-                max_ram_usage.grid(row=1, column=0, padx=(50, 50), pady=(0))
+        # MAX GPU USAGE
+        max_gpu_usage_text = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
+                                      anchor=tk.CENTER, width=10, height=1, text="GPU Usage")
+        max_gpu_usage_text.grid(
+            row=0, column=2, padx=(7), pady=(50, 0))
 
-                # MAX FREE
-                max_cpu_pwr_text = tk.Label(ram_max, bg=bg, fg=fg, font=font,
-                                            anchor=tk.CENTER, width=10, height=1, text="CPU POWER")
-                max_cpu_pwr_text.grid(row=0, column=1, padx=(0), pady=(50, 0))
+        max_gpu_usage = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
+                                 anchor=tk.CENTER, width=10, height=1, text="0%")
+        max_gpu_usage.grid(row=1, column=2, padx=(7), pady=(0))
 
-                max_cpu_pwr = tk.Label(ram_max, bg=bg, fg=fg, font=font,
-                                       anchor=tk.CENTER, width=10, height=1, text="0 W")
-                max_cpu_pwr.grid(row=1, column=1, padx=(0), pady=(0))
+        # MAX GPU TEMPERATURE
+        max_gpu_temp_text = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
+                                     anchor=tk.CENTER, width=10, height=1, text="GPU Temp")
+        max_gpu_temp_text.grid(row=0, column=3, padx=(7), pady=(50, 0))
 
-                # HOME BUTTON
-                home_btn_frame = tk.Frame(combined_test_frame, bg=bg)
-                home_btn_frame.place(
-                    relwidth=0.105, relheight=0.17, relx=0.89, rely=0.84)
+        max_gpu_temp = tk.Label(cpu_gpu_max, bg=bg, fg=fg, font=font,
+                                anchor=tk.CENTER, width=10, height=1, text="0°C")
+        max_gpu_temp.grid(row=1, column=3, padx=(7), pady=(0))
 
-                home_image = PhotoImage(file=f"{image_path}\homeCrop.png")
+        # RAM MAX
 
-                home_btn = tk.Button(home_btn_frame, bg="#b50000", fg="#ffffff", activebackground="#a10000",
-                                     width=110, height=122, bd=0, image=home_image, command=home)
-                home_btn.pack()
+        ram_max = tk.Frame(benchmark_frame, bg=bg)
+        ram_max.place(relwidth=0.37, relheight=0.18,
+                      relx=0.505, rely=0.84)
 
-                bar.update(10)
+        ram_max_text_frame = tk.Frame(ram_max, bg=bg)
+        ram_max_text_frame.place(
+            relwidth=0.4, relheight=0.12, relx=0.02, rely=0.10)
 
-                loading.pack_forget()
-                refresh_combined_test()
+        ram_max_text = tk.Label(ram_max_text_frame, bg=bg, fg=fg,
+                                font=font, anchor=tk.W, width=100, height=10, text="RAM/CPU MAX")
+        ram_max_text.pack()
+
+        # MAX RAM USAGE
+        max_ram_usage_text = tk.Label(ram_max, bg=bg, fg=fg, font=font,
+                                      anchor=tk.CENTER, width=10, height=1, text="RAM USED")
+        max_ram_usage_text.grid(
+            row=0, column=0, padx=(50, 50), pady=(50, 0))
+
+        max_ram_usage = tk.Label(ram_max, bg=bg, fg=fg, font=font,
+                                 anchor=tk.CENTER, width=10, height=1, text="0%")
+        max_ram_usage.grid(row=1, column=0, padx=(50, 50), pady=(0))
+
+        # MAX FREE
+        max_cpu_pwr_text = tk.Label(ram_max, bg=bg, fg=fg, font=font,
+                                    anchor=tk.CENTER, width=10, height=1, text="CPU POWER")
+        max_cpu_pwr_text.grid(row=0, column=1, padx=(0), pady=(50, 0))
+
+        max_cpu_pwr = tk.Label(ram_max, bg=bg, fg=fg, font=font,
+                               anchor=tk.CENTER, width=10, height=1, text="0 W")
+        max_cpu_pwr.grid(row=1, column=1, padx=(0), pady=(0))
+
+        # HOME BUTTON
+        home_btn_frame = tk.Frame(benchmark_frame, bg=bg)
+        home_btn_frame.place(
+            relwidth=0.105, relheight=0.17, relx=0.89, rely=0.84)
+
+        home_image = PhotoImage(file=f"{image_path}\homeCrop.png")
+
+        home_btn = tk.Button(home_btn_frame, bg="#b50000", fg="#ffffff", activebackground="#a10000",
+                             width=110, height=122, bd=0, image=home_image, command=home)
+        home_btn.pack()
 
         max_record = 0
-
-        dec_test = root.after(15, declare_test)
+        root.after(100, refresh_benchmark)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
-# Refresh combined test set amount of miliseconds
+# Refresh benchmark set amount of miliseconds
 
 try:
-    def refresh_combined_test():
+    def refresh_benchmark():
         global rct
         global max_record
         global cpuPerc
@@ -1542,7 +1492,7 @@ try:
         try:
             cpuPerc = psutil.cpu_percent()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1556,7 +1506,7 @@ try:
                     max_cpu_usage.configure(
                         text=f"{max(cpu_max_usage_during_test)}%")
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1567,7 +1517,7 @@ try:
 
             total_usage_bar.configure(text=f"|"*int(usage_perc))
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1581,7 +1531,7 @@ try:
             if cpuPerc > 80:
                 total_usage_bar.configure(fg=asm_red)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1595,7 +1545,7 @@ try:
             elif max(cpu_max_usage_during_test) > 80:
                 max_cpu_usage.configure(fg=asm_red)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1648,7 +1598,7 @@ try:
                             max_cpu_temp.configure(fg=asm_red)
                         break
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1675,7 +1625,7 @@ try:
                             text=f"{clock_last:.1f} MHz")
 
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1723,7 +1673,7 @@ try:
                         elif max(cpu_max_power_during_test) > max(cpu_max_power_during_test) * 0.9:
                             max_cpu_pwr.configure(fg=asm_red)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
         # UPDATING GPU #
@@ -1746,7 +1696,7 @@ try:
                          float(gpu_total_memory_test)) * 100) / 1.65
             temp_perc = ((float(gpu_temperature) / 120) * 100) / 1.65
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1758,7 +1708,7 @@ try:
                 total_gpu_usage_bar.configure(text="|"*int(load_perc))
                 total_gpu_usage_num.configure(text=f"{float(gpu_load):.1f}%")
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1773,7 +1723,7 @@ try:
             elif float(gpu_load) > 80:
                 total_gpu_usage_bar.configure(fg=asm_red)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1794,7 +1744,7 @@ try:
                 max_gpu_usage.configure(
                     text=f"{max(gpu_max_usage_during_test)}%")
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1803,7 +1753,7 @@ try:
             current_temp_bar.configure(text="|"*int(temp_perc))
             current_temp_num_label.configure(text=f"{gpu_temperature}°C")
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1818,7 +1768,7 @@ try:
             elif float(gpu_temperature) > 75:
                 current_temp_bar.configure(fg=asm_red)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
         # MAX TEMPERATURE
@@ -1838,7 +1788,7 @@ try:
                 max_gpu_temp.configure(
                     text=f"{max(gpu_max_temp_during_test)}°C")
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1851,7 +1801,7 @@ try:
             mem_perc_unop = (
                 (float(gpu_used_memory) / float(gpu_total_memory_test)) * 100)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1867,7 +1817,7 @@ try:
             elif mem_perc_unop > 80:
                 vram_bar.configure(fg=asm_red)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
         # UPDATING RAM #
@@ -1899,7 +1849,7 @@ try:
             else:
                 pass
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1914,7 +1864,7 @@ try:
             if usg_perc > 90:
                 ram_usage_bar.configure(fg=asm_red)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1924,7 +1874,7 @@ try:
                 text=f"{get_size(max(ram_max_usage_during_test))}")
             max_perc = (max(ram_max_usage_during_test) / vmem.total) * 100
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -1940,16 +1890,16 @@ try:
                 max_ram_usage.configure(fg=asm_red)
 
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         full_test()
 
         # Update test
-        rct = root.after(split[2], refresh_combined_test)
+        rct = root.after(split[2], refresh_benchmark)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 
@@ -1986,7 +1936,7 @@ try:
 
             currentTime = currentTime.strftime("%H:%M:%S")
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -2047,7 +1997,7 @@ try:
                 try:
                     partition_usage = psutil.disk_usage(part.mountpoint)
                 except Exception as e:
-                    y = open("errorFile.txt", "a")
+                    y = open("errors.txt", "a")
                     y.write("Error: {}".format(e))
                     y.close()
 
@@ -2126,7 +2076,7 @@ try:
                 f.write(f"Usage (last): {cpuPerc}%\n")
                 f.write(f"Max Usage: {max(cpu_max_usage_during_test)}%\n\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             f.write("PER CORE\n")
@@ -2137,7 +2087,7 @@ try:
                         f"Core #{i+1} (last): {percentage}%\n")
 
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             # Temperature
@@ -2148,7 +2098,7 @@ try:
                 f.write(
                     f"Max Temperature: {max(cpu_max_temp_during_test):.3f}°C\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             # Voltage
@@ -2162,7 +2112,7 @@ try:
                             f.write(f"Voltage (last): {sensor.Value:.3f}V\n")
                             break
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             # Frequency
@@ -2171,7 +2121,7 @@ try:
                 f.write(f"Frequency (last): {clock_last:.2f}Mhz\n")
                 f.write(f"Max Frequency: {clock_max:.2f}Mhz\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             # Power
@@ -2181,7 +2131,7 @@ try:
                 f.write(
                     f"Max Power Usage: {max(cpu_max_power_during_test):.3f} W\n\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             f.write(main_line_separator)
@@ -2206,7 +2156,7 @@ try:
                             fan_perc = sensor.Value
                             fan_perc_max = sensor.Max
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
 
@@ -2225,7 +2175,7 @@ try:
                             core_clk = sensor.Value
                             core_clk_max = sensor.Max
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
 
@@ -2236,7 +2186,7 @@ try:
                 f.write(
                     f"Max Usage: {float(max(gpu_max_usage_during_test)):.2f}%\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
 
@@ -2249,7 +2199,7 @@ try:
                 f.write(
                     f"Percentage used: {((float(gpu_used_memory) / float(gpu_total_memory_test)) * 100):.2f}%\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             # Temperature
@@ -2259,7 +2209,7 @@ try:
                 f.write(
                     f"Max Temperature: {max(gpu_max_temp_during_test)}°C\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             # Fans
@@ -2269,7 +2219,7 @@ try:
                 f.write(
                     f"Max Fan Speed: {fan_value_max}RPM | {fan_perc_max}%\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             # Clocks
@@ -2282,7 +2232,7 @@ try:
                 f.write(f"Memory Clock: {memory_clk:.2f}Mhz\n")
                 f.write(f"Max Memory Clock: {memory_clk_max:.2f}Mhz\n\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             f.write(main_line_separator)
@@ -2303,7 +2253,7 @@ try:
                 f.write(
                     f"Max RAM Usage: {get_size(max(ram_max_usage_during_test))} ({((max(ram_max_usage_during_test) / vmem_total)*100):.2f}%)\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
 
@@ -2318,7 +2268,7 @@ try:
                 f.write(
                     f"Max SWAP Usage: {get_size(max(swap_max_usage_during_test))} ({((max(swap_max_usage_during_test) / sv_total)*100):.2f}%)\n\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
 
@@ -2342,13 +2292,13 @@ try:
                     else:
                         pass
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
 
         f.close()
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 
@@ -2387,7 +2337,7 @@ try:
 
             currentTime = currentTime.strftime("%H:%M:%S")
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -2448,7 +2398,7 @@ try:
                 try:
                     partition_usage = psutil.disk_usage(part.mountpoint)
                 except Exception as e:
-                    y = open("errorFile.txt", "a")
+                    y = open("errors.txt", "a")
                     y.write("Error: {}".format(e))
                     y.close()
 
@@ -2535,7 +2485,7 @@ try:
                 f.write(f"Usage (last): {cpu_perc}%\n")
                 f.write(f"Max Usage: {max(cpu_max_usage_during_test)}%\n\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             f.write("PER CORE\n")
@@ -2546,7 +2496,7 @@ try:
                         f"Core #{i+1} (last): {percentage}%\n")
 
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             # Temperature
@@ -2567,7 +2517,7 @@ try:
                             f.write(
                                 f"Max Temperature: {max(cpu_max_temp_during_test):.3f}°C\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
 
@@ -2582,7 +2532,7 @@ try:
                             f.write(f"Voltage (last): {sensor.Value:.3f}V\n")
                             break
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             # Frequency
@@ -2597,7 +2547,7 @@ try:
                                 f"Frequency (last): {sensor.Value:.2f}Mhz\n")
                             f.write(f"Max Frequency: {sensor.Max:.2f}Mhz\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
 
@@ -2618,7 +2568,7 @@ try:
                             f.write(
                                 f"Max Power Usage: {max(cpu_max_power_during_test):.3f} W\n\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             f.write(main_line_separator)
@@ -2661,7 +2611,7 @@ try:
                             fan_perc = sensor.Value
                             fan_perc_max = sensor.Max
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
 
@@ -2680,7 +2630,7 @@ try:
                             core_clk = sensor.Value
                             core_clk_max = sensor.Max
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
 
@@ -2691,7 +2641,7 @@ try:
                 f.write(
                     f"Max Usage: {float(max(gpu_max_usage_during_test)):.2f}%\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
 
@@ -2703,7 +2653,7 @@ try:
                 f.write(
                     f"Percentage used: {((float(gpu_used_memory) / float(gpu_total_memory)) * 100):.2f}%\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             # Temperature
@@ -2713,7 +2663,7 @@ try:
                 f.write(
                     f"Max Temperature: {max(gpu_max_temp_during_test)}°C\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             # Fans
@@ -2723,7 +2673,7 @@ try:
                 f.write(
                     f"Max Fan Speed: {fan_value_max}RPM | {fan_perc_max}%\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             # Clocks
@@ -2736,7 +2686,7 @@ try:
                 f.write(f"Memory Clock: {memory_clk:.2f}Mhz\n")
                 f.write(f"Max Memory Clock: {memory_clk_max:.2f}Mhz\n\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
             f.write(main_line_separator)
@@ -2770,7 +2720,7 @@ try:
                 f.write(
                     f"Max RAM Usage: {get_size(max(ram_max_usage_during_test))} ({((max(ram_max_usage_during_test) / vmem.total)*100):.2f}%)\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
 
@@ -2785,7 +2735,7 @@ try:
                 f.write(
                     f"Max SWAP Usage: {get_size(max(swap_max_usage_during_test))} ({((max(swap_max_usage_during_test) / swapmem.total)*100):.2f}%)\n\n")
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
 
@@ -2807,13 +2757,13 @@ try:
                     else:
                         pass
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
 
         f.close()
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 
@@ -2829,7 +2779,7 @@ try:
             support_container.place_forget()
             support_text_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -2923,7 +2873,7 @@ try:
                                         height=2, text="SUBMIT REPORT", activeforeground=fg, activebackground=button_bg, bd=0, relief=SUNKEN, command=send_email)
         send_message_button.pack()
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 
@@ -2943,7 +2893,7 @@ try:
 
         make_frame = root.after(2000, make_support_frame)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 
@@ -2953,82 +2903,83 @@ except Exception as e:
 try:
     def mobo():
         global main_frame
+        global sys_name
 
         try:
-            motherboardButton.configure(bg=button_bg)
+            motherboardButton.configure(bg=button_bg, command=opened)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            combined_test_frame.place_forget()
+            benchmark_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            homeButton.configure(bg=sidemenu_bg)
+            homeButton.configure(bg=sidemenu_bg, command=home)
             root.after_cancel(time)
             home_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            cpuButton.configure(bg=sidemenu_bg)
+            cpuButton.configure(bg=sidemenu_bg, command=cpu)
             root.after_cancel(ref)
-            combined_test_frame.place_forget()
+            benchmark_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            gpuButton.configure(bg=sidemenu_bg)
+            gpuButton.configure(bg=sidemenu_bg, command=gpu)
             root.after_cancel(gpu_update)
             gpu_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            ramButton.configure(bg=sidemenu_bg)
+            ramButton.configure(bg=sidemenu_bg, command=ram)
             root.after_cancel(ram_ref)
             ram_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            hddButton.configure(bg=sidemenu_bg)
+            hddButton.configure(bg=sidemenu_bg, command=drives)
             root.after_cancel(drive_ref)
             drive_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            netButton.configure(bg=sidemenu_bg)
+            netButton.configure(bg=sidemenu_bg, command=network)
             root.after_cancel(net_ref)
             network_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            fanButton.configure(bg=sidemenu_bg)
+            fanButton.configure(bg=sidemenu_bg, command=fans)
             root.after_cancel(fan_ref)
             fans_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -3036,344 +2987,322 @@ try:
         main_frame.place(relwidth=0.875, relheight=0.915,
                          relx=0.117, rely=0.066)
 
-        loading = tk.Label(main_frame, bg=canvas_bg, fg=fg, font=(
-            loading_font), width=100, height=50, text="Loading...")
-        loading.pack()
+        uname = platform.uname()
 
-        def declare_mobo():
-            global sys_name
-            root.after_cancel(dec_mobo)
-            with tqdm(total=100) as bar:
-                uname = platform.uname()
+        os_info = tk.Frame(main_frame, bg=bg)
+        os_info.place(relwidth=0.49, relheight=0.51, relx=0, rely=0)
 
-                os_info = tk.Frame(main_frame, bg=bg)
-                os_info.place(relwidth=0.49, relheight=0.51, relx=0, rely=0)
+        os_frame = tk.Frame(os_info, bg=bg)
+        os_frame.place(relwidth=1, relheight=0.90, relx=0, rely=0.12)
 
-                os_frame = tk.Frame(os_info, bg=bg)
-                os_frame.place(relwidth=1, relheight=0.90, relx=0, rely=0.15)
+        os_info_frame = tk.Frame(os_info, bg=bg)
+        os_info_frame.place(relwidth=0.60, relheight=0.15,
+                            relx=0.02, rely=-0.01)
 
-                os_info_frame = tk.Frame(os_info, bg=bg)
-                os_info_frame.place(relwidth=0.60, relheight=0.15,
-                                    relx=0.02, rely=-0.01)
+        os_info_label = tk.Label(os_info_frame, bg=bg, fg=fg, font=font,
+                                 anchor=tk.W, width=100, height=100, text="SYSTEM INFORMATION")
+        os_info_label.pack()
 
-                os_info_label = tk.Label(os_info_frame, bg=bg, fg=fg, font=font,
-                                         anchor=tk.W, width=100, height=100, text="SYSTEM INFORMATION")
-                os_info_label.pack()
+        uname = platform.uname()
 
-                uname = platform.uname()
+        boot_time_timestamp = psutil.boot_time()
+        bt = datetime.fromtimestamp(boot_time_timestamp)
 
-                boot_time_timestamp = psutil.boot_time()
-                bt = datetime.fromtimestamp(boot_time_timestamp)
+        system = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
+                          width=100, height=1, pady=(1), text=f"System: {uname.system}")
+        system.grid(row=0, column=0, padx=(10), pady=(5, 0))
 
-                system = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                  width=100, height=1, pady=(1), text=f"System: {uname.system}")
-                system.grid(row=0, column=0, padx=(10), pady=(5, 0))
+        node = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
+                        width=100, height=1, text=f"Node name: {uname.node}")
+        node.grid(row=1, column=0, padx=(10))
 
-                node = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                width=100, height=1, text=f"Node name: {uname.node}")
-                node.grid(row=1, column=0, padx=(10))
+        release = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
+                           width=100, height=1, text=f"Release: {uname.release}")
+        release.grid(row=2, column=0, padx=(10))
 
-                release = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                   width=100, height=1, text=f"Release: {uname.release}")
-                release.grid(row=2, column=0, padx=(10))
+        version = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
+                           width=100, height=1, text=f"Version: {uname.version}")
+        version.grid(row=3, column=0, padx=(10))
 
-                version = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                   width=100, height=1, text=f"Version: {uname.version}")
-                version.grid(row=3, column=0, padx=(10))
+        machine = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
+                           width=100, height=1, text=f"Machine: {uname.machine}")
+        machine.grid(row=4, column=0, padx=(10))
 
-                machine = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                   width=100, height=1, text=f"Machine: {uname.machine}")
-                machine.grid(row=4, column=0, padx=(10))
+        boot_time = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
+                             width=100, height=1, text=f"Boot Time: {bt.year}/{bt.month}/{bt.day} {bt.hour}:{bt.minute}:{bt.second}")
+        boot_time.grid(row=5, column=0, padx=(10))
 
-                boot_time = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                     width=100, height=1, text=f"Boot Time: {bt.year}/{bt.month}/{bt.day} {bt.hour}:{bt.minute}:{bt.second}")
-                boot_time.grid(row=5, column=0, padx=(10))
+        processor = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
+                             width=100, height=1, text=f"Processor: {uname.processor}")
+        processor.grid(row=6, column=0, padx=(10))
 
-                processor = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                     width=100, height=1, text=f"Processor: {uname.processor}")
-                processor.grid(row=6, column=0, padx=(10))
+        w = wmi.WMI()
+        sysinf = w.Win32_ComputerSystem()[0]
 
-                w = wmi.WMI()
-                sysinf = w.Win32_ComputerSystem()[0]
+        man = sysinf.Manufacturer
+        model = sysinf.Model
 
-                man = sysinf.Manufacturer
-                model = sysinf.Model
+        manufacturer = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
+                                width=100, height=1, text=f"Manufacturer: {man}")
+        manufacturer.grid(row=7, column=0, padx=(10))
 
-                manufacturer = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                        width=100, height=1, text=f"Manufacturer: {man}")
-                manufacturer.grid(row=7, column=0, padx=(10))
+        model_name = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
+                              width=100, height=1, text=f"Model: {model}")
+        model_name.grid(row=8, column=0, padx=(10))
 
-                model_name = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                      width=100, height=1, text=f"Model: {model}")
-                model_name.grid(row=8, column=0, padx=(10))
+        windll = ctypes.windll.kernel32
 
-                windll = ctypes.windll.kernel32
+        language = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
+                            width=100, height=1, text=f"Language pack: {locale.windows_locale[ windll.GetUserDefaultUILanguage() ]}")
+        language.grid(row=9, column=0, padx=(10))
 
-                language = tk.Label(os_frame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                    width=100, height=1, text=f"Language pack: {locale.windows_locale[ windll.GetUserDefaultUILanguage() ]}")
-                language.grid(row=9, column=0, padx=(10))
+        cpuInfo = tk.Frame(main_frame, bg=bg)
+        cpuInfo.place(relwidth=0.49, relheight=0.26,
+                      relx=0.505, rely=0)
 
-                bar.update(20)
+        procFrame = tk.Frame(cpuInfo, bg=bg)
+        procFrame.place(relwidth=1, relheight=0.90, relx=0, rely=0.29)
 
-                cpuInfo = tk.Frame(main_frame, bg=bg)
-                cpuInfo.place(relwidth=0.49, relheight=0.26,
-                              relx=0.505, rely=0)
+        cpu_info_frame = tk.Frame(cpuInfo, bg=bg)
+        cpu_info_frame.place(relwidth=0.50, relheight=0.15,
+                             relx=0.02, rely=0.04)
 
-                procFrame = tk.Frame(cpuInfo, bg=bg)
-                procFrame.place(relwidth=1, relheight=0.90, relx=0, rely=0.29)
+        cpu_info_label = tk.Label(cpu_info_frame, bg=bg, fg=fg, font=font,
+                                  anchor=tk.W, width=100, height=10, text="CPU INFORMATION")
+        cpu_info_label.pack()
 
-                cpu_info_frame = tk.Frame(cpuInfo, bg=bg)
-                cpu_info_frame.place(relwidth=0.50, relheight=0.15,
-                                     relx=0.02, rely=0.04)
+        cpu_name_raw = cpuinfo.get_cpu_info()['brand_raw']
 
-                cpu_info_label = tk.Label(cpu_info_frame, bg=bg, fg=fg, font=font,
-                                          anchor=tk.W, width=100, height=10, text="CPU INFORMATION")
-                cpu_info_label.pack()
+        cpu_name = tk.Label(procFrame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
+                            width=100, height=1, text=f"Name: {cpu_name_raw}")
+        cpu_name.grid(row=0, column=0, padx=(10), pady=(5, 0))
 
-                cpu_name_raw = cpuinfo.get_cpu_info()['brand_raw']
+        physical_cores = tk.Label(procFrame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
+                                  width=100, height=1, text=f"No. Cores: {psutil.cpu_count(logical=False)}")
+        physical_cores.grid(row=1, column=0, padx=(10))
 
-                cpu_name = tk.Label(procFrame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                    width=100, height=1, text=f"Name: {cpu_name_raw}")
-                cpu_name.grid(row=0, column=0, padx=(10), pady=(5, 0))
+        total_cores = tk.Label(procFrame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
+                               width=100, height=1, text=f"No. Threads: {psutil.cpu_count(logical=True)}")
+        total_cores.grid(row=2, column=0, padx=(10))
 
-                physical_cores = tk.Label(procFrame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                          width=100, height=1, text=f"No. Cores: {psutil.cpu_count(logical=False)}")
-                physical_cores.grid(row=1, column=0, padx=(10))
+        cpufreq = psutil.cpu_freq()
 
-                total_cores = tk.Label(procFrame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                       width=100, height=1, text=f"No. Threads: {psutil.cpu_count(logical=True)}")
-                total_cores.grid(row=2, column=0, padx=(10))
+        base_freq = tk.Label(procFrame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
+                             width=100, height=1, text=f"Base Frequency: {cpufreq.current:.2f}Mhz")
+        base_freq.grid(row=3, column=0, padx=(10))
 
-                cpufreq = psutil.cpu_freq()
+        displayInfo = tk.Frame(main_frame, bg=bg)
+        displayInfo.place(relwidth=0.49, relheight=0.355,
+                          relx=0.505, rely=0.28)
 
-                base_freq = tk.Label(procFrame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                     width=100, height=1, text=f"Base Frequency: {cpufreq.current:.2f}Mhz")
-                base_freq.grid(row=3, column=0, padx=(10))
+        displayFrame = tk.Frame(displayInfo, bg=bg)
+        displayFrame.place(
+            relwidth=1, relheight=0.90, relx=0, rely=0.24)
 
-                displayInfo = tk.Frame(main_frame, bg=bg)
-                displayInfo.place(relwidth=0.49, relheight=0.355,
-                                  relx=0.505, rely=0.28)
+        display_info_frame = tk.Frame(displayInfo, bg=bg)
+        display_info_frame.place(
+            relwidth=0.80, relheight=0.15, relx=0.02, rely=0.03)
 
-                displayFrame = tk.Frame(displayInfo, bg=bg)
-                displayFrame.place(
-                    relwidth=1, relheight=0.90, relx=0, rely=0.24)
+        display_info_label = tk.Label(display_info_frame, bg=bg, fg=fg, font=font,
+                                      anchor=tk.W, width=100, height=10, text="DISPLAY ADAPTER INFORMATION")
+        display_info_label.pack()
 
-                display_info_frame = tk.Frame(displayInfo, bg=bg)
-                display_info_frame.place(
-                    relwidth=0.80, relheight=0.15, relx=0.02, rely=0.03)
+        gpus = GPUtil.getGPUs()
+        for gpu in gpus:
+            gpu_id = gpu.id
+            gpu_name = gpu.name
+            gpu_total_memory = f"{gpu.memoryTotal}MB"
+            gpu_uuid = gpu.uuid
 
-                bar.update(20)
+        gpu_number = tk.Label(displayFrame, bg=bg, fg=fg, font=font,
+                              anchor=lbl_anchor, width=100, height=1, text=f"ID: {gpu_id}")
+        gpu_number.grid(row=0, column=0, padx=(10), pady=(5, 0))
 
-                display_info_label = tk.Label(display_info_frame, bg=bg, fg=fg, font=font,
-                                              anchor=tk.W, width=100, height=10, text="DISPLAY ADAPTER INFORMATION")
-                display_info_label.pack()
+        gpu_nam = tk.Label(displayFrame, bg=bg, fg=fg, font=font,
+                           anchor=lbl_anchor, width=100, height=1, text=f"Name: {gpu_name}")
+        gpu_nam.grid(row=1, column=0, padx=(10))
 
-                gpus = GPUtil.getGPUs()
-                for gpu in gpus:
-                    gpu_id = gpu.id
-                    gpu_name = gpu.name
-                    gpu_total_memory = f"{gpu.memoryTotal}MB"
-                    gpu_uuid = gpu.uuid
+        gpu_total_mem = tk.Label(displayFrame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
+                                 width=100, height=1, text=f"Total Memory: {gpu_total_memory}")
+        gpu_total_mem.grid(row=2, column=0, padx=(10))
 
-                gpu_number = tk.Label(displayFrame, bg=bg, fg=fg, font=font,
-                                      anchor=lbl_anchor, width=100, height=1, text=f"ID: {gpu_id}")
-                gpu_number.grid(row=0, column=0, padx=(10), pady=(5, 0))
+        resolution = tk.Label(displayFrame, bg=bg, fg=fg, font=font,
+                              anchor=lbl_anchor, width=100, height=1, text=f"Active Resolution: {GetSystemMetrics(0)}x{GetSystemMetrics(1)}")
+        resolution.grid(row=3, column=0, padx=(10))
 
-                gpu_nam = tk.Label(displayFrame, bg=bg, fg=fg, font=font,
-                                   anchor=lbl_anchor, width=100, height=1, text=f"Name: {gpu_name}")
-                gpu_nam.grid(row=1, column=0, padx=(10))
+        device = win32api.EnumDisplayDevices()
+        settings = win32api.EnumDisplaySettings(device.DeviceName, -1)
 
-                gpu_total_mem = tk.Label(displayFrame, bg=bg, fg=fg, font=font, anchor=lbl_anchor,
-                                         width=100, height=1, text=f"Total Memory: {gpu_total_memory}")
-                gpu_total_mem.grid(row=2, column=0, padx=(10))
+        for varName in ['DisplayFrequency']:
+            refreshRate = tk.Label(displayFrame, bg=bg, fg=fg, font=font,
+                                   anchor=lbl_anchor, width=100, height=1, text=f"Refresh Rate: {getattr(settings, varName)}Hz")
+            refreshRate.grid(row=4, column=0, padx=(10))
+        gpu_uid = tk.Label(displayFrame, bg=bg, fg=fg, font=font,
+                           anchor=lbl_anchor, width=100, height=1, text=f"UUID: {gpu_uuid}")
+        gpu_uid.grid(row=5, column=0, padx=(10))
+
+        # Memory information
 
-                resolution = tk.Label(displayFrame, bg=bg, fg=fg, font=font,
-                                      anchor=lbl_anchor, width=100, height=1, text=f"Active Resolution: {GetSystemMetrics(0)}x{GetSystemMetrics(1)}")
-                resolution.grid(row=3, column=0, padx=(10))
+        memory_info = tk.Frame(main_frame, bg=bg)
+        memory_info.place(relwidth=0.49, relheight=0.35,
+                          relx=0.505, rely=0.655)
+
+        memory_info_frame = tk.Frame(memory_info, bg=bg)
+        memory_info_frame.place(
+            relwidth=0.45, relheight=0.15, relx=0.025, rely=0.03)
+
+        memory_info_label = tk.Label(memory_info_frame, bg=bg, fg=fg, font=font,
+                                     anchor=tk.CENTER, width=100, height=100, text="MEMORY INFORMATION")
+        memory_info_label.pack()
+
+        memory = tk.Frame(memory_info, bg=bg)
+        memory.place(relwidth=0.5, relheight=0.75, relx=0, rely=0.27)
+
+        svmem = psutil.virtual_memory()
 
-                device = win32api.EnumDisplayDevices()
-                settings = win32api.EnumDisplaySettings(device.DeviceName, -1)
+        memory_label = tk.Label(memory, bg=bg, fg=fg, font=font,
+                                anchor=tk.W, width=100, height=1, text=f"PHYSICAL MEMORY")
+        memory_label.grid(row=0, column=0, padx=(12), pady=(2))
 
-                for varName in ['DisplayFrequency']:
-                    refreshRate = tk.Label(displayFrame, bg=bg, fg=fg, font=font,
-                                           anchor=lbl_anchor, width=100, height=1, text=f"Refresh Rate: {getattr(settings, varName)}Hz")
-                    refreshRate.grid(row=4, column=0, padx=(10))
-                gpu_uid = tk.Label(displayFrame, bg=bg, fg=fg, font=font,
-                                   anchor=lbl_anchor, width=100, height=1, text=f"UUID: {gpu_uuid}")
-                gpu_uid.grid(row=5, column=0, padx=(10))
+        total_memory = tk.Label(memory, bg=bg, fg=fg, font=font,
+                                anchor=tk.W, width=100, height=1, text=f"Total size: {get_size(svmem.total)}")
+        total_memory.grid(row=1, column=0, padx=(12))
 
-                bar.update(20)
+        used_memory = tk.Label(memory, bg=bg, fg=fg, font=font,
+                               anchor=tk.W, width=100, height=1, text=f"Used: {get_size(svmem.used)}")
+        used_memory.grid(row=2, column=0, padx=(12))
 
-                # Memory information
+        free_memory = tk.Label(memory, bg=bg, fg=fg, font=font,
+                               anchor=tk.W, width=100, height=1, text=f"Free: {get_size(svmem.free)}")
+        free_memory.grid(row=3, column=0, padx=(12))
 
-                memory_info = tk.Frame(main_frame, bg=bg)
-                memory_info.place(relwidth=0.49, relheight=0.35,
-                                  relx=0.505, rely=0.655)
+        memory_perc = tk.Label(memory, bg=bg, fg=fg, font=font,
+                               anchor=tk.W, width=100, height=1, text=f"Percentage: {svmem.percent}%")
+        memory_perc.grid(row=4, column=0, padx=(12))
 
-                memory_info_frame = tk.Frame(memory_info, bg=bg)
-                memory_info_frame.place(
-                    relwidth=0.45, relheight=0.15, relx=0.025, rely=0.03)
+        separator = tk.Frame(memory_info, bg="white")
+        separator.place(relwidth=0.004, relheight=0.61,
+                        relx=0.5, rely=0.27)
 
-                memory_info_label = tk.Label(memory_info_frame, bg=bg, fg=fg, font=font,
-                                             anchor=tk.CENTER, width=100, height=100, text="MEMORY INFORMATION")
-                memory_info_label.pack()
+        swap_mem = tk.Frame(memory_info, bg=bg)
+        swap_mem.place(relwidth=0.5, relheight=0.75,
+                       relx=0.58, rely=0.27)
 
-                memory = tk.Frame(memory_info, bg=bg)
-                memory.place(relwidth=0.5, relheight=0.75, relx=0, rely=0.27)
+        swap = psutil.swap_memory()
 
-                svmem = psutil.virtual_memory()
+        swap_label = tk.Label(swap_mem, bg=bg, fg=fg, font=font,
+                              anchor=tk.W, width=100, height=1, text=f"SWAP MEMORY")
+        swap_label.grid(row=0, column=0, padx=(12), pady=(2))
 
-                memory_label = tk.Label(memory, bg=bg, fg=fg, font=font,
-                                        anchor=tk.W, width=100, height=1, text=f"PHYSICAL MEMORY")
-                memory_label.grid(row=0, column=0, padx=(12), pady=(2))
+        swap_total = tk.Label(swap_mem, bg=bg, fg=fg, font=font,
+                              anchor=tk.W, width=100, height=1, text=f"Total size: {get_size(swap.total)}")
+        swap_total.grid(row=1, column=0, padx=(12))
 
-                total_memory = tk.Label(memory, bg=bg, fg=fg, font=font,
-                                        anchor=tk.W, width=100, height=1, text=f"Total size: {get_size(svmem.total)}")
-                total_memory.grid(row=1, column=0, padx=(12))
+        swap_used = tk.Label(swap_mem, bg=bg, fg=fg, font=font,
+                             anchor=tk.W, width=100, height=1, text=f"Used: {get_size(swap.used)}")
+        swap_used.grid(row=2, column=0, padx=(12))
 
-                used_memory = tk.Label(memory, bg=bg, fg=fg, font=font,
-                                       anchor=tk.W, width=100, height=1, text=f"Used: {get_size(svmem.used)}")
-                used_memory.grid(row=2, column=0, padx=(12))
+        swap_free = tk.Label(swap_mem, bg=bg, fg=fg, font=font,
+                             anchor=tk.W, width=100, height=1, text=f"Free: {get_size(swap.free)}")
+        swap_free.grid(row=3, column=0, padx=(12))
 
-                free_memory = tk.Label(memory, bg=bg, fg=fg, font=font,
-                                       anchor=tk.W, width=100, height=1, text=f"Free: {get_size(svmem.free)}")
-                free_memory.grid(row=3, column=0, padx=(12))
+        swap_perc = tk.Label(swap_mem, bg=bg, fg=fg, font=font,
+                             anchor=tk.W, width=100, height=1, text=f"Percentage: {swap.percent}%")
+        swap_perc.grid(row=4, column=0, padx=(12))
 
-                memory_perc = tk.Label(memory, bg=bg, fg=fg, font=font,
-                                       anchor=tk.W, width=100, height=1, text=f"Percentage: {svmem.percent}%")
-                memory_perc.grid(row=4, column=0, padx=(12))
+        # Disk information
 
-                separator = tk.Frame(memory_info, bg="white")
-                separator.place(relwidth=0.004, relheight=0.61,
-                                relx=0.5, rely=0.27)
+        disk_info = tk.Frame(main_frame, bg=bg)
+        disk_info.place(relwidth=0.49, relheight=0.47,
+                        relx=0, rely=0.53)
 
-                swap_mem = tk.Frame(memory_info, bg=bg)
-                swap_mem.place(relwidth=0.5, relheight=0.75,
-                               relx=0.58, rely=0.27)
+        disk_info_frame = tk.Frame(disk_info, bg=bg)
+        disk_info_frame.place(
+            relwidth=0.37, relheight=0.15, relx=0.02, rely=0)
 
-                swap = psutil.swap_memory()
+        disk_info_label = tk.Label(disk_info_frame, bg=bg, fg=fg, font=font,
+                                   anchor=tk.CENTER, width=100, height=10, text="DISK INFORMATION")
+        disk_info_label.pack()
 
-                swap_label = tk.Label(swap_mem, bg=bg, fg=fg, font=font,
-                                      anchor=tk.W, width=100, height=1, text=f"SWAP MEMORY")
-                swap_label.grid(row=0, column=0, padx=(12), pady=(2))
+        partitions = tk.Frame(disk_info, bg=bg)
+        partitions.place(relwidth=1, relheight=0.80, relx=0, rely=0.17)
 
-                swap_total = tk.Label(swap_mem, bg=bg, fg=fg, font=font,
-                                      anchor=tk.W, width=100, height=1, text=f"Total size: {get_size(swap.total)}")
-                swap_total.grid(row=1, column=0, padx=(12))
+        d = wmi.WMI()
+        counter = 0
 
-                swap_used = tk.Label(swap_mem, bg=bg, fg=fg, font=font,
-                                     anchor=tk.W, width=100, height=1, text=f"Used: {get_size(swap.used)}")
-                swap_used.grid(row=2, column=0, padx=(12))
+        for item in d.Win32_PhysicalMedia():
+            counter += 1
 
-                swap_free = tk.Label(swap_mem, bg=bg, fg=fg, font=font,
-                                     anchor=tk.W, width=100, height=1, text=f"Free: {get_size(swap.free)}")
-                swap_free.grid(row=3, column=0, padx=(12))
+        partition = psutil.disk_partitions()
+        total_space = 0
+        free_space = 0
+        used_space = 0
+        windows_path = ""
+        mounts = ""
+        list_of_parititons_with_storage = []
 
-                swap_perc = tk.Label(swap_mem, bg=bg, fg=fg, font=font,
-                                     anchor=tk.W, width=100, height=1, text=f"Percentage: {swap.percent}%")
-                swap_perc.grid(row=4, column=0, padx=(12))
+        for part in partition:
+            mounts += f"{part.mountpoint}, "
+            try:
+                partition_usage = psutil.disk_usage(part.mountpoint)
+            except Exception as e:
+                y = open("errorFile.txt", "a")
+                y.write("Error: {}".format(e))
+                y.close()
 
-                bar.update(20)
+            if path.exists(f'{part.mountpoint}Windows'):
+                windows_path += part.mountpoint
 
-                # Disk information
+            mount = part.mountpoint
+            sp = partition_usage.total
 
-                disk_info = tk.Frame(main_frame, bg=bg)
-                disk_info.place(relwidth=0.49, relheight=0.47,
-                                relx=0, rely=0.53)
+            list_of_parititons_with_storage.append((mount, sp))
 
-                disk_info_frame = tk.Frame(disk_info, bg=bg)
-                disk_info_frame.place(
-                    relwidth=0.37, relheight=0.15, relx=0.02, rely=0)
+            total_space += partition_usage.total
+            free_space += partition_usage.free
+            used_space += partition_usage.used
 
-                disk_info_label = tk.Label(disk_info_frame, bg=bg, fg=fg, font=font,
-                                           anchor=tk.CENTER, width=100, height=10, text="DISK INFORMATION")
-                disk_info_label.pack()
+        total_space_in_gb = get_size(total_space)
+        total_free_in_gb = get_size(free_space)
+        total_used_in_gb = get_size(used_space)
 
-                partitions = tk.Frame(disk_info, bg=bg)
-                partitions.place(relwidth=1, relheight=0.80, relx=0, rely=0.17)
+        number_of_drives = tk.Label(partitions, bg=bg, fg=fg, font=font,
+                                    anchor=tk.W, width=100, height=1, text=f"Number of drives: {counter}")
+        number_of_drives.grid(row=0, column=0, padx=(9), pady=(2, 0))
 
-                d = wmi.WMI()
-                counter = 0
+        mount_points = tk.Label(partitions, bg=bg, fg=fg, font=font,
+                                anchor=tk.W, width=100, height=1, text=f"Mountpoints: {mounts}")
+        mount_points.grid(row=1, column=0, padx=(9))
 
-                for item in d.Win32_PhysicalMedia():
-                    counter += 1
+        windows_installed_on = tk.Label(partitions, bg=bg, fg=fg, font=font,
+                                        anchor=tk.W, width=100, height=1, text=f"Windows installed on partition: {windows_path}")
+        windows_installed_on.grid(row=2, column=0, padx=(9))
 
-                partition = psutil.disk_partitions()
-                total_space = 0
-                free_space = 0
-                used_space = 0
-                windows_path = ""
-                mounts = ""
-                list_of_parititons_with_storage = []
+        total_drive_space = tk.Label(partitions, bg=bg, fg=fg, font=font,
+                                     anchor=tk.W, width=100, height=1, text=f"Total Space (Combined): {total_space_in_gb}")
+        total_drive_space.grid(row=3, column=0, padx=(9))
 
-                for part in partition:
-                    mounts += f"{part.mountpoint}, "
-                    try:
-                        partition_usage = psutil.disk_usage(part.mountpoint)
-                    except Exception as e:
-                        y = open("errorFile.txt", "a")
-                        y.write("Error: {}".format(e))
-                        y.close()
+        total_free_space = tk.Label(partitions, bg=bg, fg=fg, font=font,
+                                    anchor=tk.W, width=100, height=1, text=f"Free Space (Combined): {total_free_in_gb}")
+        total_free_space.grid(row=4, column=0, padx=(9))
 
-                    if path.exists(f'{part.mountpoint}Windows'):
-                        windows_path += part.mountpoint
+        free_perc = (free_space / total_space) * 100
 
-                    mount = part.mountpoint
-                    sp = partition_usage.total
+        total_free_percentage = tk.Label(partitions, bg=bg, fg=fg, font=font,
+                                         anchor=tk.W, width=100, height=1, text=f"Free Space (Percentage): {free_perc:.2f}%")
+        total_free_percentage.grid(row=5, column=0, padx=(9))
 
-                    list_of_parititons_with_storage.append((mount, sp))
+        total_used_space = tk.Label(partitions, bg=bg, fg=fg, font=font,
+                                    anchor=tk.W, width=100, height=1, text=f"Used Space (Combined): {total_used_in_gb}")
+        total_used_space.grid(row=6, column=0, padx=(9))
 
-                    total_space += partition_usage.total
-                    free_space += partition_usage.free
-                    used_space += partition_usage.used
+        used_perc = (used_space / total_space) * 100
 
-                total_space_in_gb = get_size(total_space)
-                total_free_in_gb = get_size(free_space)
-                total_used_in_gb = get_size(used_space)
-
-                number_of_drives = tk.Label(partitions, bg=bg, fg=fg, font=font,
-                                            anchor=tk.W, width=100, height=1, text=f"Number of drives: {counter}")
-                number_of_drives.grid(row=0, column=0, padx=(9), pady=(2, 0))
-
-                mount_points = tk.Label(partitions, bg=bg, fg=fg, font=font,
-                                        anchor=tk.W, width=100, height=1, text=f"Mountpoints: {mounts}")
-                mount_points.grid(row=1, column=0, padx=(9))
-
-                windows_installed_on = tk.Label(partitions, bg=bg, fg=fg, font=font,
-                                                anchor=tk.W, width=100, height=1, text=f"Windows installed on partition: {windows_path}")
-                windows_installed_on.grid(row=2, column=0, padx=(9))
-
-                total_drive_space = tk.Label(partitions, bg=bg, fg=fg, font=font,
-                                             anchor=tk.W, width=100, height=1, text=f"Total Space (Combined): {total_space_in_gb}")
-                total_drive_space.grid(row=3, column=0, padx=(9))
-
-                total_free_space = tk.Label(partitions, bg=bg, fg=fg, font=font,
-                                            anchor=tk.W, width=100, height=1, text=f"Free Space (Combined): {total_free_in_gb}")
-                total_free_space.grid(row=4, column=0, padx=(9))
-
-                free_perc = (free_space / total_space) * 100
-
-                total_free_percentage = tk.Label(partitions, bg=bg, fg=fg, font=font,
-                                                 anchor=tk.W, width=100, height=1, text=f"Free Space (Percentage): {free_perc:.2f}%")
-                total_free_percentage.grid(row=5, column=0, padx=(9))
-
-                total_used_space = tk.Label(partitions, bg=bg, fg=fg, font=font,
-                                            anchor=tk.W, width=100, height=1, text=f"Used Space (Combined): {total_used_in_gb}")
-                total_used_space.grid(row=6, column=0, padx=(9))
-
-                used_perc = (used_space / total_space) * 100
-
-                total_used_percentage = tk.Label(partitions, bg=bg, fg=fg, font=font,
-                                                 anchor=tk.W, width=100, height=1, text=f"Used Space (Percentage): {used_perc:.2f}%")
-                total_used_percentage.grid(row=7, column=0, padx=(9))
-
-                bar.update(20)
-
-                loading.pack_forget()
-
-        dec_mobo = root.after(15, declare_mobo)
+        total_used_percentage = tk.Label(partitions, bg=bg, fg=fg, font=font,
+                                         anchor=tk.W, width=100, height=1, text=f"Used Space (Percentage): {used_perc:.2f}%")
+        total_used_percentage.grid(row=7, column=0, padx=(9))
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # CPU function grabs various information about your CPU and displays it
@@ -3382,82 +3311,103 @@ try:
     def cpu():
         global cpu_frame
         global max_record
+        global totalUsageMeasure
+        global coreUsage
+        global helpFrame
+        global pos
+        global total_usage_bar
+        global total_usage_num
+        global usage_frame
+        global package_temp_bar
+        global package_temp_value_label
+        global voltage_value_label
+        global voltage_bar
+        global frequency_bar
+        global frequency_value_label
+        global power_value_label
+        global power_usage_bar
+        global cores
+        global max_temp
+        global max_freq
+        global max_usage
+        global max_power
+        global sheet
         # Hide existing frames from other functions
 
         try:
-            cpuButton.configure(bg=button_bg)
+            cpuButton.configure(bg=button_bg, command=opened)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            combined_test_frame.place_forget()
+            benchmark_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            homeButton.configure(bg=sidemenu_bg)
+            homeButton.configure(bg=sidemenu_bg, command=home)
             root.after_cancel(time)
             home_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            motherboardButton.configure(bg=sidemenu_bg)
+            motherboardButton.configure(bg=sidemenu_bg, command=mobo)
             main_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            gpuButton.configure(bg=sidemenu_bg)
+            gpuButton.configure(bg=sidemenu_bg, command=gpu)
             gpu_frame.place_forget()
             root.after_cancel(gpu_update)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            ramButton.configure(bg=sidemenu_bg)
+            ramButton.configure(bg=sidemenu_bg, command=ram)
             root.after_cancel(ram_ref)
             ram_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            hddButton.configure(bg=sidemenu_bg)
+            hddButton.configure(bg=sidemenu_bg, command=drives)
             root.after_cancel(drive_ref)
             drive_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            netButton.configure(bg=sidemenu_bg)
+            netButton.configure(bg=sidemenu_bg, command=network)
             root.after_cancel(net_ref)
             network_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            fanButton.configure(bg=sidemenu_bg)
+            fanButton.configure(bg=sidemenu_bg, command=fans)
             root.after_cancel(fan_ref)
             fans_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -3467,340 +3417,289 @@ try:
         cpu_frame.place(relwidth=0.875, relheight=0.915,
                         relx=0.117, rely=0.066)
 
-        loading = tk.Label(cpu_frame, bg=canvas_bg, fg=fg, font=(
-            loading_font), width=100, height=50, text="Loading...")
-        loading.pack()
-
-        def declare_cpu():
-            global totalUsageMeasure
-            global coreUsage
-            global helpFrame
-            global pos
-            global total_usage_bar
-            global total_usage_num
-            global usage_frame
-            global package_temp_bar
-            global package_temp_value_label
-            global voltage_value_label
-            global voltage_bar
-            global frequency_bar
-            global frequency_value_label
-            global power_value_label
-            global power_usage_bar
-            global cores
-            global max_temp
-            global max_freq
-            global max_usage
-            global max_power
-            global sheet
-
-            root.after_cancel(dec_cpu)
+        # Measure usage
 
-            with tqdm(total=100) as bar:
-
-                # Measure usage
+        usage_frame = tk.Frame(cpu_frame, bg=bg)
+        usage_frame.place(
+            relwidth=0.49, relheight=0.19, relx=0, rely=0)
 
-                usage_frame = tk.Frame(cpu_frame, bg=bg)
-                usage_frame.place(
-                    relwidth=0.49, relheight=0.19, relx=0, rely=0)
+        usage_label_frame = tk.Frame(usage_frame, bg=bg)
+        usage_label_frame.place(
+            relwidth=0.15, relheight=0.15, relx=0.01, rely=0.08)
 
-                usage_label_frame = tk.Frame(usage_frame, bg=bg)
-                usage_label_frame.place(
-                    relwidth=0.15, relheight=0.15, relx=0.01, rely=0.08)
+        usage_label = tk.Label(usage_label_frame, bg=bg, fg=fg, width=100,
+                               height=1, anchor=tk.CENTER, font=font, text="USAGE")
+        usage_label.pack()
 
-                usage_label = tk.Label(usage_label_frame, bg=bg, fg=fg, width=100,
-                                       height=1, anchor=tk.CENTER, font=font, text="USAGE")
-                usage_label.pack()
+        total_usage_frame = tk.Frame(usage_frame, bg=bg)
+        total_usage_frame.place(
+            relwidth=1, relheight=0.90, relx=0.02, rely=0.426)
 
-                total_usage_frame = tk.Frame(usage_frame, bg=bg)
-                total_usage_frame.place(
-                    relwidth=1, relheight=0.90, relx=0.02, rely=0.426)
+        total_usage = tk.Label(total_usage_frame, bg=bg, fg=fg, anchor=tk.W,
+                               font=font, width=100, height=1, text="Total usage")
+        total_usage.pack()
 
-                total_usage = tk.Label(total_usage_frame, bg=bg, fg=fg, anchor=tk.W,
-                                       font=font, width=100, height=1, text="Total usage")
-                total_usage.pack()
+        total_usage_bar = tk.Label(total_usage_frame, bg=bg, fg=fg, anchor=tk.W,
+                                   font=font, width=100, height=1, text="|")
+        total_usage_bar.pack()
 
-                total_usage_bar = tk.Label(total_usage_frame, bg=bg, fg=fg, anchor=tk.W,
-                                           font=font, width=100, height=1, text="|")
-                total_usage_bar.pack()
+        total_usage_num_frame = tk.Frame(usage_frame, bg=bg)
+        total_usage_num_frame.place(
+            relwidth=0.25, relheight=0.15, relx=0.72, rely=0.465)
 
-                total_usage_num_frame = tk.Frame(usage_frame, bg=bg)
-                total_usage_num_frame.place(
-                    relwidth=0.25, relheight=0.15, relx=0.72, rely=0.465)
+        total_usage_num = tk.Label(total_usage_num_frame, bg=bg, fg=fg,
+                                   font=font, anchor=tk.E, width=15, height=15, text="0%")
+        total_usage_num.pack()
 
-                total_usage_num = tk.Label(total_usage_num_frame, bg=bg, fg=fg,
-                                           font=font, anchor=tk.E, width=15, height=15, text="0%")
-                total_usage_num.pack()
+        # Measure usage per core
 
-                bar.update(12.5)
+        usage_per_core = tk.Frame(cpu_frame, bg=bg)
+        usage_per_core.place(
+            relwidth=0.49, relheight=0.61, relx=0, rely=0.21)
 
-                # Measure usage per core
+        per_core_usage = tk.Frame(usage_per_core, bg=bg)
+        per_core_usage.place(relwidth=0.35, relheight=0.07,
+                             relx=0.02, rely=0.02)
 
-                usage_per_core = tk.Frame(cpu_frame, bg=bg)
-                usage_per_core.place(
-                    relwidth=0.49, relheight=0.61, relx=0, rely=0.21)
+        per_core_usage_label = tk.Label(
+            per_core_usage, bg=bg, fg=fg, font=font, anchor=tk.W, width=100, height=10, text="USAGE PER CORE")
+        per_core_usage_label.pack()
 
-                per_core_usage = tk.Frame(usage_per_core, bg=bg)
-                per_core_usage.place(relwidth=0.35, relheight=0.07,
-                                     relx=0.02, rely=0.02)
+        cores = tk.Frame(usage_per_core, bg=bg)
+        cores.place(relwidth=1, relheight=0.83, relx=0, rely=0.13)
 
-                per_core_usage_label = tk.Label(
-                    per_core_usage, bg=bg, fg=fg, font=font, anchor=tk.W, width=100, height=10, text="USAGE PER CORE")
-                per_core_usage_label.pack()
+        # Measure temperature
 
-                cores = tk.Frame(usage_per_core, bg=bg)
-                cores.place(relwidth=1, relheight=0.83, relx=0, rely=0.13)
+        temp_frame = tk.Frame(cpu_frame, bg=bg)
+        temp_frame.place(relwidth=0.49, relheight=0.19,
+                         relx=0.505, rely=0)
 
-                bar.update(12.5)
+        temperature_frame = tk.Frame(temp_frame, bg=bg)
+        temperature_frame.place(
+            relwidth=0.40, relheight=0.15, relx=-0.04, rely=0.09)
 
-                # Measure temperature
+        temp_label = tk.Label(temperature_frame, bg=bg, fg=fg, width=100,
+                              height=100, anchor=tk.CENTER, font=font, text="TEMPERATURE")
+        temp_label.pack()
 
-                temp_frame = tk.Frame(cpu_frame, bg=bg)
-                temp_frame.place(relwidth=0.49, relheight=0.19,
-                                 relx=0.505, rely=0)
+        package_temp = tk.Frame(temp_frame, bg=bg)
+        package_temp.place(relwidth=0.963, relheight=0.50,
+                           relx=0.018, rely=0.426)
 
-                temperature_frame = tk.Frame(temp_frame, bg=bg)
-                temperature_frame.place(
-                    relwidth=0.40, relheight=0.15, relx=-0.04, rely=0.09)
+        package_temp_label = tk.Label(package_temp, bg=bg, fg=fg, font=font,
+                                      anchor=tk.W, width=100, height=1, text="Package Temperature")
+        package_temp_label.pack()
 
-                temp_label = tk.Label(temperature_frame, bg=bg, fg=fg, width=100,
-                                      height=100, anchor=tk.CENTER, font=font, text="TEMPERATURE")
-                temp_label.pack()
+        package_temp_bar = tk.Label(
+            package_temp, bg=bg, fg=fg, font=font, anchor=tk.W, width=200, height=1, text="|")
+        package_temp_bar.pack()
 
-                package_temp = tk.Frame(temp_frame, bg=bg)
-                package_temp.place(relwidth=0.963, relheight=0.50,
-                                   relx=0.018, rely=0.426)
+        package_temp_value = tk.Frame(temp_frame, bg="white")
+        package_temp_value.place(
+            relwidth=0.15, relheight=0.25, relx=0.83, rely=0.40)
 
-                package_temp_label = tk.Label(package_temp, bg=bg, fg=fg, font=font,
-                                              anchor=tk.W, width=100, height=1, text="Package Temperature")
-                package_temp_label.pack()
+        package_temp_value_label = tk.Label(
+            package_temp_value, bg=bg, fg=fg, font=font, anchor=tk.E, width=15, height=15, text="0°C")
+        package_temp_value_label.pack()
 
-                package_temp_bar = tk.Label(
-                    package_temp, bg=bg, fg=fg, font=font, anchor=tk.W, width=200, height=1, text="|")
-                package_temp_bar.pack()
+        # Measure voltage
 
-                package_temp_value = tk.Frame(temp_frame, bg="white")
-                package_temp_value.place(
-                    relwidth=0.15, relheight=0.25, relx=0.83, rely=0.40)
+        cpu_voltage = tk.Frame(cpu_frame, bg=bg)
+        cpu_voltage.place(relwidth=0.49, relheight=0.19,
+                          relx=0.505, rely=0.21)
 
-                package_temp_value_label = tk.Label(
-                    package_temp_value, bg=bg, fg=fg, font=font, anchor=tk.E, width=15, height=15, text="0°C")
-                package_temp_value_label.pack()
+        voltage_frame = tk.Frame(cpu_voltage, bg="white")
+        voltage_frame.place(
+            relwidth=0.20, relheight=0.15, relx=0.012, rely=0.09)
 
-                bar.update(12.5)
+        voltage_frame_label = tk.Label(voltage_frame, bg=bg, fg=fg, width=100,
+                                       height=100, anchor=tk.CENTER, font=font, text="VOLTAGE")
+        voltage_frame_label.pack()
 
-                # Measure voltage
+        voltage = tk.Frame(cpu_voltage, bg=bg)
+        voltage.place(relwidth=0.963, relheight=0.50,
+                      relx=0.021, rely=0.426)
 
-                cpu_voltage = tk.Frame(cpu_frame, bg=bg)
-                cpu_voltage.place(relwidth=0.49, relheight=0.19,
-                                  relx=0.505, rely=0.21)
+        voltage_label = tk.Label(voltage, bg=bg, fg=fg, font=font,
+                                 anchor=tk.W, width=100, height=1, text="Voltage")
+        voltage_label.pack()
 
-                voltage_frame = tk.Frame(cpu_voltage, bg="white")
-                voltage_frame.place(
-                    relwidth=0.20, relheight=0.15, relx=0.012, rely=0.09)
+        voltage_bar = tk.Label(voltage, bg=bg, fg=asm_cyan, font=font,
+                               anchor=tk.W, width=100, height=1, text="|")
+        voltage_bar.pack()
 
-                voltage_frame_label = tk.Label(voltage_frame, bg=bg, fg=fg, width=100,
-                                               height=100, anchor=tk.CENTER, font=font, text="VOLTAGE")
-                voltage_frame_label.pack()
+        voltage_value = tk.Frame(cpu_voltage, bg=bg)
+        voltage_value.place(relwidth=0.2, relheight=0.2,
+                            relx=0.78, rely=0.426)
 
-                voltage = tk.Frame(cpu_voltage, bg=bg)
-                voltage.place(relwidth=0.963, relheight=0.50,
-                              relx=0.021, rely=0.426)
+        voltage_value_label = tk.Label(
+            voltage_value, bg=bg, fg=fg, anchor=tk.E, font=font, width=15, height=15, text="0V")
+        voltage_value_label.pack()
 
-                voltage_label = tk.Label(voltage, bg=bg, fg=fg, font=font,
-                                         anchor=tk.W, width=100, height=1, text="Voltage")
-                voltage_label.pack()
+        # Measure frequency
 
-                voltage_bar = tk.Label(voltage, bg=bg, fg=asm_cyan, font=font,
-                                       anchor=tk.W, width=100, height=1, text="|")
-                voltage_bar.pack()
+        cpu_frequency = tk.Frame(cpu_frame, bg=bg)
+        cpu_frequency.place(relwidth=0.49, relheight=0.19,
+                            relx=0.505, rely=0.42)
 
-                voltage_value = tk.Frame(cpu_voltage, bg=bg)
-                voltage_value.place(relwidth=0.2, relheight=0.2,
-                                    relx=0.78, rely=0.426)
+        frequency_frame = tk.Frame(cpu_frequency, bg=bg)
+        frequency_frame.place(
+            relwidth=0.25, relheight=0.15, relx=0.012, rely=0.09)
 
-                voltage_value_label = tk.Label(
-                    voltage_value, bg=bg, fg=fg, anchor=tk.E, font=font, width=15, height=15, text="0V")
-                voltage_value_label.pack()
+        frequency_frame_label = tk.Label(
+            frequency_frame, bg=bg, fg=fg, font=font, anchor=tk.CENTER, width=100, height=100, text="FREQUENCY")
+        frequency_frame_label.pack()
 
-                bar.update(12.5)
+        frequency = tk.Frame(cpu_frequency, bg=bg)
+        frequency.place(relwidth=0.963, relheight=0.50,
+                        relx=0.021, rely=0.426)
 
-                # Measure frequency
+        frequency_label = tk.Label(frequency, bg=bg, fg=fg, font=font,
+                                   anchor=tk.W, width=100, height=1, text="Current Frequency")
+        frequency_label.pack()
 
-                cpu_frequency = tk.Frame(cpu_frame, bg=bg)
-                cpu_frequency.place(relwidth=0.49, relheight=0.19,
-                                    relx=0.505, rely=0.42)
+        frequency_bar = tk.Label(
+            frequency, bg=bg, fg=asm_cyan, font=font, anchor=tk.W, width=100, height=1, text="|")
+        frequency_bar.pack()
 
-                frequency_frame = tk.Frame(cpu_frequency, bg=bg)
-                frequency_frame.place(
-                    relwidth=0.25, relheight=0.15, relx=0.012, rely=0.09)
+        frequency_value = tk.Frame(cpu_frequency, bg=bg)
+        frequency_value.place(relwidth=0.3, relheight=0.2,
+                              relx=0.72, rely=0.426)
 
-                frequency_frame_label = tk.Label(
-                    frequency_frame, bg=bg, fg=fg, font=font, anchor=tk.CENTER, width=100, height=100, text="FREQUENCY")
-                frequency_frame_label.pack()
+        frequency_value_label = tk.Label(
+            frequency_value, bg=bg, fg=fg, font=font, anchor=tk.E, width=10, height=10, text="0 MHz")
+        frequency_value_label.pack()
 
-                frequency = tk.Frame(cpu_frequency, bg=bg)
-                frequency.place(relwidth=0.963, relheight=0.50,
-                                relx=0.021, rely=0.426)
+        # Measure power consumption
 
-                frequency_label = tk.Label(frequency, bg=bg, fg=fg, font=font,
-                                           anchor=tk.W, width=100, height=1, text="Current Frequency")
-                frequency_label.pack()
+        cpu_power = tk.Frame(cpu_frame, bg=bg)
+        cpu_power.place(relwidth=0.49, relheight=0.19,
+                        relx=0.505, rely=0.63)
 
-                frequency_bar = tk.Label(
-                    frequency, bg=bg, fg=asm_cyan, font=font, anchor=tk.W, width=100, height=1, text="|")
-                frequency_bar.pack()
+        cpu_power_frame = tk.Frame(cpu_power, bg=bg)
+        cpu_power_frame.place(
+            relwidth=0.45, relheight=0.15, relx=0.018, rely=0.09)
 
-                frequency_value = tk.Frame(cpu_frequency, bg=bg)
-                frequency_value.place(relwidth=0.3, relheight=0.2,
-                                      relx=0.72, rely=0.426)
+        cpu_power_label = tk.Label(cpu_power_frame, bg=bg, fg=fg, font=font,
+                                   anchor=tk.CENTER, width=100, height=100, text="POWER CONSUMPTION")
+        cpu_power_label.pack()
 
-                frequency_value_label = tk.Label(
-                    frequency_value, bg=bg, fg=fg, font=font, anchor=tk.E, width=10, height=10, text="0 MHz")
-                frequency_value_label.pack()
+        power_consumption = tk.Frame(cpu_power, bg=bg)
+        power_consumption.place(
+            relwidth=0.963, relheight=0.50, relx=0.021, rely=0.426)
 
-                bar.update(12.5)
+        power_consumption_label = tk.Label(
+            power_consumption, bg=bg, fg=fg, font=font, anchor=tk.W, width=100, height=1, text="Power Usage")
+        power_consumption_label.pack()
 
-                # Measure power consumption
-
-                cpu_power = tk.Frame(cpu_frame, bg=bg)
-                cpu_power.place(relwidth=0.49, relheight=0.19,
-                                relx=0.505, rely=0.63)
-
-                cpu_power_frame = tk.Frame(cpu_power, bg=bg)
-                cpu_power_frame.place(
-                    relwidth=0.45, relheight=0.15, relx=0.018, rely=0.09)
-
-                cpu_power_label = tk.Label(cpu_power_frame, bg=bg, fg=fg, font=font,
-                                           anchor=tk.CENTER, width=100, height=100, text="POWER CONSUMPTION")
-                cpu_power_label.pack()
-
-                power_consumption = tk.Frame(cpu_power, bg=bg)
-                power_consumption.place(
-                    relwidth=0.963, relheight=0.50, relx=0.021, rely=0.426)
-
-                power_consumption_label = tk.Label(
-                    power_consumption, bg=bg, fg=fg, font=font, anchor=tk.W, width=100, height=1, text="Power Usage")
-                power_consumption_label.pack()
-
-                power_usage_bar = tk.Label(power_consumption, bg=bg, fg=fg,
-                                           font=font, anchor=tk.W, width=100, height=1, text="|")
-                power_usage_bar.pack()
-
-                power_value = tk.Frame(cpu_power, bg=bg)
-                power_value.place(relwidth=0.2, relheight=0.2,
-                                  relx=0.78, rely=0.426)
-
-                power_value_label = tk.Label(
-                    power_value, bg=bg, fg=fg, font=font, anchor=tk.E, width=10, height=10, text="0 W")
-                power_value_label.pack()
-
-                bar.update(12.5)
-
-                # Max values
-
-                max_values = tk.Frame(cpu_frame, bg=bg)
-                max_values.place(relwidth=0.49, relheight=0.17,
-                                 relx=0.505, rely=0.84)
-
-                # TEMPERATURE
-                max_temp_text = tk.Label(max_values, bg=bg, fg=fg, font=font,
-                                         anchor=tk.CENTER, width=10, height=1, text="Temp (Max)")
-                max_temp_text.grid(row=0, column=0, padx=(7), pady=(30, 0))
-
-                max_temp = tk.Label(max_values, bg=bg, fg=fg, font=font,
-                                    anchor=tk.CENTER, width=10, height=1, text="0C")
-                max_temp.grid(row=1, column=0, padx=(7), pady=(0))
-
-                # POWER
-                max_power_text = tk.Label(max_values, bg=bg, fg=fg, font=font,
-                                          anchor=tk.CENTER, width=10, height=1, text="Power (Max)")
-                max_power_text.grid(row=0, column=1, padx=(7), pady=(30, 0))
-
-                max_power = tk.Label(max_values, bg=bg, fg=fg, font=font,
-                                     anchor=tk.CENTER, width=10, height=1, text="0 W")
-                max_power.grid(row=1, column=1, padx=(7), pady=(0))
-
-                # USAGE
-                max_usage_text = tk.Label(max_values, bg=bg, fg=fg, font=font,
-                                          anchor=tk.CENTER, width=10, height=1, text="Usage (Max)")
-                max_usage_text.grid(row=0, column=2, padx=(7), pady=(30, 0))
-
-                max_usage = tk.Label(max_values, bg=bg, fg=fg, font=font,
-                                     anchor=tk.CENTER, width=10, height=1, text="0%")
-                max_usage.grid(row=1, column=2, padx=(7), pady=(0))
-
-                # FREQUENCY
-                max_freq_text = tk.Label(max_values, bg=bg, fg=fg, font=font,
-                                         anchor=tk.CENTER, width=10, height=1, text="Freq (Max)")
-                max_freq_text.grid(row=0, column=3, padx=(7), pady=(30, 0))
-
-                max_freq = tk.Label(max_values, bg=bg, fg=asm_cyan, font=font,
-                                    anchor=tk.CENTER, width=10, height=1, text="0 MHz")
-                max_freq.grid(row=1, column=3, padx=(7), pady=(0))
-
-                bar.update(12.5)
-
-                # Notes
-                def MessageBox(title, text, style):
-                    ctypes.windll.user32.MessageBoxW(0, text, title, style)
-
-                notes = tk.Frame(cpu_frame, bg=bg)
-                notes.place(relwidth=0.49, relheight=0.17, relx=0, rely=0.84)
-
-                notes_frame = tk.Frame(notes, bg=bg)
-                notes_frame.place(relwidth=0.94, relheight=0.80,
-                                  relx=0.01, rely=0.07)
-
-                sheet = PhotoImage(file=f"{image_path}\psheet.png")
-
-                note1 = tk.Button(notes_frame, bg=bg, fg=fg, image=sheet, width=70, height=70,
-                                  bd=0, activebackground=button_bg, activeforeground="white", command=lambda: MessageBox(
-                                      'Note #1', 'Some metrics require OpenHardwareMonitor to be running in order to display information, If its not running they will show "0" as a value. \n\nCPU Usage does not require OHM as its pulling information directly from the sensors using a module which, well, measures Usage.', 0))
-                note1.grid(row=0, column=0, padx=(5), pady=0)
-
-                note1_label = tk.Label(notes_frame, bg=bg, fg=fg, font=font,
-                                       anchor=tk.CENTER, width=10, height=1, text="Note #1")
-                note1_label.grid(row=1, column=0, padx=(5))
-
-                note2 = tk.Button(notes_frame, bg=bg, fg=fg, image=sheet, width=70, height=70,
-                                  bd=0, activebackground=button_bg, activeforeground="white", command=lambda: MessageBox(
-                                      'Note #2', 'It is possible that the program will lag when moving it while its refreshing. Lag intensity will depend on your system but it is nothing to worry about as its only refreshing and loading new data and Python apparently does not like to be moved while doing so.', 0))
-                note2.grid(row=0, column=1, padx=(5), pady=0)
-
-                note2_label = tk.Label(notes_frame, bg=bg, fg=fg, font=font,
-                                       anchor=tk.CENTER, width=10, height=1, text="Note #2")
-                note2_label.grid(row=1, column=1, padx=(5))
-
-                note3 = tk.Button(notes_frame, bg=bg, fg=fg, image=sheet, width=70, height=70,
-                                  bd=0, activebackground=button_bg, activeforeground="white", command=lambda: MessageBox(
-                                      'Note #3', 'If the OpenHardwareMonitor does not launch with this app you can launch it manually and the information will start updating automatically. OHM comes standard with this app so please do not remove it from its own folder. \n\nAlso, some live information is based on maximum values it measured like Power and Frequency, Python cannot determine the TDP or Base frequency so when you load the CPU it will use its Max TDP and Frequency then those values will be used for measurements.', 0))
-                note3.grid(row=0, column=2, padx=(5), pady=0)
-
-                note3_label = tk.Label(notes_frame, bg=bg, fg=fg, font=font,
-                                       anchor=tk.CENTER, width=10, height=1, text="Note #3")
-                note3_label.grid(row=1, column=2, padx=(5))
-
-                note4 = tk.Button(notes_frame, bg=bg, fg=fg, image=sheet, width=70, height=70,
-                                  bd=0, activebackground=button_bg, activeforeground="white", command=lambda: MessageBox(
-                                      'Note #4', 'Per-Core Usage only supports updating up to 24 cores, meaning it will not show usage Per-Core if you have more than 24 non-logical cores (32, 64 etc.). This feature will be added later when we figure out how to fit them all in that small window. \n\nHowever if you have 12C/24T or less it will show all of the cores including logical ones and if you have more than 12C/24T it will show only non-logical cores up to 24 cores.', 0))
-                note4.grid(row=0, column=3, padx=(5), pady=0)
-
-                note4_label = tk.Label(notes_frame, bg=bg, fg=fg, font=font,
-                                       anchor=tk.CENTER, width=10, height=1, text="Note #4")
-                note4_label.grid(row=1, column=3, padx=(5))
-
-                bar.update(12.5)
-
-                loading.pack_forget()
-
-                refresh_cpu()
-
+        power_usage_bar = tk.Label(power_consumption, bg=bg, fg=fg,
+                                   font=font, anchor=tk.W, width=100, height=1, text="|")
+        power_usage_bar.pack()
+
+        power_value = tk.Frame(cpu_power, bg=bg)
+        power_value.place(relwidth=0.2, relheight=0.2,
+                          relx=0.78, rely=0.426)
+
+        power_value_label = tk.Label(
+            power_value, bg=bg, fg=fg, font=font, anchor=tk.E, width=10, height=10, text="0 W")
+        power_value_label.pack()
+
+        # Max values
+
+        max_values = tk.Frame(cpu_frame, bg=bg)
+        max_values.place(relwidth=0.49, relheight=0.17,
+                         relx=0.505, rely=0.84)
+
+        # TEMPERATURE
+        max_temp_text = tk.Label(max_values, bg=bg, fg=fg, font=font,
+                                 anchor=tk.CENTER, width=10, height=1, text="Temp (Max)")
+        max_temp_text.grid(row=0, column=0, padx=(7), pady=(30, 0))
+
+        max_temp = tk.Label(max_values, bg=bg, fg=fg, font=font,
+                            anchor=tk.CENTER, width=10, height=1, text="0C")
+        max_temp.grid(row=1, column=0, padx=(7), pady=(0))
+
+        # POWER
+        max_power_text = tk.Label(max_values, bg=bg, fg=fg, font=font,
+                                  anchor=tk.CENTER, width=10, height=1, text="Power (Max)")
+        max_power_text.grid(row=0, column=1, padx=(7), pady=(30, 0))
+
+        max_power = tk.Label(max_values, bg=bg, fg=fg, font=font,
+                             anchor=tk.CENTER, width=10, height=1, text="0 W")
+        max_power.grid(row=1, column=1, padx=(7), pady=(0))
+
+        # USAGE
+        max_usage_text = tk.Label(max_values, bg=bg, fg=fg, font=font,
+                                  anchor=tk.CENTER, width=10, height=1, text="Usage (Max)")
+        max_usage_text.grid(row=0, column=2, padx=(7), pady=(30, 0))
+
+        max_usage = tk.Label(max_values, bg=bg, fg=fg, font=font,
+                             anchor=tk.CENTER, width=10, height=1, text="0%")
+        max_usage.grid(row=1, column=2, padx=(7), pady=(0))
+
+        # FREQUENCY
+        max_freq_text = tk.Label(max_values, bg=bg, fg=fg, font=font,
+                                 anchor=tk.CENTER, width=10, height=1, text="Freq (Max)")
+        max_freq_text.grid(row=0, column=3, padx=(7), pady=(30, 0))
+
+        max_freq = tk.Label(max_values, bg=bg, fg=asm_cyan, font=font,
+                            anchor=tk.CENTER, width=10, height=1, text="0 MHz")
+        max_freq.grid(row=1, column=3, padx=(7), pady=(0))
+
+        # Notes
+        def MessageBox(title, text, style):
+            ctypes.windll.user32.MessageBoxW(0, text, title, style)
+
+        notes = tk.Frame(cpu_frame, bg=bg)
+        notes.place(relwidth=0.49, relheight=0.17, relx=0, rely=0.84)
+
+        notes_frame = tk.Frame(notes, bg=bg)
+        notes_frame.place(relwidth=0.94, relheight=0.80,
+                          relx=0.01, rely=0.07)
+
+        sheet = PhotoImage(file=f"{image_path}\psheet.png")
+
+        note1 = tk.Button(notes_frame, bg=bg, fg=fg, image=sheet, width=70, height=70,
+                          bd=0, activebackground=button_bg, activeforeground="white", command=lambda: MessageBox(
+                              'Note #1', 'Some metrics require OpenHardwareMonitor to be running in order to display information, If its not running they will show "0" as a value. \n\nCPU Usage does not require OHM as its pulling information directly from the sensors using a module which, well, measures Usage.', 0))
+        note1.grid(row=0, column=0, padx=(5), pady=0)
+
+        note1_label = tk.Label(notes_frame, bg=bg, fg=fg, font=font,
+                               anchor=tk.CENTER, width=10, height=1, text="Note #1")
+        note1_label.grid(row=1, column=0, padx=(5))
+
+        note2 = tk.Button(notes_frame, bg=bg, fg=fg, image=sheet, width=70, height=70,
+                          bd=0, activebackground=button_bg, activeforeground="white", command=lambda: MessageBox(
+                              'Note #2', 'It is possible that the program will lag when moving it while its refreshing. Lag intensity will depend on your system but it is nothing to worry about as its only refreshing and loading new data and Python apparently does not like to be moved while doing so.', 0))
+        note2.grid(row=0, column=1, padx=(5), pady=0)
+
+        note2_label = tk.Label(notes_frame, bg=bg, fg=fg, font=font,
+                               anchor=tk.CENTER, width=10, height=1, text="Note #2")
+        note2_label.grid(row=1, column=1, padx=(5))
+
+        note3 = tk.Button(notes_frame, bg=bg, fg=fg, image=sheet, width=70, height=70,
+                          bd=0, activebackground=button_bg, activeforeground="white", command=lambda: MessageBox(
+                              'Note #3', 'If the OpenHardwareMonitor does not launch with this app you can launch it manually and the information will start updating automatically. OHM comes standard with this app so please do not remove it from its own folder. \n\nAlso, some live information is based on maximum values it measured like Power and Frequency, Python cannot determine the TDP or Base frequency so when you load the CPU it will use its Max TDP and Frequency then those values will be used for measurements.', 0))
+        note3.grid(row=0, column=2, padx=(5), pady=0)
+
+        note3_label = tk.Label(notes_frame, bg=bg, fg=fg, font=font,
+                               anchor=tk.CENTER, width=10, height=1, text="Note #3")
+        note3_label.grid(row=1, column=2, padx=(5))
+
+        note4 = tk.Button(notes_frame, bg=bg, fg=fg, image=sheet, width=70, height=70,
+                          bd=0, activebackground=button_bg, activeforeground="white", command=lambda: MessageBox(
+                              'Note #4', 'Per-Core Usage only supports updating up to 24 cores, meaning it will not show usage Per-Core if you have more than 24 non-logical cores (32, 64 etc.). This feature will be added later when we figure out how to fit them all in that small window. \n\nHowever if you have 12C/24T or less it will show all of the cores including logical ones and if you have more than 12C/24T it will show only non-logical cores up to 24 cores.', 0))
+        note4.grid(row=0, column=3, padx=(5), pady=0)
+
+        note4_label = tk.Label(notes_frame, bg=bg, fg=fg, font=font,
+                               anchor=tk.CENTER, width=10, height=1, text="Note #4")
+        note4_label.grid(row=1, column=3, padx=(5))
         max_record = 0
 
-        dec_cpu = root.after(15, declare_cpu)
+        root.after(100, refresh_cpu)
+
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # refresh_cpu function updates cpu information every x amount of miliseconds
@@ -3905,7 +3804,7 @@ try:
                             package_temp_bar.configure(fg=asm_red)
                         break
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -3923,7 +3822,7 @@ try:
                             text=f"{sensor.Value:.2f}V")
                         break
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -3962,7 +3861,7 @@ try:
 
                     break
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -3983,7 +3882,7 @@ try:
                         max_freq.configure(text=f"{sensor.Max:.1f} MHz")
                         break
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -3997,7 +3896,7 @@ try:
             elif max(cpu_max_usage_list) > 80:
                 max_usage.configure(fg=asm_red)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -4011,13 +3910,13 @@ try:
             elif max_temp_sensor > 90:
                 max_temp.configure(fg=asm_red)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         ref = root.after(1500, refresh_cpu)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # GPU function gets all the information available for the GPU
@@ -4025,83 +3924,109 @@ except Exception as e:
 try:
     def gpu():
         global gpu_frame
+        global total_gpu_usage_bar
+        global total_gpu_usage_num
+        global current_temp_bar
+        global current_temp_num_label
+        global vram_bar
+        global vram_value_label
+        global core_clock_value
+        global core_clock_bar
+        global memory_clock_bar
+        global memory_clock_value
+        global shader_clock_bar
+        global shader_clock_value
+        global core_load
+        global frame_buffer
+        global video_engine
+        global bus_interface
+        global memory_load
+        global rpm_value
+        global fan_rpm_bar
+        global video_engine_usage_bar
+        global video_engine_value_label
+        global gpu_max_temp
+        global gpu_max_usage
+        global gpu_max_vram
+        global gpu_max_rpm
+        global note_image
 
         # Remove any previously opened windows and change button background
 
         try:
-            gpuButton.configure(bg=button_bg)
+            gpuButton.configure(bg=button_bg, command=opened)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            combined_test_frame.place_forget()
+            benchmark_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            homeButton.configure(bg=sidemenu_bg)
+            homeButton.configure(bg=sidemenu_bg, command=home)
             root.after_cancel(time)
             home_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            cpuButton.configure(bg=sidemenu_bg)
+            cpuButton.configure(bg=sidemenu_bg, command=cpu)
             root.after_cancel(ref)
             cpu_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            motherboardButton.configure(bg=sidemenu_bg)
+            motherboardButton.configure(bg=sidemenu_bg, command=mobo)
             main_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            ramButton.configure(bg=sidemenu_bg)
+            ramButton.configure(bg=sidemenu_bg, command=ram)
             root.after_cancel(ram_ref)
             ram_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            hddButton.configure(bg=sidemenu_bg)
+            hddButton.configure(bg=sidemenu_bg, command=drives)
             root.after_cancel(drive_ref)
             drive_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            netButton.configure(bg=sidemenu_bg)
+            netButton.configure(bg=sidemenu_bg, command=network)
             root.after_cancel(net_ref)
             network_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            fanButton.configure(bg=sidemenu_bg)
+            fanButton.configure(bg=sidemenu_bg, command=fans)
             root.after_cancel(fan_ref)
             fans_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -4109,416 +4034,359 @@ try:
         gpu_frame = tk.Frame(root, bg=canvas_bg)
         gpu_frame.place(relwidth=0.875, relheight=0.915,
                         relx=0.117, rely=0.066)
+        # Set frames, labels and bar for usage
+        gpu_usage = tk.Frame(gpu_frame, bg=bg)
+        gpu_usage.place(relwidth=0.49, relheight=0.19, relx=0, rely=0)
+
+        usage_frame = tk.Frame(gpu_usage, bg=bg)
+        usage_frame.place(
+            relwidth=0.15, relheight=0.15, relx=0.01, rely=0.08)
+
+        usage_label = tk.Label(usage_frame, bg=bg, fg=fg, width=100,
+                               height=1, anchor=tk.CENTER, font=font, text="USAGE")
+        usage_label.pack()
+
+        total_gpu_usage = tk.Frame(gpu_usage, bg=bg)
+        total_gpu_usage.place(relwidth=1, relheight=0.90,
+                              relx=0.02, rely=0.426)
+
+        total_gpu_usage_label = tk.Label(total_gpu_usage, bg=bg, fg=fg, width=100,
+                                         height=1, anchor=tk.W, font=font, text="Total usage")
+        total_gpu_usage_label.pack()
+
+        total_gpu_usage_bar = tk.Label(total_gpu_usage, bg=bg, fg=fg, width=100,
+                                       height=1, anchor=tk.W, font=font, text="|")
+        total_gpu_usage_bar.pack()
+
+        total_gpu_usage_num_frame = tk.Frame(gpu_usage, bg=bg)
+        total_gpu_usage_num_frame.place(
+            relwidth=0.25, relheight=0.15, relx=0.72, rely=0.465)
+
+        total_gpu_usage_num = tk.Label(total_gpu_usage_num_frame, bg=bg,
+                                       fg=fg, font=font, anchor=tk.E, width=15, height=15, text="0%")
+        total_gpu_usage_num.pack()
+
+        # Set frames, labels and bar for temperature
+        gpu_temp = tk.Frame(gpu_frame, bg=bg)
+        gpu_temp.place(relwidth=0.49, relheight=0.19,
+                       relx=0.505, rely=0)
+
+        gpu_temp_frame = tk.Frame(gpu_temp, bg=bg)
+        gpu_temp_frame.place(relwidth=0.40, relheight=0.15,
+                             relx=-0.04, rely=0.09)
+
+        gpu_temp_label = tk.Label(gpu_temp_frame, bg=bg, fg=fg, width=100,
+                                  height=100, anchor=tk.CENTER, font=font, text="TEMPERATURE")
+        gpu_temp_label.pack()
+
+        temp_container = tk.Frame(gpu_temp, bg=bg)
+        temp_container.place(relwidth=0.963, relheight=0.50,
+                             relx=0.018, rely=0.426)
+
+        current_temp = tk.Label(temp_container, bg=bg, fg=fg, width=100,
+                                height=1, anchor=tk.W, font=font, text="Current Temperature")
+        current_temp.pack()
+
+        current_temp_bar = tk.Label(temp_container, bg=bg, fg=fg, width=100,
+                                    height=1, anchor=tk.W, font=font, text="|")
+        current_temp_bar.pack()
+
+        current_temp_num = tk.Frame(gpu_temp, bg=bg)
+        current_temp_num.place(
+            relwidth=0.15, relheight=0.25, relx=0.83, rely=0.40)
+
+        current_temp_num_label = tk.Label(current_temp_num, bg=bg, fg=fg, width=15,
+                                          height=15, anchor=tk.E, font=font, text="0°C")
+        current_temp_num_label.pack()
+
+        # Set frames, labels and bar for VRAM usage
+        gpu_vram_usage = tk.Frame(gpu_frame, bg=bg)
+        gpu_vram_usage.place(relwidth=0.49, relheight=0.19,
+                             relx=0.505, rely=0.21)
+
+        vram_frame = tk.Frame(gpu_vram_usage, bg=bg)
+        vram_frame.place(relwidth=0.28, relheight=0.15,
+                         relx=0.012, rely=0.09)
+
+        vram_label = tk.Label(vram_frame, bg=bg, fg=fg, font=font,
+                              anchor=tk.CENTER, width=100, height=10, text="VRAM USAGE")
+        vram_label.pack()
+
+        vram = tk.Frame(gpu_vram_usage, bg=bg)
+        vram.place(relwidth=0.963, relheight=0.50,
+                   relx=0.021, rely=0.426)
+
+        vram_label = tk.Label(vram, bg=bg, fg=fg, font=font,
+                              anchor=tk.W, width=100, height=1, text="VRAM")
+        vram_label.pack()
+
+        vram_bar = tk.Label(vram, bg=bg, fg=fg, font=font,
+                            anchor=tk.W, width=100, height=1, text="|")
+        vram_bar.pack()
+
+        vram_value = tk.Frame(gpu_vram_usage, bg=bg)
+        vram_value.place(relwidth=0.3, relheight=0.2,
+                         relx=0.684, rely=0.426)
+
+        vram_value_label = tk.Label(
+            vram_value, bg=bg, fg=fg, anchor=tk.E, font=font, width=40, height=15, text="0GB/0GB")
+        vram_value_label.pack()
+
+        # Set frame, labels and bars for various gpu clock speeds
+        gpu_clocks = tk.Frame(gpu_frame, bg=bg)
+        gpu_clocks.place(
+            relwidth=0.49, relheight=0.35, relx=0, rely=0.21)
+
+        clocks_frame = tk.Frame(gpu_clocks, bg=bg)
+        clocks_frame.place(relwidth=0.15, relheight=0.15,
+                           relx=0.023, rely=0.03)
+
+        clocks_label = tk.Label(clocks_frame, bg=bg, fg=fg, font=font,
+                                anchor=tk.CENTER, width=100, height=1, text="CLOCKS")
+        clocks_label.pack()
+
+        # Container which holds all the clocks
+        clock_container = tk.Frame(gpu_clocks, bg=bg)
+        clock_container.place(
+            relwidth=1, relheight=0.76, relx=0, rely=0.217)
 
-        loading = tk.Label(gpu_frame, bg=canvas_bg, fg=fg, font=(
-            loading_font), width=100, height=50, text="Loading...")
-        loading.pack()
-
-        def declare_gpu():
-            global total_gpu_usage_bar
-            global total_gpu_usage_num
-            global current_temp_bar
-            global current_temp_num_label
-            global vram_bar
-            global vram_value_label
-            global core_clock_value
-            global core_clock_bar
-            global memory_clock_bar
-            global memory_clock_value
-            global shader_clock_bar
-            global shader_clock_value
-            global core_load
-            global frame_buffer
-            global video_engine
-            global bus_interface
-            global memory_load
-            global rpm_value
-            global fan_rpm_bar
-            global video_engine_usage_bar
-            global video_engine_value_label
-            global gpu_max_temp
-            global gpu_max_usage
-            global gpu_max_vram
-            global gpu_max_rpm
-            global note_image
-
-            root.after_cancel(dec_gpu)
-
-            with tqdm(total=100) as bar:
-                # Set frames, labels and bar for usage
-                gpu_usage = tk.Frame(gpu_frame, bg=bg)
-                gpu_usage.place(relwidth=0.49, relheight=0.19, relx=0, rely=0)
-
-                usage_frame = tk.Frame(gpu_usage, bg=bg)
-                usage_frame.place(
-                    relwidth=0.15, relheight=0.15, relx=0.01, rely=0.08)
-
-                usage_label = tk.Label(usage_frame, bg=bg, fg=fg, width=100,
-                                       height=1, anchor=tk.CENTER, font=font, text="USAGE")
-                usage_label.pack()
-
-                total_gpu_usage = tk.Frame(gpu_usage, bg=bg)
-                total_gpu_usage.place(relwidth=1, relheight=0.90,
-                                      relx=0.02, rely=0.426)
-
-                total_gpu_usage_label = tk.Label(total_gpu_usage, bg=bg, fg=fg, width=100,
-                                                 height=1, anchor=tk.W, font=font, text="Total usage")
-                total_gpu_usage_label.pack()
-
-                total_gpu_usage_bar = tk.Label(total_gpu_usage, bg=bg, fg=fg, width=100,
-                                               height=1, anchor=tk.W, font=font, text="|")
-                total_gpu_usage_bar.pack()
-
-                total_gpu_usage_num_frame = tk.Frame(gpu_usage, bg=bg)
-                total_gpu_usage_num_frame.place(
-                    relwidth=0.25, relheight=0.15, relx=0.72, rely=0.465)
-
-                total_gpu_usage_num = tk.Label(total_gpu_usage_num_frame, bg=bg,
-                                               fg=fg, font=font, anchor=tk.E, width=15, height=15, text="0%")
-                total_gpu_usage_num.pack()
-
-                bar.update(10)
-
-                # Set frames, labels and bar for temperature
-                gpu_temp = tk.Frame(gpu_frame, bg=bg)
-                gpu_temp.place(relwidth=0.49, relheight=0.19,
-                               relx=0.505, rely=0)
-
-                gpu_temp_frame = tk.Frame(gpu_temp, bg=bg)
-                gpu_temp_frame.place(relwidth=0.40, relheight=0.15,
-                                     relx=-0.04, rely=0.09)
-
-                gpu_temp_label = tk.Label(gpu_temp_frame, bg=bg, fg=fg, width=100,
-                                          height=100, anchor=tk.CENTER, font=font, text="TEMPERATURE")
-                gpu_temp_label.pack()
-
-                temp_container = tk.Frame(gpu_temp, bg=bg)
-                temp_container.place(relwidth=0.963, relheight=0.50,
-                                     relx=0.018, rely=0.426)
-
-                current_temp = tk.Label(temp_container, bg=bg, fg=fg, width=100,
-                                        height=1, anchor=tk.W, font=font, text="Current Temperature")
-                current_temp.pack()
-
-                current_temp_bar = tk.Label(temp_container, bg=bg, fg=fg, width=100,
-                                            height=1, anchor=tk.W, font=font, text="|")
-                current_temp_bar.pack()
-
-                current_temp_num = tk.Frame(gpu_temp, bg=bg)
-                current_temp_num.place(
-                    relwidth=0.15, relheight=0.25, relx=0.83, rely=0.40)
-
-                current_temp_num_label = tk.Label(current_temp_num, bg=bg, fg=fg, width=15,
-                                                  height=15, anchor=tk.E, font=font, text="0°C")
-                current_temp_num_label.pack()
-
-                bar.update(10)
-
-                # Set frames, labels and bar for VRAM usage
-                gpu_vram_usage = tk.Frame(gpu_frame, bg=bg)
-                gpu_vram_usage.place(relwidth=0.49, relheight=0.19,
-                                     relx=0.505, rely=0.21)
-
-                vram_frame = tk.Frame(gpu_vram_usage, bg=bg)
-                vram_frame.place(relwidth=0.28, relheight=0.15,
-                                 relx=0.012, rely=0.09)
+        # Core clock
+        core_clock = tk.Label(clock_container, bg=bg, fg=fg, font=font,
+                              anchor=tk.W, width=100, height=1, text="Core Clock")
+        core_clock.grid(row=0, column=0, padx=(10), pady=(5, 0))
 
-                vram_label = tk.Label(vram_frame, bg=bg, fg=fg, font=font,
-                                      anchor=tk.CENTER, width=100, height=10, text="VRAM USAGE")
-                vram_label.pack()
+        core_clock_bar = tk.Label(clock_container, bg=bg, fg=asm_cyan,
+                                  font=font, anchor=tk.W, width=100, height=1, text="|")
+        core_clock_bar.grid(row=1, column=0, padx=(10))
 
-                vram = tk.Frame(gpu_vram_usage, bg=bg)
-                vram.place(relwidth=0.963, relheight=0.50,
-                           relx=0.021, rely=0.426)
+        core_clock_value_frame = tk.Frame(gpu_clocks, bg=bg)
+        core_clock_value_frame.place(
+            relwidth=0.30, relheight=0.10, relx=0.675, rely=0.245)
 
-                vram_label = tk.Label(vram, bg=bg, fg=fg, font=font,
-                                      anchor=tk.W, width=100, height=1, text="VRAM")
-                vram_label.pack()
+        core_clock_value = tk.Label(core_clock_value_frame, bg=bg, fg=fg, font=font,
+                                    anchor=tk.E, width=100, height=1, text="0 MHz")
+        core_clock_value.pack()
 
-                vram_bar = tk.Label(vram, bg=bg, fg=fg, font=font,
-                                    anchor=tk.W, width=100, height=1, text="|")
-                vram_bar.pack()
+        # Memory clock
+        memory_clock = tk.Label(clock_container, bg=bg, fg=fg, font=font,
+                                anchor=tk.W, width=100, height=1, text="Memory Clock")
+        memory_clock.grid(row=2, column=0, padx=(10))
 
-                vram_value = tk.Frame(gpu_vram_usage, bg=bg)
-                vram_value.place(relwidth=0.3, relheight=0.2,
-                                 relx=0.684, rely=0.426)
+        memory_clock_bar = tk.Label(clock_container, bg=bg, fg=asm_cyan,
+                                    font=font, anchor=tk.W, width=100, height=1, text="|")
+        memory_clock_bar.grid(row=3, column=0, padx=(10))
 
-                vram_value_label = tk.Label(
-                    vram_value, bg=bg, fg=fg, anchor=tk.E, font=font, width=40, height=15, text="0GB/0GB")
-                vram_value_label.pack()
+        memory_clock_value_frame = tk.Frame(gpu_clocks, bg=bg)
+        memory_clock_value_frame.place(
+            relwidth=0.30, relheight=0.10, relx=0.675, rely=0.48)
 
-                bar.update(10)
+        memory_clock_value = tk.Label(memory_clock_value_frame, bg=bg, fg=fg, font=font,
+                                      anchor=tk.E, width=100, height=1, text="0 MHz")
+        memory_clock_value.pack()
 
-                # Set frame, labels and bars for various gpu clock speeds
-                gpu_clocks = tk.Frame(gpu_frame, bg=bg)
-                gpu_clocks.place(
-                    relwidth=0.49, relheight=0.35, relx=0, rely=0.21)
+        # Shader clock
+        shader_clock = tk.Label(clock_container, bg=bg, fg=fg, font=font,
+                                anchor=tk.W, width=100, height=1, text="Shader Clock")
+        shader_clock.grid(row=4, column=0, padx=(10))
 
-                clocks_frame = tk.Frame(gpu_clocks, bg=bg)
-                clocks_frame.place(relwidth=0.15, relheight=0.15,
-                                   relx=0.023, rely=0.03)
+        shader_clock_bar = tk.Label(clock_container, bg=bg, fg=asm_cyan,
+                                    font=font, anchor=tk.W, width=100, height=1, text="|")
+        shader_clock_bar.grid(row=5, column=0, padx=(10))
 
-                clocks_label = tk.Label(clocks_frame, bg=bg, fg=fg, font=font,
-                                        anchor=tk.CENTER, width=100, height=1, text="CLOCKS")
-                clocks_label.pack()
+        shader_clock_value_frame = tk.Frame(gpu_clocks, bg=bg)
+        shader_clock_value_frame.place(
+            relwidth=0.30, relheight=0.10, relx=0.675, rely=0.715)
 
-                # Container which holds all the clocks
-                clock_container = tk.Frame(gpu_clocks, bg=bg)
-                clock_container.place(
-                    relwidth=1, relheight=0.76, relx=0, rely=0.217)
+        shader_clock_value = tk.Label(shader_clock_value_frame, bg=bg, fg=fg, font=font,
+                                      anchor=tk.E, width=100, height=1, text="0 MHz")
+        shader_clock_value.pack()
 
-                # Core clock
-                core_clock = tk.Label(clock_container, bg=bg, fg=fg, font=font,
-                                      anchor=tk.W, width=100, height=1, text="Core Clock")
-                core_clock.grid(row=0, column=0, padx=(10), pady=(5, 0))
+        # Set frames and labels for various gpu loads
 
-                core_clock_bar = tk.Label(clock_container, bg=bg, fg=asm_cyan,
-                                          font=font, anchor=tk.W, width=100, height=1, text="|")
-                core_clock_bar.grid(row=1, column=0, padx=(10))
+        gpu_loads = tk.Frame(gpu_frame, bg=bg)
+        gpu_loads.place(relwidth=0.49, relheight=0.24,
+                        relx=0, rely=0.58)
 
-                core_clock_value_frame = tk.Frame(gpu_clocks, bg=bg)
-                core_clock_value_frame.place(
-                    relwidth=0.30, relheight=0.10, relx=0.675, rely=0.245)
+        gpu_loads_label_frame = tk.Frame(gpu_loads, bg=bg)
+        gpu_loads_label_frame.place(
+            relwidth=0.15, relheight=0.15, relx=0.02, rely=0.04)
 
-                core_clock_value = tk.Label(core_clock_value_frame, bg=bg, fg=fg, font=font,
-                                            anchor=tk.E, width=100, height=1, text="0 MHz")
-                core_clock_value.pack()
+        gpu_loads_label = tk.Label(gpu_loads_label_frame, bg=bg, fg=fg,
+                                   font=font, anchor=tk.CENTER, width=100, height=10, text="LOADS")
+        gpu_loads_label.pack()
 
-                # Memory clock
-                memory_clock = tk.Label(clock_container, bg=bg, fg=fg, font=font,
-                                        anchor=tk.W, width=100, height=1, text="Memory Clock")
-                memory_clock.grid(row=2, column=0, padx=(10))
+        load_container = tk.Frame(gpu_loads, bg=bg)
+        load_container.place(
+            relwidth=1, relheight=0.70, relx=0, rely=0.30)
 
-                memory_clock_bar = tk.Label(clock_container, bg=bg, fg=asm_cyan,
-                                            font=font, anchor=tk.W, width=100, height=1, text="|")
-                memory_clock_bar.grid(row=3, column=0, padx=(10))
+        core_load = tk.Label(load_container, bg=bg, fg=fg, font=font,
+                             anchor=tk.CENTER, width=10, height=2, text="Core Load\n0%")
+        core_load.grid(row=0, column=0, padx=(25), pady=(5))
 
-                memory_clock_value_frame = tk.Frame(gpu_clocks, bg=bg)
-                memory_clock_value_frame.place(
-                    relwidth=0.30, relheight=0.10, relx=0.675, rely=0.48)
+        frame_buffer = tk.Label(load_container, bg=bg, fg=fg, font=font,
+                                anchor=tk.CENTER, width=10, height=2, text="Frame Buffer\n0%")
+        frame_buffer.grid(row=0, column=1, padx=(25), pady=(5))
 
-                memory_clock_value = tk.Label(memory_clock_value_frame, bg=bg, fg=fg, font=font,
-                                              anchor=tk.E, width=100, height=1, text="0 MHz")
-                memory_clock_value.pack()
+        bus_interface = tk.Label(load_container, bg=bg, fg=fg, font=font,
+                                 anchor=tk.CENTER, width=10, height=2, text="Bus Interface\n0%")
+        bus_interface.grid(row=0, column=2, padx=(25), pady=(20))
 
-                # Shader clock
-                shader_clock = tk.Label(clock_container, bg=bg, fg=fg, font=font,
-                                        anchor=tk.W, width=100, height=1, text="Shader Clock")
-                shader_clock.grid(row=4, column=0, padx=(10))
+        # GPU Fans
 
-                shader_clock_bar = tk.Label(clock_container, bg=bg, fg=asm_cyan,
-                                            font=font, anchor=tk.W, width=100, height=1, text="|")
-                shader_clock_bar.grid(row=5, column=0, padx=(10))
+        gpu_fans = tk.Frame(gpu_frame, bg=bg)
+        gpu_fans.place(relwidth=0.49, relheight=0.19,
+                       relx=0.505, rely=0.42)
 
-                shader_clock_value_frame = tk.Frame(gpu_clocks, bg=bg)
-                shader_clock_value_frame.place(
-                    relwidth=0.30, relheight=0.10, relx=0.675, rely=0.715)
+        gpu_fans_label_frame = tk.Frame(gpu_fans, bg=bg)
+        gpu_fans_label_frame.place(
+            relwidth=0.10, relheight=0.15, relx=0.027, rely=0.085)
 
-                shader_clock_value = tk.Label(shader_clock_value_frame, bg=bg, fg=fg, font=font,
-                                              anchor=tk.E, width=100, height=1, text="0 MHz")
-                shader_clock_value.pack()
+        gpu_fans_label = tk.Label(gpu_fans_label_frame, bg=bg, fg=fg,
+                                  font=font, anchor=tk.CENTER, width=100, height=10, text="FANS")
+        gpu_fans_label.pack()
 
-                bar.update(10)
+        fans_container = tk.Frame(gpu_fans, bg=bg)
+        fans_container.place(relwidth=0.963, relheight=0.50,
+                             relx=0.021, rely=0.426)
 
-                # Set frames and labels for various gpu loads
+        fan_rpm = tk.Label(fans_container, bg=bg, fg=fg, font=font,
+                           anchor=tk.W, width=100, height=1, text="Fan RPM")
+        fan_rpm.pack()
 
-                gpu_loads = tk.Frame(gpu_frame, bg=bg)
-                gpu_loads.place(relwidth=0.49, relheight=0.24,
-                                relx=0, rely=0.58)
+        fan_rpm_bar = tk.Label(fans_container, bg=bg, fg=fg,
+                               font=font, anchor=tk.W, width=100, height=1, text="|")
+        fan_rpm_bar.pack()
 
-                gpu_loads_label_frame = tk.Frame(gpu_loads, bg=bg)
-                gpu_loads_label_frame.place(
-                    relwidth=0.15, relheight=0.15, relx=0.02, rely=0.04)
+        rpm_value_frame = tk.Frame(gpu_fans, bg=bg)
+        rpm_value_frame.place(relwidth=0.3, relheight=0.2,
+                              relx=0.684, rely=0.426)
 
-                gpu_loads_label = tk.Label(gpu_loads_label_frame, bg=bg, fg=fg,
-                                           font=font, anchor=tk.CENTER, width=100, height=10, text="LOADS")
-                gpu_loads_label.pack()
+        rpm_value = tk.Label(rpm_value_frame, bg=bg, fg=fg, font=font,
+                             anchor=tk.E, width=40, height=15, text="0 RPM")
+        rpm_value.pack()
 
-                load_container = tk.Frame(gpu_loads, bg=bg)
-                load_container.place(
-                    relwidth=1, relheight=0.70, relx=0, rely=0.30)
+        # Video engine
 
-                core_load = tk.Label(load_container, bg=bg, fg=fg, font=font,
-                                     anchor=tk.CENTER, width=10, height=2, text="Core Load\n0%")
-                core_load.grid(row=0, column=0, padx=(25), pady=(5))
+        gpu_video_engine = tk.Frame(gpu_frame, bg=bg)
+        gpu_video_engine.place(relwidth=0.49, relheight=0.19,
+                               relx=0.505, rely=0.63)
 
-                frame_buffer = tk.Label(load_container, bg=bg, fg=fg, font=font,
-                                        anchor=tk.CENTER, width=10, height=2, text="Frame Buffer\n0%")
-                frame_buffer.grid(row=0, column=1, padx=(25), pady=(5))
+        gpu_video_engine_frame = tk.Frame(gpu_video_engine, bg=bg)
+        gpu_video_engine_frame.place(
+            relwidth=0.30, relheight=0.15, relx=0.01, rely=0.085)
 
-                bus_interface = tk.Label(load_container, bg=bg, fg=fg, font=font,
-                                         anchor=tk.CENTER, width=10, height=2, text="Bus Interface\n0%")
-                bus_interface.grid(row=0, column=2, padx=(25), pady=(20))
+        gpu_video_engine_label = tk.Label(gpu_video_engine_frame, bg=bg, fg=fg,
+                                          font=font, anchor=tk.CENTER, width=100, height=10, text="VIDEO ENGINE")
+        gpu_video_engine_label.pack()
 
-                bar.update(10)
+        video_engine_container = tk.Frame(gpu_video_engine, bg=bg)
+        video_engine_container.place(
+            relwidth=0.963, relheight=0.50, relx=0.021, rely=0.426)
 
-                # GPU Fans
+        video_engine_usage = tk.Label(video_engine_container, bg=bg, fg=fg,
+                                      font=font, anchor=tk.W, width=100, height=1, text="Usage")
+        video_engine_usage.pack()
 
-                gpu_fans = tk.Frame(gpu_frame, bg=bg)
-                gpu_fans.place(relwidth=0.49, relheight=0.19,
-                               relx=0.505, rely=0.42)
+        video_engine_usage_bar = tk.Label(
+            video_engine_container, bg=bg, fg=fg, font=font, anchor=tk.W, width=100, height=1, text="|")
+        video_engine_usage_bar.pack()
 
-                gpu_fans_label_frame = tk.Frame(gpu_fans, bg=bg)
-                gpu_fans_label_frame.place(
-                    relwidth=0.10, relheight=0.15, relx=0.027, rely=0.085)
+        video_engine_value_frame = tk.Frame(gpu_video_engine, bg=bg)
+        video_engine_value_frame.place(
+            relwidth=0.3, relheight=0.2, relx=0.684, rely=0.426)
 
-                gpu_fans_label = tk.Label(gpu_fans_label_frame, bg=bg, fg=fg,
-                                          font=font, anchor=tk.CENTER, width=100, height=10, text="FANS")
-                gpu_fans_label.pack()
+        video_engine_value_label = tk.Label(
+            video_engine_value_frame, bg=bg, fg=fg, font=font, anchor=tk.E, width=40, height=15, text="0%")
+        video_engine_value_label.pack()
 
-                fans_container = tk.Frame(gpu_fans, bg=bg)
-                fans_container.place(relwidth=0.963, relheight=0.50,
-                                     relx=0.021, rely=0.426)
+        # Max recorded values
 
-                fan_rpm = tk.Label(fans_container, bg=bg, fg=fg, font=font,
-                                   anchor=tk.W, width=100, height=1, text="Fan RPM")
-                fan_rpm.pack()
+        gpu_max_values = tk.Frame(gpu_frame, bg=bg)
+        gpu_max_values.place(relwidth=0.49, relheight=0.17,
+                             relx=0.505, rely=0.84)
 
-                fan_rpm_bar = tk.Label(fans_container, bg=bg, fg=fg,
-                                       font=font, anchor=tk.W, width=100, height=1, text="|")
-                fan_rpm_bar.pack()
+        gpu_max_temp_text = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
+                                     anchor=tk.CENTER, width=10, height=1, text="Temp (Max)")
+        gpu_max_temp_text.grid(row=0, column=0, padx=(7), pady=(30, 0))
 
-                rpm_value_frame = tk.Frame(gpu_fans, bg=bg)
-                rpm_value_frame.place(relwidth=0.3, relheight=0.2,
-                                      relx=0.684, rely=0.426)
+        gpu_max_temp = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
+                                anchor=tk.CENTER, width=10, height=1, text="0C")
+        gpu_max_temp.grid(row=1, column=0, padx=(7), pady=0)
 
-                rpm_value = tk.Label(rpm_value_frame, bg=bg, fg=fg, font=font,
-                                     anchor=tk.E, width=40, height=15, text="0 RPM")
-                rpm_value.pack()
+        gpu_max_usage_text = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
+                                      anchor=tk.CENTER, width=10, height=1, text="Usage (Max)")
+        gpu_max_usage_text.grid(
+            row=0, column=1, padx=(7), pady=(30, 0))
 
-                bar.update(10)
+        gpu_max_usage = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
+                                 anchor=tk.CENTER, width=10, height=1, text="0%")
+        gpu_max_usage.grid(row=1, column=1, padx=(7), pady=0)
 
-                # Video engine
+        gpu_max_vram_text = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
+                                     anchor=tk.CENTER, width=10, height=1, text="VRAM (Max)")
+        gpu_max_vram_text.grid(row=0, column=2, padx=(7), pady=(30, 0))
 
-                gpu_video_engine = tk.Frame(gpu_frame, bg=bg)
-                gpu_video_engine.place(relwidth=0.49, relheight=0.19,
-                                       relx=0.505, rely=0.63)
+        gpu_max_vram = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
+                                anchor=tk.CENTER, width=10, height=1, text="0GB")
+        gpu_max_vram.grid(row=1, column=2, padx=(7), pady=0)
 
-                gpu_video_engine_frame = tk.Frame(gpu_video_engine, bg=bg)
-                gpu_video_engine_frame.place(
-                    relwidth=0.30, relheight=0.15, relx=0.01, rely=0.085)
+        gpu_max_rpm_text = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
+                                    anchor=tk.CENTER, width=10, height=1, text="RPM (Max)")
+        gpu_max_rpm_text.grid(row=0, column=3, padx=(7), pady=(30, 0))
 
-                gpu_video_engine_label = tk.Label(gpu_video_engine_frame, bg=bg, fg=fg,
-                                                  font=font, anchor=tk.CENTER, width=100, height=10, text="VIDEO ENGINE")
-                gpu_video_engine_label.pack()
+        gpu_max_rpm = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
+                               anchor=tk.CENTER, width=10, height=1, text="0 RPM")
+        gpu_max_rpm.grid(row=1, column=3, padx=(7), pady=0)
 
-                video_engine_container = tk.Frame(gpu_video_engine, bg=bg)
-                video_engine_container.place(
-                    relwidth=0.963, relheight=0.50, relx=0.021, rely=0.426)
+        # Notes
+        def MessageBox(title, text, style):
+            ctypes.windll.user32.MessageBoxW(0, text, title, style)
 
-                video_engine_usage = tk.Label(video_engine_container, bg=bg, fg=fg,
-                                              font=font, anchor=tk.W, width=100, height=1, text="Usage")
-                video_engine_usage.pack()
+        note_image = PhotoImage(file=f"{image_path}\psheet.png")
 
-                video_engine_usage_bar = tk.Label(
-                    video_engine_container, bg=bg, fg=fg, font=font, anchor=tk.W, width=100, height=1, text="|")
-                video_engine_usage_bar.pack()
+        gpu_section_notes = tk.Frame(gpu_frame, bg=bg)
+        gpu_section_notes.place(
+            relwidth=0.49, relheight=0.17, relx=0, rely=0.84)
 
-                video_engine_value_frame = tk.Frame(gpu_video_engine, bg=bg)
-                video_engine_value_frame.place(
-                    relwidth=0.3, relheight=0.2, relx=0.684, rely=0.426)
+        gpu_section_notes_frame = tk.Frame(gpu_section_notes, bg=bg)
+        gpu_section_notes_frame.place(
+            relwidth=0.94, relheight=0.80, relx=0.01, rely=0.07)
 
-                video_engine_value_label = tk.Label(
-                    video_engine_value_frame, bg=bg, fg=fg, font=font, anchor=tk.E, width=40, height=15, text="0%")
-                video_engine_value_label.pack()
+        gpu_note_1 = tk.Button(gpu_section_notes_frame, bg=bg, fg=fg, image=note_image, width=70, height=70, bd=0,
+                               activebackground=button_bg, activeforeground="white", command=lambda: MessageBox('Note #1', 'This is a test!', 0))
+        gpu_note_1.grid(row=0, column=0, padx=(5), pady=0)
 
-                bar.update(10)
+        gpu_note_1_label = tk.Label(gpu_section_notes_frame, bg=bg, fg=fg,
+                                    font=font, anchor=tk.CENTER, width=10, height=1, text="Note #1")
+        gpu_note_1_label.grid(row=1, column=0, padx=(5))
 
-                # Max recorded values
+        gpu_note_2 = tk.Button(gpu_section_notes_frame, bg=bg, fg=fg, image=note_image, width=70, height=70, bd=0,
+                               activebackground=button_bg, activeforeground="white", command=lambda: MessageBox('Note #2', 'This is a test!', 0))
+        gpu_note_2.grid(row=0, column=1, padx=(5), pady=0)
 
-                gpu_max_values = tk.Frame(gpu_frame, bg=bg)
-                gpu_max_values.place(relwidth=0.49, relheight=0.17,
-                                     relx=0.505, rely=0.84)
+        gpu_note_2_label = tk.Label(gpu_section_notes_frame, bg=bg, fg=fg,
+                                    font=font, anchor=tk.CENTER, width=10, height=1, text="Note #2")
+        gpu_note_2_label.grid(row=1, column=1, padx=(5))
 
-                gpu_max_temp_text = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
-                                             anchor=tk.CENTER, width=10, height=1, text="Temp (Max)")
-                gpu_max_temp_text.grid(row=0, column=0, padx=(7), pady=(30, 0))
+        gpu_note_3 = tk.Button(gpu_section_notes_frame, bg=bg, fg=fg, image=note_image, width=70, height=70, bd=0,
+                               activebackground=button_bg, activeforeground="white", command=lambda: MessageBox('Note #3', 'This is a test!', 0))
+        gpu_note_3.grid(row=0, column=2, padx=(5), pady=0)
 
-                gpu_max_temp = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
-                                        anchor=tk.CENTER, width=10, height=1, text="0C")
-                gpu_max_temp.grid(row=1, column=0, padx=(7), pady=0)
+        gpu_note_3_label = tk.Label(gpu_section_notes_frame, bg=bg, fg=fg,
+                                    font=font, anchor=tk.CENTER, width=10, height=1, text="Note #3")
+        gpu_note_3_label.grid(row=1, column=2, padx=(5))
 
-                gpu_max_usage_text = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
-                                              anchor=tk.CENTER, width=10, height=1, text="Usage (Max)")
-                gpu_max_usage_text.grid(
-                    row=0, column=1, padx=(7), pady=(30, 0))
+        gpu_note_4 = tk.Button(gpu_section_notes_frame, bg=bg, fg=fg, image=note_image, width=70, height=70, bd=0,
+                               activebackground=button_bg, activeforeground="white", command=lambda: MessageBox('Note #4', 'This is a test!', 0))
+        gpu_note_4.grid(row=0, column=3, padx=(5), pady=0)
 
-                gpu_max_usage = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
-                                         anchor=tk.CENTER, width=10, height=1, text="0%")
-                gpu_max_usage.grid(row=1, column=1, padx=(7), pady=0)
+        gpu_note_4_label = tk.Label(gpu_section_notes_frame, bg=bg, fg=fg,
+                                    font=font, anchor=tk.CENTER, width=10, height=1, text="Note #4")
+        gpu_note_4_label.grid(row=1, column=3, padx=(5))
 
-                gpu_max_vram_text = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
-                                             anchor=tk.CENTER, width=10, height=1, text="VRAM (Max)")
-                gpu_max_vram_text.grid(row=0, column=2, padx=(7), pady=(30, 0))
-
-                gpu_max_vram = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
-                                        anchor=tk.CENTER, width=10, height=1, text="0GB")
-                gpu_max_vram.grid(row=1, column=2, padx=(7), pady=0)
-
-                gpu_max_rpm_text = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
-                                            anchor=tk.CENTER, width=10, height=1, text="RPM (Max)")
-                gpu_max_rpm_text.grid(row=0, column=3, padx=(7), pady=(30, 0))
-
-                gpu_max_rpm = tk.Label(gpu_max_values, bg=bg, fg=fg, font=font,
-                                       anchor=tk.CENTER, width=10, height=1, text="0 RPM")
-                gpu_max_rpm.grid(row=1, column=3, padx=(7), pady=0)
-
-                bar.update(10)
-
-                # Notes
-                def MessageBox(title, text, style):
-                    ctypes.windll.user32.MessageBoxW(0, text, title, style)
-
-                note_image = PhotoImage(file=f"{image_path}\psheet.png")
-
-                gpu_section_notes = tk.Frame(gpu_frame, bg=bg)
-                gpu_section_notes.place(
-                    relwidth=0.49, relheight=0.17, relx=0, rely=0.84)
-
-                gpu_section_notes_frame = tk.Frame(gpu_section_notes, bg=bg)
-                gpu_section_notes_frame.place(
-                    relwidth=0.94, relheight=0.80, relx=0.01, rely=0.07)
-
-                gpu_note_1 = tk.Button(gpu_section_notes_frame, bg=bg, fg=fg, image=note_image, width=70, height=70, bd=0,
-                                       activebackground=button_bg, activeforeground="white", command=lambda: MessageBox('Note #1', 'This is a test!', 0))
-                gpu_note_1.grid(row=0, column=0, padx=(5), pady=0)
-
-                gpu_note_1_label = tk.Label(gpu_section_notes_frame, bg=bg, fg=fg,
-                                            font=font, anchor=tk.CENTER, width=10, height=1, text="Note #1")
-                gpu_note_1_label.grid(row=1, column=0, padx=(5))
-
-                gpu_note_2 = tk.Button(gpu_section_notes_frame, bg=bg, fg=fg, image=note_image, width=70, height=70, bd=0,
-                                       activebackground=button_bg, activeforeground="white", command=lambda: MessageBox('Note #2', 'This is a test!', 0))
-                gpu_note_2.grid(row=0, column=1, padx=(5), pady=0)
-
-                gpu_note_2_label = tk.Label(gpu_section_notes_frame, bg=bg, fg=fg,
-                                            font=font, anchor=tk.CENTER, width=10, height=1, text="Note #2")
-                gpu_note_2_label.grid(row=1, column=1, padx=(5))
-
-                gpu_note_3 = tk.Button(gpu_section_notes_frame, bg=bg, fg=fg, image=note_image, width=70, height=70, bd=0,
-                                       activebackground=button_bg, activeforeground="white", command=lambda: MessageBox('Note #3', 'This is a test!', 0))
-                gpu_note_3.grid(row=0, column=2, padx=(5), pady=0)
-
-                gpu_note_3_label = tk.Label(gpu_section_notes_frame, bg=bg, fg=fg,
-                                            font=font, anchor=tk.CENTER, width=10, height=1, text="Note #3")
-                gpu_note_3_label.grid(row=1, column=2, padx=(5))
-
-                gpu_note_4 = tk.Button(gpu_section_notes_frame, bg=bg, fg=fg, image=note_image, width=70, height=70, bd=0,
-                                       activebackground=button_bg, activeforeground="white", command=lambda: MessageBox('Note #4', 'This is a test!', 0))
-                gpu_note_4.grid(row=0, column=3, padx=(5), pady=0)
-
-                gpu_note_4_label = tk.Label(gpu_section_notes_frame, bg=bg, fg=fg,
-                                            font=font, anchor=tk.CENTER, width=10, height=1, text="Note #4")
-                gpu_note_4_label.grid(row=1, column=3, padx=(5))
-
-                bar.update(20)
-
-                loading.pack_forget()
-
-                refresh_gpu()
-        dec_gpu = root.after(15, declare_gpu)
+        root.after(100, refresh_gpu)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # This function refreshes GPU information every x amount of miliseconds
@@ -4612,7 +4480,7 @@ try:
                         core_clock_bar.configure(
                             text="|"*int(clock_bar_percentage))
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -4630,7 +4498,7 @@ try:
                         memory_clock_bar.configure(
                             text=f"|"*int(clock_bar_percentage))
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -4649,7 +4517,7 @@ try:
                         shader_clock_bar.configure(
                             text="|"*int(shader_bar_percentage))
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -4669,7 +4537,7 @@ try:
                         bus_interface.configure(
                             text=f"Bus Interface\n{sensor.Value:.1f}%")
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -4716,7 +4584,7 @@ try:
                                 gpu_max_rpm.configure(fg=asm_red)
 
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -4748,7 +4616,7 @@ try:
                             video_engine_usage_bar.configure(
                                 text="|"*int(ve_quotient))
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -4770,7 +4638,7 @@ try:
                 gpu_max_usage.configure(
                     text=f"{max(gpu_max_load_list)}%")
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -4790,7 +4658,7 @@ try:
                 gpu_max_temp.configure(
                     text=f"{max(gpu_max_temp_list)}°C")
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -4812,13 +4680,13 @@ try:
                 gpu_max_vram.configure(
                     text=f"{max(gpu_max_vram_list)}GB")
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         gpu_update = root.after(1000, refresh_gpu)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # RAM function gets all available information for RAM and SWAP memory
@@ -4826,83 +4694,95 @@ except Exception as e:
 try:
     def ram():
         global ram_frame
+        global ram_usage_bar
+        global ram_usage_value_label
+        global ram_free_bar
+        global ram_free_value_label
+        global ram_max_usage_bar
+        global ram_max_usage_value_label
+        global swap_usage_bar
+        global swap_usage_value
+        global swap_free_bar
+        global swap_free_value
+        global swap_max_usage_bar
+        global swap_max_usage_value
 
         # Remove and previously running windows and change button background
 
         try:
-            ramButton.configure(bg=button_bg)
+            ramButton.configure(bg=button_bg, command=opened)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            combined_test_frame.place_forget()
+            benchmark_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            homeButton.configure(bg=sidemenu_bg)
+            homeButton.configure(bg=sidemenu_bg, command=home)
             root.after_cancel(time)
             home_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            cpuButton.configure(bg=sidemenu_bg)
+            cpuButton.configure(bg=sidemenu_bg, command=cpu)
             root.after_cancel(ref)
             cpu_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            motherboardButton.configure(bg=sidemenu_bg)
+            motherboardButton.configure(bg=sidemenu_bg, command=mobo)
             main_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            gpuButton.configure(bg=sidemenu_bg)
+            gpuButton.configure(bg=sidemenu_bg, command=gpu)
             root.after_cancel(gpu_update)
             gpu_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            hddButton.configure(bg=sidemenu_bg)
+            hddButton.configure(bg=sidemenu_bg, command=drives)
             root.after_cancel(drive_ref)
             drive_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            netButton.configure(bg=sidemenu_bg)
+            netButton.configure(bg=sidemenu_bg, command=network)
             root.after_cancel(net_ref)
             network_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            fanButton.configure(bg=sidemenu_bg)
+            fanButton.configure(bg=sidemenu_bg, command=fans)
             root.after_cancel(fan_ref)
             fans_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -4911,255 +4791,220 @@ try:
         ram_frame = tk.Frame(root, bg=canvas_bg)
         ram_frame.place(relwidth=0.875, relheight=0.915,
                         relx=0.117, rely=0.066)
+        # Ram usage
 
-        loading = tk.Label(ram_frame, bg=canvas_bg, fg=fg, font=(
-            loading_font), width=100, height=50, text="Loading...")
-        loading.pack()
+        ram_usage_frame = tk.Frame(ram_frame, bg=bg)
+        ram_usage_frame.place(
+            relwidth=0.49, relheight=0.19, relx=0, rely=0)
 
-        def declare_ram():
-            global ram_usage_bar
-            global ram_usage_value_label
-            global ram_free_bar
-            global ram_free_value_label
-            global ram_max_usage_bar
-            global ram_max_usage_value_label
-            global swap_usage_bar
-            global swap_usage_value
-            global swap_free_bar
-            global swap_free_value
-            global swap_max_usage_bar
-            global swap_max_usage_value
-            root.after_cancel(dec_ram)
-            with tqdm(total=100) as bar:
-                # Ram usage
+        ram_usage_label_frame = tk.Frame(ram_usage_frame, bg=bg)
+        ram_usage_label_frame.place(
+            relwidth=0.30, relheight=0.15, relx=0.02, rely=0.08)
 
-                ram_usage_frame = tk.Frame(ram_frame, bg=bg)
-                ram_usage_frame.place(
-                    relwidth=0.49, relheight=0.19, relx=0, rely=0)
+        ram_usage_label = tk.Label(ram_usage_label_frame, bg=bg, fg=fg,
+                                   font=font, anchor=tk.W, width=100, height=10, text="RAM USAGE")
+        ram_usage_label.pack()
 
-                ram_usage_label_frame = tk.Frame(ram_usage_frame, bg=bg)
-                ram_usage_label_frame.place(
-                    relwidth=0.30, relheight=0.15, relx=0.02, rely=0.08)
+        ram_usage_container = tk.Frame(ram_usage_frame, bg=bg)
+        ram_usage_container.place(
+            relwidth=0.963, relheight=0.5, relx=0.018, rely=0.426)
 
-                ram_usage_label = tk.Label(ram_usage_label_frame, bg=bg, fg=fg,
-                                           font=font, anchor=tk.W, width=100, height=10, text="RAM USAGE")
-                ram_usage_label.pack()
+        ram_usage = tk.Label(ram_usage_container, bg=bg, fg=fg, font=font,
+                             anchor=tk.W, width=100, height=1, text="Total Usage")
+        ram_usage.pack()
 
-                ram_usage_container = tk.Frame(ram_usage_frame, bg=bg)
-                ram_usage_container.place(
-                    relwidth=0.963, relheight=0.5, relx=0.018, rely=0.426)
+        ram_usage_bar = tk.Label(ram_usage_container, bg=bg, fg=fg,
+                                 font=font, anchor=tk.W, width=100, height=1, text="|")
+        ram_usage_bar.pack()
 
-                ram_usage = tk.Label(ram_usage_container, bg=bg, fg=fg, font=font,
-                                     anchor=tk.W, width=100, height=1, text="Total Usage")
-                ram_usage.pack()
+        ram_usage_value_frame = tk.Frame(ram_usage_frame, bg=bg)
+        ram_usage_value_frame.place(
+            relwidth=0.30, relheight=0.2, relx=0.684, rely=0.426)
 
-                ram_usage_bar = tk.Label(ram_usage_container, bg=bg, fg=fg,
-                                         font=font, anchor=tk.W, width=100, height=1, text="|")
-                ram_usage_bar.pack()
+        ram_usage_value_label = tk.Label(
+            ram_usage_value_frame, bg=bg, fg=fg, font=font, anchor=tk.E, width=40, height=15, text="0GB/0GB")
+        ram_usage_value_label.pack()
 
-                ram_usage_value_frame = tk.Frame(ram_usage_frame, bg=bg)
-                ram_usage_value_frame.place(
-                    relwidth=0.30, relheight=0.2, relx=0.684, rely=0.426)
+        # RAM Free memory
 
-                ram_usage_value_label = tk.Label(
-                    ram_usage_value_frame, bg=bg, fg=fg, font=font, anchor=tk.E, width=40, height=15, text="0GB/0GB")
-                ram_usage_value_label.pack()
+        ram_free_frame = tk.Frame(ram_frame, bg=bg)
+        ram_free_frame.place(
+            relwidth=0.49, relheight=0.19, relx=0, rely=0.21)
 
-                bar.update(10)
+        ram_free_label_frame = tk.Frame(ram_free_frame, bg=bg)
+        ram_free_label_frame.place(
+            relwidth=0.30, relheight=0.15, relx=0.02, rely=0.08)
 
-                # RAM Free memory
+        ram_free_label = tk.Label(ram_free_label_frame, bg=bg, fg=fg,
+                                  font=font, anchor=tk.W, width=100, height=10, text="RAM (FREE)")
+        ram_free_label.pack()
 
-                ram_free_frame = tk.Frame(ram_frame, bg=bg)
-                ram_free_frame.place(
-                    relwidth=0.49, relheight=0.19, relx=0, rely=0.21)
+        ram_free_container = tk.Frame(ram_free_frame, bg=bg)
+        ram_free_container.place(
+            relwidth=0.963, relheight=0.5, relx=0.018, rely=0.426)
 
-                ram_free_label_frame = tk.Frame(ram_free_frame, bg=bg)
-                ram_free_label_frame.place(
-                    relwidth=0.30, relheight=0.15, relx=0.02, rely=0.08)
+        ram_free = tk.Label(ram_free_container, bg=bg, fg=fg, font=font,
+                            anchor=tk.W, width=100, height=1, text="Total Free")
+        ram_free.pack()
 
-                ram_free_label = tk.Label(ram_free_label_frame, bg=bg, fg=fg,
-                                          font=font, anchor=tk.W, width=100, height=10, text="RAM (FREE)")
-                ram_free_label.pack()
+        ram_free_bar = tk.Label(ram_free_container, bg=bg, fg=fg,
+                                font=font, anchor=tk.W, width=100, height=1, text="|")
+        ram_free_bar.pack()
 
-                ram_free_container = tk.Frame(ram_free_frame, bg=bg)
-                ram_free_container.place(
-                    relwidth=0.963, relheight=0.5, relx=0.018, rely=0.426)
+        ram_free_value_frame = tk.Frame(ram_free_frame, bg=bg)
+        ram_free_value_frame.place(
+            relwidth=0.30, relheight=0.2, relx=0.684, rely=0.426)
 
-                ram_free = tk.Label(ram_free_container, bg=bg, fg=fg, font=font,
-                                    anchor=tk.W, width=100, height=1, text="Total Free")
-                ram_free.pack()
+        ram_free_value_label = tk.Label(
+            ram_free_value_frame, bg=bg, fg=fg, font=font, anchor=tk.E, width=40, height=15, text="0GB")
+        ram_free_value_label.pack()
 
-                ram_free_bar = tk.Label(ram_free_container, bg=bg, fg=fg,
-                                        font=font, anchor=tk.W, width=100, height=1, text="|")
-                ram_free_bar.pack()
+        # RAM Max usage
 
-                ram_free_value_frame = tk.Frame(ram_free_frame, bg=bg)
-                ram_free_value_frame.place(
-                    relwidth=0.30, relheight=0.2, relx=0.684, rely=0.426)
+        ram_max_usage_frame = tk.Frame(ram_frame, bg=bg)
+        ram_max_usage_frame.place(
+            relwidth=0.49, relheight=0.19, relx=0, rely=0.42)
 
-                ram_free_value_label = tk.Label(
-                    ram_free_value_frame, bg=bg, fg=fg, font=font, anchor=tk.E, width=40, height=15, text="0GB")
-                ram_free_value_label.pack()
+        ram_max_usage_label_frame = tk.Frame(
+            ram_max_usage_frame, bg=bg)
+        ram_max_usage_label_frame.place(
+            relwidth=0.30, relheight=0.15, relx=0.02, rely=0.08)
 
-                bar.update(10)
+        ram_max_usage_label = tk.Label(ram_max_usage_label_frame, bg=bg, fg=fg,
+                                       font=font, anchor=tk.W, width=100, height=10, text="RAM (MAX)")
+        ram_max_usage_label.pack()
 
-                # RAM Max usage
+        ram_max_usage_container = tk.Frame(ram_max_usage_frame, bg=bg)
+        ram_max_usage_container.place(
+            relwidth=0.963, relheight=0.5, relx=0.018, rely=0.426)
 
-                ram_max_usage_frame = tk.Frame(ram_frame, bg=bg)
-                ram_max_usage_frame.place(
-                    relwidth=0.49, relheight=0.19, relx=0, rely=0.42)
+        ram_max_usage = tk.Label(ram_max_usage_container, bg=bg, fg=fg, font=font,
+                                 anchor=tk.W, width=100, height=1, text="Max Usage")
+        ram_max_usage.pack()
 
-                ram_max_usage_label_frame = tk.Frame(
-                    ram_max_usage_frame, bg=bg)
-                ram_max_usage_label_frame.place(
-                    relwidth=0.30, relheight=0.15, relx=0.02, rely=0.08)
+        ram_max_usage_bar = tk.Label(ram_max_usage_container, bg=bg, fg=fg,
+                                     font=font, anchor=tk.W, width=100, height=1, text="|")
+        ram_max_usage_bar.pack()
 
-                ram_max_usage_label = tk.Label(ram_max_usage_label_frame, bg=bg, fg=fg,
-                                               font=font, anchor=tk.W, width=100, height=10, text="RAM (MAX)")
-                ram_max_usage_label.pack()
+        ram_max_usage_value_frame = tk.Frame(
+            ram_max_usage_frame, bg=bg)
+        ram_max_usage_value_frame.place(
+            relwidth=0.30, relheight=0.2, relx=0.684, rely=0.426)
 
-                ram_max_usage_container = tk.Frame(ram_max_usage_frame, bg=bg)
-                ram_max_usage_container.place(
-                    relwidth=0.963, relheight=0.5, relx=0.018, rely=0.426)
+        ram_max_usage_value_label = tk.Label(
+            ram_max_usage_value_frame, bg=bg, fg=fg, font=font, anchor=tk.E, width=40, height=15, text="0GB")
+        ram_max_usage_value_label.pack()
 
-                ram_max_usage = tk.Label(ram_max_usage_container, bg=bg, fg=fg, font=font,
-                                         anchor=tk.W, width=100, height=1, text="Max Usage")
-                ram_max_usage.pack()
+        # SWAP Memory usage (if it exists)
 
-                ram_max_usage_bar = tk.Label(ram_max_usage_container, bg=bg, fg=fg,
-                                             font=font, anchor=tk.W, width=100, height=1, text="|")
-                ram_max_usage_bar.pack()
+        swap_memory_usage_frame = tk.Frame(ram_frame, bg=bg)
+        swap_memory_usage_frame.place(
+            relwidth=0.49, relheight=0.19, relx=0.505, rely=0)
 
-                ram_max_usage_value_frame = tk.Frame(
-                    ram_max_usage_frame, bg=bg)
-                ram_max_usage_value_frame.place(
-                    relwidth=0.30, relheight=0.2, relx=0.684, rely=0.426)
+        swap_usage_label_frame = tk.Frame(
+            swap_memory_usage_frame, bg=bg)
+        swap_usage_label_frame.place(
+            relwidth=0.45, relheight=0.15, relx=0.02, rely=0.08)
 
-                ram_max_usage_value_label = tk.Label(
-                    ram_max_usage_value_frame, bg=bg, fg=fg, font=font, anchor=tk.E, width=40, height=15, text="0GB")
-                ram_max_usage_value_label.pack()
+        swap_usage_label = tk.Label(swap_usage_label_frame, bg=bg, fg=fg, font=font,
+                                    anchor=tk.W, width=100, height=10, text="SWAP MEMORY USAGE")
+        swap_usage_label.pack()
 
-                bar.update(10)
+        swap_usage_container = tk.Frame(swap_memory_usage_frame, bg=bg)
+        swap_usage_container.place(
+            relwidth=0.963, relheight=0.5, relx=0.018, rely=0.426)
 
-                # SWAP Memory usage (if it exists)
+        swap_usage = tk.Label(swap_usage_container, bg=bg, fg=fg, font=font,
+                              anchor=tk.W, width=100, height=1, text="Total Usage")
+        swap_usage.pack()
 
-                swap_memory_usage_frame = tk.Frame(ram_frame, bg=bg)
-                swap_memory_usage_frame.place(
-                    relwidth=0.49, relheight=0.19, relx=0.505, rely=0)
+        swap_usage_bar = tk.Label(swap_usage_container, bg=bg, fg=fg,
+                                  font=font, anchor=tk.W, width=100, height=1, text="|")
+        swap_usage_bar.pack()
 
-                swap_usage_label_frame = tk.Frame(
-                    swap_memory_usage_frame, bg=bg)
-                swap_usage_label_frame.place(
-                    relwidth=0.45, relheight=0.15, relx=0.02, rely=0.08)
+        swap_usage_value_frame = tk.Frame(
+            swap_memory_usage_frame, bg=bg)
+        swap_usage_value_frame.place(
+            relwidth=0.3, relheight=0.2, relx=0.684, rely=0.426)
 
-                swap_usage_label = tk.Label(swap_usage_label_frame, bg=bg, fg=fg, font=font,
-                                            anchor=tk.W, width=100, height=10, text="SWAP MEMORY USAGE")
-                swap_usage_label.pack()
+        swap_usage_value = tk.Label(swap_usage_value_frame, bg=bg, fg=fg,
+                                    font=font, anchor=tk.E, width=40, height=15, text="0GB/0GB")
+        swap_usage_value.pack()
 
-                swap_usage_container = tk.Frame(swap_memory_usage_frame, bg=bg)
-                swap_usage_container.place(
-                    relwidth=0.963, relheight=0.5, relx=0.018, rely=0.426)
+        # SWAP free memory
 
-                swap_usage = tk.Label(swap_usage_container, bg=bg, fg=fg, font=font,
-                                      anchor=tk.W, width=100, height=1, text="Total Usage")
-                swap_usage.pack()
+        swap_memory_free_frame = tk.Frame(ram_frame, bg=bg)
+        swap_memory_free_frame.place(
+            relwidth=0.49, relheight=0.19, relx=0.505, rely=0.21)
 
-                swap_usage_bar = tk.Label(swap_usage_container, bg=bg, fg=fg,
-                                          font=font, anchor=tk.W, width=100, height=1, text="|")
-                swap_usage_bar.pack()
+        swap_free_label_frame = tk.Frame(swap_memory_free_frame, bg=bg)
+        swap_free_label_frame.place(
+            relwidth=0.45, relheight=0.15, relx=0.02, rely=0.08)
 
-                swap_usage_value_frame = tk.Frame(
-                    swap_memory_usage_frame, bg=bg)
-                swap_usage_value_frame.place(
-                    relwidth=0.3, relheight=0.2, relx=0.684, rely=0.426)
+        swap_free_label = tk.Label(swap_free_label_frame, bg=bg, fg=fg, font=font,
+                                   anchor=tk.W, width=100, height=10, text="SWAP (FREE)")
+        swap_free_label.pack()
 
-                swap_usage_value = tk.Label(swap_usage_value_frame, bg=bg, fg=fg,
-                                            font=font, anchor=tk.E, width=40, height=15, text="0GB/0GB")
-                swap_usage_value.pack()
+        swap_free_container = tk.Frame(swap_memory_free_frame, bg=bg)
+        swap_free_container.place(
+            relwidth=0.963, relheight=0.5, relx=0.018, rely=0.426)
 
-                bar.update(10)
+        swap_free = tk.Label(swap_free_container, bg=bg, fg=fg, font=font,
+                             anchor=tk.W, width=100, height=1, text="Total Free")
+        swap_free.pack()
 
-                # SWAP free memory
+        swap_free_bar = tk.Label(swap_free_container, bg=bg, fg=fg,
+                                 font=font, anchor=tk.W, width=100, height=1, text="|")
+        swap_free_bar.pack()
 
-                swap_memory_free_frame = tk.Frame(ram_frame, bg=bg)
-                swap_memory_free_frame.place(
-                    relwidth=0.49, relheight=0.19, relx=0.505, rely=0.21)
+        swap_free_value_frame = tk.Frame(swap_memory_free_frame, bg=bg)
+        swap_free_value_frame.place(
+            relwidth=0.3, relheight=0.2, relx=0.684, rely=0.426)
 
-                swap_free_label_frame = tk.Frame(swap_memory_free_frame, bg=bg)
-                swap_free_label_frame.place(
-                    relwidth=0.45, relheight=0.15, relx=0.02, rely=0.08)
+        swap_free_value = tk.Label(swap_free_value_frame, bg=bg, fg=fg,
+                                   font=font, anchor=tk.E, width=40, height=15, text="0GB")
+        swap_free_value.pack()
 
-                swap_free_label = tk.Label(swap_free_label_frame, bg=bg, fg=fg, font=font,
-                                           anchor=tk.W, width=100, height=10, text="SWAP (FREE)")
-                swap_free_label.pack()
+        # SWAP Max usage
 
-                swap_free_container = tk.Frame(swap_memory_free_frame, bg=bg)
-                swap_free_container.place(
-                    relwidth=0.963, relheight=0.5, relx=0.018, rely=0.426)
+        swap_memory_max_frame = tk.Frame(ram_frame, bg=bg)
+        swap_memory_max_frame.place(
+            relwidth=0.49, relheight=0.19, relx=0.505, rely=0.42)
 
-                swap_free = tk.Label(swap_free_container, bg=bg, fg=fg, font=font,
-                                     anchor=tk.W, width=100, height=1, text="Total Free")
-                swap_free.pack()
+        swap_max_usage_label_frame = tk.Frame(
+            swap_memory_max_frame, bg=bg)
+        swap_max_usage_label_frame.place(
+            relwidth=0.45, relheight=0.15, relx=0.02, rely=0.08)
 
-                swap_free_bar = tk.Label(swap_free_container, bg=bg, fg=fg,
-                                         font=font, anchor=tk.W, width=100, height=1, text="|")
-                swap_free_bar.pack()
+        swap_max_usage_label = tk.Label(swap_max_usage_label_frame, bg=bg, fg=fg, font=font,
+                                        anchor=tk.W, width=100, height=10, text="SWAP (MAX)")
+        swap_max_usage_label.pack()
 
-                swap_free_value_frame = tk.Frame(swap_memory_free_frame, bg=bg)
-                swap_free_value_frame.place(
-                    relwidth=0.3, relheight=0.2, relx=0.684, rely=0.426)
+        swap_max_usage_container = tk.Frame(
+            swap_memory_max_frame, bg=bg)
+        swap_max_usage_container.place(
+            relwidth=0.963, relheight=0.5, relx=0.018, rely=0.426)
 
-                swap_free_value = tk.Label(swap_free_value_frame, bg=bg, fg=fg,
-                                           font=font, anchor=tk.E, width=40, height=15, text="0GB")
-                swap_free_value.pack()
+        swap_max_usage = tk.Label(swap_max_usage_container, bg=bg, fg=fg, font=font,
+                                  anchor=tk.W, width=100, height=1, text="Max Usage")
+        swap_max_usage.pack()
 
-                bar.update(10)
+        swap_max_usage_bar = tk.Label(swap_max_usage_container, bg=bg, fg=fg,
+                                      font=font, anchor=tk.W, width=100, height=1, text="|")
+        swap_max_usage_bar.pack()
 
-                # SWAP Max usage
+        swap_max_usage_value_frame = tk.Frame(
+            swap_memory_max_frame, bg=bg)
+        swap_max_usage_value_frame.place(
+            relwidth=0.3, relheight=0.2, relx=0.684, rely=0.426)
 
-                swap_memory_max_frame = tk.Frame(ram_frame, bg=bg)
-                swap_memory_max_frame.place(
-                    relwidth=0.49, relheight=0.19, relx=0.505, rely=0.42)
+        swap_max_usage_value = tk.Label(swap_max_usage_value_frame, bg=bg, fg=fg,
+                                        font=font, anchor=tk.E, width=40, height=15, text="0GB")
+        swap_max_usage_value.pack()
 
-                swap_max_usage_label_frame = tk.Frame(
-                    swap_memory_max_frame, bg=bg)
-                swap_max_usage_label_frame.place(
-                    relwidth=0.45, relheight=0.15, relx=0.02, rely=0.08)
-
-                swap_max_usage_label = tk.Label(swap_max_usage_label_frame, bg=bg, fg=fg, font=font,
-                                                anchor=tk.W, width=100, height=10, text="SWAP (MAX)")
-                swap_max_usage_label.pack()
-
-                swap_max_usage_container = tk.Frame(
-                    swap_memory_max_frame, bg=bg)
-                swap_max_usage_container.place(
-                    relwidth=0.963, relheight=0.5, relx=0.018, rely=0.426)
-
-                swap_max_usage = tk.Label(swap_max_usage_container, bg=bg, fg=fg, font=font,
-                                          anchor=tk.W, width=100, height=1, text="Max Usage")
-                swap_max_usage.pack()
-
-                swap_max_usage_bar = tk.Label(swap_max_usage_container, bg=bg, fg=fg,
-                                              font=font, anchor=tk.W, width=100, height=1, text="|")
-                swap_max_usage_bar.pack()
-
-                swap_max_usage_value_frame = tk.Frame(
-                    swap_memory_max_frame, bg=bg)
-                swap_max_usage_value_frame.place(
-                    relwidth=0.3, relheight=0.2, relx=0.684, rely=0.426)
-
-                swap_max_usage_value = tk.Label(swap_max_usage_value_frame, bg=bg, fg=fg,
-                                                font=font, anchor=tk.E, width=40, height=15, text="0GB")
-                swap_max_usage_value.pack()
-
-                bar.update(50)
-
-                loading.pack_forget()
-
-                refresh_ram()
-        dec_ram = root.after(5, declare_ram)
+        root.after(10, refresh_ram)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # refresh_ram function refreshes ram and swap memory information every x amount of miliseconds
@@ -5188,7 +5033,7 @@ try:
             else:
                 pass
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -5200,7 +5045,7 @@ try:
             free_perc_optimized = free_perc / 1.65
             ram_free_bar.configure(text="|"*int(free_perc_optimized))
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -5213,7 +5058,7 @@ try:
             max_perc_optimized = max_perc / 1.65
             ram_max_usage_bar.configure(text="|"*int(max_perc_optimized))
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -5235,7 +5080,7 @@ try:
             else:
                 pass
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -5247,7 +5092,7 @@ try:
             sw_free_perc_optimized = sw_free_perc / 1.65
             swap_free_bar.configure(text="|"*int(sw_free_perc_optimized))
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -5260,7 +5105,7 @@ try:
             sw_max_perc_optimized = sw_max_perc / 1.65
             swap_max_usage_bar.configure(text="|"*int(sw_max_perc_optimized))
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -5298,7 +5143,7 @@ try:
                 ram_free_bar.configure(fg=asm_red)
 
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -5335,13 +5180,13 @@ try:
                 swap_free_bar.configure(fg=asm_red)
 
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         ram_ref = root.after(1000, refresh_ram)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # Drives function gets all available partitions and shows their usage and free space
@@ -5351,79 +5196,79 @@ try:
         global drive_frame
         # Remove any previous opened windows and change button background
         try:
-            hddButton.configure(bg=button_bg)
+            hddButton.configure(bg=button_bg, command=opened)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            combined_test_frame.place_forget()
+            benchmark_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            homeButton.configure(bg=sidemenu_bg)
+            homeButton.configure(bg=sidemenu_bg, command=home)
             root.after_cancel(time)
             home_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            cpuButton.configure(bg=sidemenu_bg)
+            cpuButton.configure(bg=sidemenu_bg, command=cpu)
             root.after_cancel(ref)
             cpu_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            motherboardButton.configure(bg=sidemenu_bg)
+            motherboardButton.configure(bg=sidemenu_bg, command=mobo)
             main_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            ramButton.configure(bg=sidemenu_bg)
+            ramButton.configure(bg=sidemenu_bg, command=ram)
             root.after_cancel(ram_ref)
             ram_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            gpuButton.configure(bg=sidemenu_bg)
+            gpuButton.configure(bg=sidemenu_bg, command=gpu)
             root.after_cancel(gpu_update)
             gpu_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            netButton.configure(bg=sidemenu_bg)
+            netButton.configure(bg=sidemenu_bg, command=network)
             root.after_cancel(net_ref)
             network_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            fanButton.configure(bg=sidemenu_bg)
+            fanButton.configure(bg=sidemenu_bg, command=fans)
             root.after_cancel(fan_ref)
             fans_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -5431,9 +5276,9 @@ try:
         drive_frame.place(relwidth=0.875, relheight=0.915,
                           relx=0.117, rely=0.066)
 
-        refresh_drives()
+        root.after(10, refresh_drives)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # refresh_drives function refreshes partition data every x amount of seconds
@@ -5451,7 +5296,7 @@ try:
             try:
                 partition_usage = psutil.disk_usage(part.mountpoint)
             except Exception as e:
-                y = open("errorFile.txt", "a")
+                y = open("errors.txt", "a")
                 y.write("Error: {}".format(e))
                 y.close()
 
@@ -5553,7 +5398,7 @@ try:
 
         drive_ref = root.after(10000, refresh_drives)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # fans function sets up basic frame and closes all previous processes
@@ -5565,78 +5410,78 @@ try:
         # Remove any previously opened windows and change button background
 
         try:
-            fanButton.configure(bg=button_bg)
+            fanButton.configure(bg=button_bg, command=opened)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            combined_test_frame.place_forget()
+            benchmark_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            homeButton.configure(bg=sidemenu_bg)
+            homeButton.configure(bg=sidemenu_bg, command=home)
             root.after_cancel(time)
             home_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
         try:
-            cpuButton.configure(bg=sidemenu_bg)
+            cpuButton.configure(bg=sidemenu_bg, command=cpu)
             root.after_cancel(ref)
             cpu_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            gpuButton.configure(bg=sidemenu_bg)
+            gpuButton.configure(bg=sidemenu_bg, command=gpu)
             root.after_cancel(gpu_update)
             gpu_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            motherboardButton.configure(bg=sidemenu_bg)
+            motherboardButton.configure(bg=sidemenu_bg, command=mobo)
             main_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            ramButton.configure(bg=sidemenu_bg)
+            ramButton.configure(bg=sidemenu_bg, command=ram)
             root.after_cancel(ram_ref)
             ram_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            hddButton.configure(bg=sidemenu_bg)
+            hddButton.configure(bg=sidemenu_bg, command=drives)
             root.after_cancel(drive_ref)
             drive_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            netButton.configure(bg=sidemenu_bg)
+            netButton.configure(bg=sidemenu_bg, command=network)
             root.after_cancel(net_ref)
             network_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -5646,7 +5491,7 @@ try:
 
         refresh_fans()
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # refresh_fans finds all the fans connected to the system, displays and refreshes them every x amount of miliseconds
@@ -5715,13 +5560,13 @@ try:
                         fan_speed_bar.configure(fg=asm_red)
 
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         fan_ref = root.after(1000, refresh_fans)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # network function sets up frames and labels for various network information and removes previously active services
@@ -5743,79 +5588,79 @@ try:
         # Remove any previously opened windows and change button background
 
         try:
-            netButton.configure(bg=button_bg)
+            netButton.configure(bg=button_bg, command=opened)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            combined_test_frame.place_forget()
+            benchmark_frame.place_forget()
             root.after_cancel(rct)
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            homeButton.configure(bg=sidemenu_bg)
+            homeButton.configure(bg=sidemenu_bg, command=home)
             root.after_cancel(time)
             home_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            cpuButton.configure(bg=sidemenu_bg)
+            cpuButton.configure(bg=sidemenu_bg, command=cpu)
             root.after_cancel(ref)
             cpu_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            gpuButton.configure(bg=sidemenu_bg)
+            gpuButton.configure(bg=sidemenu_bg, command=gpu)
             root.after_cancel(gpu_update)
             gpu_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            motherboardButton.configure(bg=sidemenu_bg)
+            motherboardButton.configure(bg=sidemenu_bg, command=mobo)
             main_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            ramButton.configure(bg=sidemenu_bg)
+            ramButton.configure(bg=sidemenu_bg, command=ram)
             root.after_cancel(ram_ref)
             ram_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            hddButton.configure(bg=sidemenu_bg)
+            hddButton.configure(bg=sidemenu_bg, command=drives)
             root.after_cancel(drive_ref)
             drive_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
         try:
-            fanButton.configure(bg=sidemenu_bg)
+            fanButton.configure(bg=sidemenu_bg, command=fans)
             root.after_cancel(fan_ref)
             fans_frame.place_forget()
         except Exception as e:
-            y = open("errorFile.txt", "a")
+            y = open("errors.txt", "a")
             y.write("Error: {}".format(e))
             y.close()
 
@@ -6099,9 +5944,9 @@ try:
                                          font=font, anchor=tk.CENTER, width=10, height=1, text=f"{max(upload_list)}Mbps")
             best_upload_value.grid(row=1, column=2, padx=(5), pady=(0))
 
-        refresh_net()
+        root.after(10, refresh_net)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # refresh_net function refreshes network information every x amount of miliseconds
@@ -6163,172 +6008,167 @@ try:
 
         net_ref = root.after(1000, refresh_net)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 # get_speed function handles the speedtesting
 try:
     def get_speed():
+        global download
+        global upload
+        global ping
 
-        def start_test():
-            global download
-            global upload
-            global ping
-            root.after_cancel(start_speedtest)
+        st = speedtest.Speedtest()
 
-            with tqdm(total=3) as bar:
-                st = speedtest.Speedtest()
+        download = st.download() / 1000000
+        download_list.append(f"{download:.2f}")
 
-                download = st.download() / 1000000
-                download_list.append(f"{download:.2f}")
+        if download < 5:
+            download_color.clear()
+            download_color.append(asm_red)
+            download_value.configure(fg=download_color)
+        elif download > 5 and download < 10:
+            download_color.clear()
+            download_color.append(asm_orange)
+            download_value.configure(fg=download_color)
+        elif download > 10 and download < 20:
+            download_color.clear()
+            download_color.append(asm_yellow)
+            download_value.configure(fg=download_color)
+        elif download > 20 and download < 40:
+            download_color.clear()
+            download_color.append(asm_green)
+            download_value.configure(fg=download_color)
+        elif download > 40:
+            download_color.clear()
+            download_color.append(asm_cyan)
+            download_value.configure(fg=download_color)
 
-                if download < 5:
-                    download_color.clear()
-                    download_color.append(asm_red)
-                    download_value.configure(fg=download_color)
-                elif download > 5 and download < 10:
-                    download_color.clear()
-                    download_color.append(asm_orange)
-                    download_value.configure(fg=download_color)
-                elif download > 10 and download < 20:
-                    download_color.clear()
-                    download_color.append(asm_yellow)
-                    download_value.configure(fg=download_color)
-                elif download > 20 and download < 40:
-                    download_color.clear()
-                    download_color.append(asm_green)
-                    download_value.configure(fg=download_color)
-                elif download > 40:
-                    download_color.clear()
-                    download_color.append(asm_cyan)
-                    download_value.configure(fg=download_color)
+        try:
+            download_value.configure(
+                text=f"{download:.2f}Mbps")
+        except Exception as e:
+            y = open("errors.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
+        try:
+            best_download_value.configure(
+                text=f"{max(download_list)}Mbps")
+        except Exception as e:
+            y = open("errors.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
-                try:
-                    download_value.configure(
-                        text=f"{download:.2f}Mbps")
-                except Exception as e:
-                    y = open("errorFile.txt", "a")
-                    y.write("Error: {}".format(e))
-                    y.close()
-                try:
-                    best_download_value.configure(
-                        text=f"{max(download_list)}Mbps")
-                except Exception as e:
-                    y = open("errorFile.txt", "a")
-                    y.write("Error: {}".format(e))
-                    y.close()
+        upload = st.upload() / 1000000
+        upload_list.append(f"{upload:.2f}")
 
-                bar.update(1)
+        if upload < 3:
+            upload_color.clear()
+            upload_color.append(asm_red)
+            upload_value.configure(fg=upload_color)
+        elif upload > 3 and upload < 6:
+            upload_color.clear()
+            upload_color.append(asm_orange)
+            upload_value.configure(fg=upload_color)
+        elif upload > 6 and upload < 10:
+            upload_color.clear()
+            upload_color.append(asm_yellow)
+            upload_value.configure(fg=upload_color)
+        elif upload > 10 and upload < 20:
+            upload_color.clear()
+            upload_color.append(asm_green)
+            upload_value.configure(fg=upload_color)
+        elif upload > 20:
+            upload_color.clear()
+            upload_color.append(asm_cyan)
+            upload_value.configure(fg=upload_color)
 
-                upload = st.upload() / 1000000
-                upload_list.append(f"{upload:.2f}")
+        try:
+            upload_value.configure(text=f"{upload:.2f}Mbps")
+        except Exception as e:
+            y = open("errors.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
-                if upload < 3:
-                    upload_color.clear()
-                    upload_color.append(asm_red)
-                    upload_value.configure(fg=upload_color)
-                elif upload > 3 and upload < 6:
-                    upload_color.clear()
-                    upload_color.append(asm_orange)
-                    upload_value.configure(fg=upload_color)
-                elif upload > 6 and upload < 10:
-                    upload_color.clear()
-                    upload_color.append(asm_yellow)
-                    upload_value.configure(fg=upload_color)
-                elif upload > 10 and upload < 20:
-                    upload_color.clear()
-                    upload_color.append(asm_green)
-                    upload_value.configure(fg=upload_color)
-                elif upload > 20:
-                    upload_color.clear()
-                    upload_color.append(asm_cyan)
-                    upload_value.configure(fg=upload_color)
+        try:
+            best_upload_value.configure(
+                text=f"{max(upload_list)}Mbps")
+        except Exception as e:
+            y = open("errors.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
-                try:
-                    upload_value.configure(text=f"{upload:.2f}Mbps")
-                except Exception as e:
-                    y = open("errorFile.txt", "a")
-                    y.write("Error: {}".format(e))
-                    y.close()
+        ping = st.results.ping
+        ping_list.append(f"{ping:.2f}")
 
-                try:
-                    best_upload_value.configure(
-                        text=f"{max(upload_list)}Mbps")
-                except Exception as e:
-                    y = open("errorFile.txt", "a")
-                    y.write("Error: {}".format(e))
-                    y.close()
+        if ping < 10:
+            ping_color.clear()
+            ping_color.append(asm_cyan)
+            ping_value.configure(fg=ping_color)
+        elif ping > 10 and ping < 20:
+            ping_color.clear()
+            ping_color.append(asm_green)
+            ping_value.configure(fg=ping_color)
+        elif ping > 20 and ping < 30:
+            ping_color.clear()
+            ping_color.append(asm_yellow)
+            ping_value.configure(fg=ping_color)
+        elif ping > 30 and ping < 50:
+            ping_color.clear()
+            ping_color.append(asm_orange)
+            ping_value.configure(fg=ping_color)
+        elif ping > 50:
+            ping_color.clear()
+            ping_color.append(asm_red)
+            ping_value.configure(fg=ping_color)
 
-                bar.update(1)
+        try:
+            ping_value.configure(text=f"{ping:.2f}ms")
+        except Exception as e:
+            y = open("errors.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
-                ping = st.results.ping
-                ping_list.append(f"{ping:.2f}")
-
-                if ping < 10:
-                    ping_color.clear()
-                    ping_color.append(asm_cyan)
-                    ping_value.configure(fg=ping_color)
-                elif ping > 10 and ping < 20:
-                    ping_color.clear()
-                    ping_color.append(asm_green)
-                    ping_value.configure(fg=ping_color)
-                elif ping > 20 and ping < 30:
-                    ping_color.clear()
-                    ping_color.append(asm_yellow)
-                    ping_value.configure(fg=ping_color)
-                elif ping > 30 and ping < 50:
-                    ping_color.clear()
-                    ping_color.append(asm_orange)
-                    ping_value.configure(fg=ping_color)
-                elif ping > 50:
-                    ping_color.clear()
-                    ping_color.append(asm_red)
-                    ping_value.configure(fg=ping_color)
-
-                try:
-                    ping_value.configure(text=f"{ping:.2f}ms")
-                except Exception as e:
-                    y = open("errorFile.txt", "a")
-                    y.write("Error: {}".format(e))
-                    y.close()
-
-                try:
-                    best_ping_value.configure(
-                        text=f"{min(ping_list)}ms")
-                except Exception as e:
-                    y = open("errorFile.txt", "a")
-                    y.write("Error: {}".format(e))
-                    y.close()
-                bar.update(1)
+        try:
+            best_ping_value.configure(
+                text=f"{min(ping_list)}ms")
+        except Exception as e:
+            y = open("errors.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
 
         ping_value.configure(text="...", fg=fg)
         download_value.configure(text="...", fg=fg)
         upload_value.configure(text="...", fg=fg)
-
-        start_speedtest = root.after(10, start_test)
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
 
 # all the basic stuff is setup in this section
 try:
     if __name__ == '__main__':
+
         multiprocessing.freeze_support()
 
         # Basic root options
         root = tk.Tk()
         root.resizable(False, False)
         root.overrideredirect(1)
-
+        root.iconbitmap(default="Code\Visual\images\ASM_Logo_ICO.ico")
         # Try to start OpenHardwareMonitor
+        """
         try:
             info = subprocess.STARTUPINFO()
             info.dwFlags = 1
             subprocess.Popen(
                 r"Code\OpenHardwareMonitor\OpenHardwareMonitor.exe", startupinfo=info, shell=True)
         except Exception as e:
-            print(e)
+            y = open("errors.txt", "a")
+            y.write("Error: {}".format(e))
+            y.close()
+
+        """
 
         # Read color and theme from file
         color_list = []
@@ -6547,24 +6387,11 @@ try:
                               height=98, bd=0, activebackground=button_bg, activeforeground="white", relief=SUNKEN, command=network)
         netButton.place(relx=0, rely=0.877)
 
-        # Applied fix for TQDM failing after disabling console in cx_freeze
-        # This amazing solution belongs to StackOverflow user Manoj K, below is the link to the solution
-        # https://stackoverflow.com/questions/63956413/cx-freeze-window-attributeerror-nonetype-object-has-no-attribute-write/63964910#63964910
+        # Check for updates
+        root.after(1000, updateChecker)
 
-        Path("log").mkdir(parents=True, exist_ok=True)
-        formatter = logging.Formatter(
-            "%(asctime)s - %(levelname)s - %(message)s")
-        handler = TimedRotatingFileHandler('log/error.log', when="midnight",
-                                           interval=1, encoding='utf8')
-        handler.suffix = "%Y-%m-%d"
-        handler.setFormatter(formatter)
-        logger = logging.getLogger()
-        logger.setLevel(logging.ERROR)
-        logger.addHandler(handler)
-        sys.stdout = LoggerWriter(logging.debug)
-        sys.stderr = LoggerWriter(logging.warning)
         root.mainloop()
 except Exception as e:
-    y = open("errorFile.txt", "a")
+    y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()

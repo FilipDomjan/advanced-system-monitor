@@ -13,10 +13,3 @@ class LoggerWriter:
         # printed to the logger
         if message != '\n':
             self.level(message)
-
-    def flush(self):
-        # create a flush method so things can be flushed when
-        # the system wants to. Not sure if simply 'printing'
-        # sys.stderr is the correct way to do it, but it seemed
-        # to work properly for me.
-        self.level(sys.stderr)
