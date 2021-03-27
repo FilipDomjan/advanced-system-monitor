@@ -35,7 +35,8 @@ def updateChecker():
         read_ver_new = ""
 
         for i in str(read_ver):
-            if i == "'" or i == "b":
+            print(i)
+            if i == "'" or i == "b" or i == "\\" or i == "n":
                 pass
             else:
                 read_ver_new += i
@@ -46,10 +47,9 @@ def updateChecker():
         MessageBox('Update available!',
                    'Your app is out of date, new version is available to download!', 0)
 
-    print(read_ver_new)
-
-
 # Opened button will be assigned this command to prevent multiple clicks on the same button causing issues
+
+
 def opened():
     y = open("errors.txt", "a")
     y.write("Already opened..")
