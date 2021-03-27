@@ -29,17 +29,24 @@ def updateChecker():
     with open(r"Code\version.txt", "r") as version:
         ver = version.read()
 
-    with urllib.request.urlopen("") as update:
+    with urllib.request.urlopen("https://raw.githubusercontent.com/FilipDomjan/advanced-system-monitor/main/Code/version.txt") as update:
         read_ver = update.read()
 
-    if ver == read_ver:
+        read_ver_new = ""
+
+        for i in str(read_ver):
+            if i == "'" or i == "b":
+                pass
+            else:
+                read_ver_new += i
+
+    if ver == read_ver_new:
         pass
     else:
         MessageBox('Update available!',
                    'Your app is out of date, new version is available to download!', 0)
 
-    print(read_ver)
-    print(ver)
+    print(read_ver_new)
 
 
 # Opened button will be assigned this command to prevent multiple clicks on the same button causing issues
