@@ -25,27 +25,42 @@ from InfoBox import CreateToolTip
 from SendEmail import initiante_email
 
 
+# Check for updates on each launch
 def updateChecker():
-    with open(r"Code\version.txt", "r") as version:
-        ver = version.read()
+    try:
+        with open(r"Code\version.txt", "r") as version:
+            ver = version.read()
+    except Exception as e:
+        y = open("errors.txt", "a")
+        y.write("Error: {}".format(e))
+        y.close()
 
-    with urllib.request.urlopen("https://raw.githubusercontent.com/FilipDomjan/advanced-system-monitor/main/Code/version.txt") as update:
-        read_ver = update.read()
+    try:
+        with urllib.request.urlopen("https://raw.githubusercontent.com/FilipDomjan/advanced-system-monitor/main/Code/version.txt") as update:
+            read_ver = update.read()
 
-        read_ver_new = ""
+            read_ver_new = ""
 
-        for i in str(read_ver):
-            print(i)
-            if i == "'" or i == "b" or i == "\\" or i == "n":
-                pass
-            else:
-                read_ver_new += i
+            for i in str(read_ver):
+                if i == "'" or i == "b" or i == "\\" or i == "n":
+                    pass
+                else:
+                    read_ver_new += i
+    except Exception as e:
+        y = open("errors.txt", "a")
+        y.write("Error: {}".format(e))
+        y.close()
 
-    if ver == read_ver_new:
-        pass
-    else:
-        MessageBox('Update available!',
-                   'Your app is out of date, new version is available to download!', 0)
+    try:
+        if ver == read_ver_new:
+            pass
+        else:
+            MessageBox('Update available!',
+                       'Your app is out of date, new version is available to download!', 0)
+    except Exception as e:
+        y = open("errors.txt", "a")
+        y.write("Error: {}".format(e))
+        y.close()
 
 # Opened button will be assigned this command to prevent multiple clicks on the same button causing issues
 
@@ -752,7 +767,6 @@ except Exception as e:
     y = open("errors.txt", "a")
     y.write("Error: {}".format(e))
     y.close()
-
 
 # Function for the clock located on the home page
 
@@ -6306,7 +6320,7 @@ try:
         asm_logo.grid(row=0, column=0, padx=(5, 2), pady=6)
 
         title_bar_title = tk.Label(title_bar_frame, bg=bg, fg=fg, font=(
-            "Oxygen", 12), width=40, height=1, anchor=tk.W, text="ADVANCED SYSTEM MONITOR")
+            "Oxygen", 12), width=40, height=1, anchor=tk.W, text="ADVANCED SYSTEM MONITOR (BETA)")
         title_bar_title.grid(row=0, column=1, padx=5, pady=0)
 
         title_bar_minimize = tk.Button(title_bar_frame, bg=bg, fg=fg, bd=0, activebackground=button_bg, activeforeground=fg, relief=SUNKEN, font=(
